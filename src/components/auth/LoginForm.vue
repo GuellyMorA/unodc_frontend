@@ -9,8 +9,8 @@ const router = useRouter();
 
 const checkbox = ref(false);
 const form = ref({
-    username: '1895306',
-    password: '81720006',
+    user_login: '1895306',
+    password_hash: '81720006',
     sistema: 'UEGG'
 });
 
@@ -23,7 +23,7 @@ const submit = async (event: any) => {
             console.log('res', res.data);
             if (res.data.codigo_sie) {
                 localStorage.setItem('user', JSON.stringify(res.data));
-                localStorage.setItem('username', form.value.username);
+                localStorage.setItem('username', form.value.user_login);
                 router.push('/');
                 return res;
             } else {
@@ -60,7 +60,7 @@ const submit = async (event: any) => {
         <v-row class="mb-3">
             <v-col cols="12">
                 <v-label class="font-weight-medium mb-1">Usuario</v-label>
-                <v-text-field variant="outlined" class="pwdInput" hide-details color="primary" v-model="form.username"></v-text-field>
+                <v-text-field variant="outlined" class="pwdInput" hide-details color="primary" v-model="form.user_login"></v-text-field>
             </v-col>
             <v-col cols="12">
                 <v-label class="font-weight-medium mb-1">Contraseña</v-label>
@@ -70,7 +70,7 @@ const submit = async (event: any) => {
                     type="password"
                     hide-details
                     color="primary"
-                    v-model="form.password"
+                    v-model="form.password_hash"
                 ></v-text-field>
             </v-col>
             <v-col cols="12">

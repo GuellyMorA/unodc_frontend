@@ -32,6 +32,26 @@ const sidebarItem: menu[] = [
     to: '/'
   },
   { header: 'Temática' },
+  //
+  {
+    title: "Administracion",
+    icon: CircleDotIcon,
+    BgColor: 'primary',
+    to: "/administracion/admUsuario",
+  },
+  {
+    title: "Seguimiento",
+    icon: AlertCircleIcon,
+    BgColor: 'primary',
+    to: "/denuncia/seguimiento",    
+  },
+  {
+    title: "Reporte",
+    icon: BoxMultiple1Icon,
+    BgColor: 'primary',
+    to: "/reportes/reporte",
+  },
+
   {
     title: "Convivencia pacífica y armónica",
     icon: CircleDotIcon,
