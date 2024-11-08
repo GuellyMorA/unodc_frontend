@@ -341,12 +341,12 @@ export default {
         try {
             if (this.editedIndex > -1) {   // Update person
                 Object.assign(this.people[this.editedIndex], this.editedItem)
-                this.showSnackbar('Usuario saved successfully!', 'green')
+                this.showSnackbar('Usuario modificado correctamente!', 'green')
                      this.close()
               } else {  // Add new person
               this.people.push(this.editedItem);
 
-              Usuario.usuarioCreate(this.editedItem)
+          /*   Usuario.usuarioCreate(this.editedItem)
               .then( (response) => {
                   console.log("response  : ",  response.status, response);
                   if(response.status === 200){
@@ -362,7 +362,9 @@ export default {
               .catch(e => {
                 console.log(e);
               });
-
+*/
+this.showSnackbar('Usuario creado correctamente!', 'green')
+                     this.close()
             }
             
         } catch (error) {
