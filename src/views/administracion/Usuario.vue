@@ -194,6 +194,7 @@ export default {
     ],
     people: [],
     editedIndex: -1,
+    
     // ... propiedades del formulario 
         editedItem: {
           nombres: '',
@@ -340,7 +341,9 @@ export default {
         try {
             if (this.editedIndex > -1) {   // Update person
                 Object.assign(this.people[this.editedIndex], this.editedItem)
-            } else {  // Add new person
+                this.showSnackbar('Usuario saved successfully!', 'green')
+                     this.close()
+              } else {  // Add new person
               this.people.push(this.editedItem);
 
               Usuario.usuarioCreate(this.editedItem)
