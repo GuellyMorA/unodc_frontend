@@ -39,7 +39,7 @@ onMounted(async() => {
             <ProductCards/>
         </v-col> -->
         <v-col class="text-center mt-2">
-            <p class="text-muted">Diseñado y desarrollado por <a flat variant="text" href="https://www.minedu.gob.bo/" target="_blank" class="pl-1 text-primary">minedu.gob.bo</a></p>
+            <p class="text-muted">Diseñado y desarrollado por <a flat variant="text" href="https://www.transparencia.gob.bo/" target="_blank" class="pl-1 text-primary">transparencia.gob.bo</a></p>
         </v-col>
     </v-row>
 </template>

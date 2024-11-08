@@ -5,7 +5,7 @@
 
      <!-- Data Table -->
   <v-data-table :headers="headers" :items="filteredItems"
-    :sort-by="[{ key: 'calories', order: 'asc' }, { key: 'fat', order: 'desc' }]" class="custom-table" :search="search"
+    :sort-by="[{ key: 'num', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="custom-table" :search="search"
     v-model:page="page" :items-per-page="itemsPerPage"   >
 
 
@@ -112,8 +112,10 @@
                   <v-text-field v-model="editedItem.password_hash"  :readonly="lockField" label="password_hash" :rules="[v => !!v || 'password es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItem.estado"  :readonly="lockField" label="Estado del usuario" :rules="[v => !!v || 'estado es requerido']"></v-text-field>
-                </v-col>
+                  <v-select
+                   v-model="editedItem.estado" :items="estadoOptions"  :readonly="lockField" label="Estado del usuario" :rules="[v => !!v || 'estado es requerido']"
+                   ></v-select>  
+              </v-col>
 
 
               </v-row>
@@ -127,28 +129,25 @@
           </v-card-actions>
           <v-card-actions v-else-if="lockField === true">
             <v-spacer></v-spacer>
-            <v-btn color="primary" text > Cerrar </v-btn>
+            <v-btn class="custom-green-btn" text  @click="close"> Cerrar </v-btn>
           </v-card-actions>
 
 
         </v-card>
       </v-dialog>
 
-
-
-
     </template>
 
     <template>
           <!-- Snackbar -->
-        <v-snackbar v-model="snackbar" :timeout="3000">
-            {{ snackbarText }}
+        <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color">
+            {{ snackbar.message  }}
             <template v-slot:action="{ attrs }">
               <v-btn
                 color="blue"
                 text
                 v-bind="attrs"
-                @click="snackbar = false"
+                @click="snackbar.visible = false"
               >
                 Cerrar
               </v-btn>
@@ -230,76 +229,52 @@ export default {
           estado: ''
         },
         viewedItem: {},
-        departments: ['IT', 'HR', 'Finance', 'Marketing', 'Operations'],
-        cities: ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'],
-    //formTitle: '',
+    
+
         viewDialog: false,
-        snackbar: false,
-        snackbarText: '',
-        expedidoOptions: ['Activo', 'Inactivo'],
-    gradoOptions: ['TI', 'Administración', 'Recursos Humanos'],
-    departOptions: ['scz', 'La Paz', 'cbba'],
-    ciudadOptions: ['Lima', 'Arequipa', 'Cusco'],
+ 
+        snackbar: {
+                    visible: false,
+                    message: '',
+                    color: '',
+                  },
+        expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
+        gradoOptions: ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
+        departOptions: ['Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
+        ciudadOptions: ['El Alto','Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
+        estadoOptions: ['ACTIVO', 'INACTIVO'],
   }),
 
   mounted() {
    username : localStorage.getItem('username');
-   this.listByFkUsuario () ;
+   this.listItem () ;
    
-  },
-
-  computed: {
-    formTitle () {
-          return this.editedIndex === -1 ? 'Adicionar Usuario' : 'Modificar Usuario'
-        },
-    filteredItems() {
-      return this.people.filter(item => {
-        return Object.keys(item).some(key => {
-          return String(item[key])
-            .toLowerCase()
-            .includes(this.search.toLowerCase())
-        })
-      })
-    },
-    pageCount() {
-      return Math.ceil(this.people.length / this.itemsPerPage)
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close()
-    },
-    dialogDelete(val) {
-      val || this.closeDelete()
-    },
-  },
-
-  created() {
-   // this.initialize()
-    //this.listByFkUsuario () 
   },
 
   methods: {
  
-      listByFkUsuario (){ 
+      async listItem (){ 
         Usuario.listByFkUsuario(0)
         .then( (response) => {
             console.log("response  : ", response.data, response.status);
             if(response.status === 200){
               this.people = response.data;  
             } else {
-                toast.error('Indicadores no encontrados', {
-                    autoClose: 3000,
-                    position: toast.POSITION.TOP_RIGHT,
-                });
+                this.showSnackbar('Error recuperando Usuario ' + response, 'red');
             }
           })
         .catch(e => {
           console.log(e);
         });
-    },
+      },
 
+      addNewPerson () {
+              this.editedIndex = -1
+              this.editedItem = Object.assign({}, this.defaultItem)
+              this.dialog = true
+
+
+            },
 
       editItem (item) {
               this.editedIndex = this.people.indexOf(item)
@@ -315,11 +290,7 @@ export default {
               this.lockField= true
             },
 
-      addNewPerson () {
-              this.editedIndex = -1
-              this.editedItem = Object.assign({}, this.defaultItem)
-              this.dialog = true
-            },
+   
 
 
       deleteItem(item) {
@@ -356,23 +327,97 @@ export default {
               this.viewedItem = {}
         },
 
-      save () {
-              if (this.editedIndex > -1) {
-                Object.assign(this.people[this.editedIndex], this.editedItem)
-              } else {
-                this.people.push(this.editedItem)
-              }
-              this.showSnackbar('Person saved successfully!')
-              this.close()
+      cancelEdit() {
+          this.resetForm();
         },
+      resetForm() {
+          this.editedItem =Object.assign({}, this.defaultItem)
+          this.editedIndex = -1
+          this.dialog = false
+          //this.editingUserId = null;
+        },
+      save () {
+        try {
+            if (this.editedIndex > -1) {   // Update person
+                Object.assign(this.people[this.editedIndex], this.editedItem)
+            } else {  // Add new person
+              this.people.push(this.editedItem);
 
-      showSnackbar (text) {
-              this.snackbarText = text
-              this.snackbar = true
+              Usuario.usuarioCreate(this.editedItem)
+              .then( (response) => {
+                  console.log("response  : ",  response.status, response);
+                  if(response.status === 200){
+                    this.people = response.data;  
+                    
+                    this.showSnackbar('Usuario saved successfully!', 'green')
+                     this.close()
+                  } else {
+                    this.showSnackbar('Error creating Usuario ' + response, 'red');
+                      
+                  }
+                })
+              .catch(e => {
+                console.log(e);
+              });
+
+            }
+            
+        } catch (error) {
+                this.showSnackbar('Error creating Usuario', 'red');
+            }    
+                   
+      
+      
+      },
+
+        /**
+* @param {string} message
+* @param {string} color
+*/
+        showSnackbar(message, color) {
+          this.snackbar.message = message;
+          this.snackbar.color = color;
+          this.snackbar.visible = true;
         }
+},
+
+  computed: {
+    formTitle () {
+          return this.editedIndex === -1 ? 'Adicionar Usuario' : 'Modificar Usuario'
+        },
+    filteredItems() {
+      return this.people.filter(item => {
+        return Object.keys(item).some(key => {
+          return String(item[key])
+            .toLowerCase()
+            .includes(this.search.toLowerCase())
+        })
+      })
+    },
+    pageCount() {
+      return Math.ceil(this.people.length / this.itemsPerPage)
+    },
   },
+
+  watch: {
+    dialog(val) {
+      val || this.close()
+    },
+    dialogDelete(val) {
+      val || this.closeDelete()
+    },
+  },
+
+  created() {
+   // this.initialize()
+    //this.listByFkUsuario () 
+  },
+
+ 
 }
 </script>
+
+
 <style>
 .custom-green-btn {
   background-color: #4CAF50; /* Verde */

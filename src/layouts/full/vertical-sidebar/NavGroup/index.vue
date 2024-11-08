@@ -8,3 +8,4 @@ const props = defineProps({ item: Object });
        <span class="mini-text font-weight-semibold pl-2 text-medium-emphasis text-uppercase ">{{ props.item.header}}</span> 
     </v-list-subheader>
 </template>
+

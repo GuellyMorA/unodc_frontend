@@ -26,7 +26,7 @@ export interface menu {
 const sidebarItem: menu[] = [
   { header: 'Inicio' },
   {
-    title: 'Dashboard',
+    title: 'Dashboard.',
     icon: LayoutDashboardIcon,
     BgColor: 'primary',
     to: '/'
@@ -51,7 +51,7 @@ const sidebarItem: menu[] = [
     BgColor: 'primary',
     to: "/reportes/reporte",
   },
-
+/*
   {
     title: "Convivencia pacífica y armónica",
     icon: CircleDotIcon,
@@ -70,6 +70,7 @@ const sidebarItem: menu[] = [
     BgColor: 'primary',
     to: "/violencia/jerarquica",
   },
+  */
   // {
   //   title: "Violencia entre pares",
   //   icon: BoxMultiple1Icon,

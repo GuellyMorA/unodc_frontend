@@ -12,7 +12,7 @@ const items = ref([
         <v-card-item class="pa-6">
             <div class="d-flex align-center justify-space-between">
                 <div>
-                    <h5 class="text-h5 mb-1 font-weight-semibold">Unidades educativas que más casos presentan</h5>
+                    <h5 class="text-h5 mb-1 font-weight-semibold">Departamentos que más casos presentan</h5>
                 </div>
                 <div>
                     <v-menu bottom left>

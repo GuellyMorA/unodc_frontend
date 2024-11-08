@@ -97,7 +97,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                 <v-card elevation="10" class="withbg">
                     <v-card-item>
                         <div class="d-flex align-center justify-space-between pt-sm-2">
-                            <v-card-title class="text-h5">PCPA <span class="text-subtitle-1 text-muted">aprobados</span></v-card-title>
+                            <v-card-title class="text-h5">DENUNCIAS <span class="text-subtitle-1 text-muted">aprobados</span></v-card-title>
                             <v-btn  size="small" icon class="bg-error">
                                 <v-avatar size="20" class="text-surface">
                                     <BuildingIcon size="20" />
@@ -109,7 +109,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                                 <div class="mt-2">
                                     <h3 class="text-h4">499</h3>
                                     <div class="mt-2">
-                                        <span class="text-subtitle-1 text-muted">unidades educativas</span>
+                                        <span class="text-subtitle-1 text-muted">Departamentos</span>
                                     </div>  
                                 </div>
                             </v-col>
@@ -137,7 +137,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                                 <div class="mt-2">
                                     <h3 class="text-h4">231</h3>
                                     <div class="mt-2">
-                                        <span class="text-subtitle-1 text-muted">unidades educativas</span>
+                                        <span class="text-subtitle-1 text-muted">Departamentos</span>
                                     </div>  
                                 </div>
                             </v-col>
@@ -165,7 +165,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                                 <div class="mt-2">
                                     <h3 class="text-h4">15</h3>
                                     <div class="mt-2">
-                                        <span class="text-subtitle-1 text-muted">unidades educativas</span>
+                                        <span class="text-subtitle-1 text-muted">Departamentos</span>
                                     </div>  
                                 </div>
                             </v-col>
@@ -221,7 +221,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                                 <div class="mt-2">
                                     <h3 class="text-h4">131</h3>
                                     <div class="mt-2">
-                                        <span class="text-subtitle-1 text-muted">unidades educativas</span>
+                                        <span class="text-subtitle-1 text-muted">Departamentos</span>
                                     </div>  
                                 </div>
                             </v-col>
@@ -249,7 +249,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                                 <div class="mt-2">
                                     <h3 class="text-h4">15</h3>
                                     <div class="mt-2">
-                                        <span class="text-subtitle-1 text-muted">unidades educativas</span>
+                                        <span class="text-subtitle-1 text-muted">Departamentos</span>
                                     </div>  
                                 </div>
                             </v-col>
@@ -331,7 +331,7 @@ const Chart = [38, 40, 25, 10, 12, 8, 5, 25, 12];
                                 <div class="mt-2">
                                     <h3 class="text-h4">20</h3>
                                     <div class="mt-2">
-                                        <span class="text-subtitle-1 text-muted">unidades educativas</span>
+                                        <span class="text-subtitle-1 text-muted">Departamentos</span>
                                     </div>  
                                 </div>
                             </v-col>
