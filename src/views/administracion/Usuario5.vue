@@ -168,7 +168,7 @@ export default {
           roles_sigla: '',
           password_hash: '',
           telefono: '',
-          estado: '''
+          estado: ''
        },
        defaultItem: {
         nombres: '',
@@ -318,7 +318,7 @@ export default {
        if(res.data && res.data.length > 0){
          this.people.value = res.data;  
        }
-     */
+   
          const res = await Usuario.listByFkUsuario(0).then((data) => {
            console.log("data : ", data.data, data.status);
            if(data.status === 200){
@@ -331,7 +331,7 @@ export default {
                });
            }
          });
-
+  */
      },
 
 
