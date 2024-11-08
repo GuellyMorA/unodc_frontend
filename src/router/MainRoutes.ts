@@ -13,6 +13,15 @@ const MainRoutes = {
             component: () => import('@/views/dashboard/index.vue')
         },
         {
+            name: 'AdministracionAdmUsuario',
+            path: '/administracion/admUsuario',
+            requiresAuth: true,
+            component: () => import('@/views/administracion/Usuario.vue')
+        },
+
+
+
+        {
             name: 'ConvivenciaPacifica',
             path: '/convivencia/pacifica',
             requiresAuth: true,

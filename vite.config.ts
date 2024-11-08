@@ -2,14 +2,17 @@ import { fileURLToPath, URL } from 'url';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import vuetify from 'vite-plugin-vuetify';
-
+//import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify'
 // https://vitejs.dev/config/
 export default defineConfig({
+ /*vue({
+            template: { transformAssetUrls },
+          }),*/
     plugins: [
         vue(),
         vuetify({
             autoImport: true,
-            styles: { configFile: 'src/scss/variables.scss' }
+            styles: { configFile: 'src/scss/_variables.scss' }
         })
     ],
     resolve: {

@@ -1,10 +1,14 @@
 import { createVuetify } from 'vuetify';
+import { VDataTable } from 'vuetify/labs/VDataTable'
+
 import '@mdi/font/css/materialdesignicons.css';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { BLUE_THEME } from '@/theme/LightTheme';
 export default createVuetify({
-    components,
+ components : {
+        VDataTable,
+      },
     directives,
 
     theme: {
