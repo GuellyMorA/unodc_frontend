@@ -73,9 +73,3 @@ const store = useNavbarStore();
         </div>
     </div>
 </template>
-<style>
-.custom-green-btn-top {
-  background-color: #073d09; /* Verde */
-  color: white; /* Texto en blanco */
-}
-</style>

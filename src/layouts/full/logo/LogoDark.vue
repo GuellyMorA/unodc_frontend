@@ -7,13 +7,14 @@ import logo from '@/assets/images/logos/logo-pol-nal.png';
         <RouterLink to="/">
             <img :src="logo" alt="home" style="width: 20%"/>
         </RouterLink>
-        <h3 class="custom-green-btn-side" >Sistema de denuncias</h3>
+        <h3  >Sistema de denuncias</h3>
     </div>
 </template>
+<!--
 <style>
 .custom-green-btn-side {
   background-color: #073d09; /* Verde */
   color: white; /* Texto en blanco */
 }
-</style>
+</style>  -->
 

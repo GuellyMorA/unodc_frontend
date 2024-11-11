@@ -5,7 +5,7 @@ const props = defineProps({ item: Object, level: Number });
 
 <template>
     <!---Single Item-->
-    <div class="custom-green-btn-side">
+    <div class="mb-1">
         <v-list-item  :to="item.type === 'external' ? '' : item.to" :href="item.type === 'external' ? item.to : ''" rounded
             :class="'  bg-hover-' + item.BgColor" :color="item.BgColor" :ripple="false" :disabled="item.disabled"
             :target="item.type === 'external' ? '_blank' : ''">
@@ -32,9 +32,10 @@ const props = defineProps({ item: Object, level: Number });
         </v-list-item>
     </div>
 </template>
+<!--
 <style>
 .custom-green-btn-side {
   background-color: #073d09; /* Verde */
   color: white; /* Texto en blanco */
 }
-</style>
+</style> -->

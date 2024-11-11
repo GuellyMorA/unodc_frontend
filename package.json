@@ -1,6 +1,6 @@
 {
-    "name": "uegg",
-    "version": "1.4.0",
+    "name": "denun",
+    "version": "1.2.0",
     "scripts": {
         "dev": "vite",
         "build": "vue-tsc --noEmit && vite build",

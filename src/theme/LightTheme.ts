@@ -25,7 +25,7 @@ const BLUE_THEME: ThemeTypes = {
         textSecondary: '#2A3547',
         borderColor: '#e5eaef',
         inputBorder: '#DFE5EF',
-        containerBg: '#ffffff',
+        containerBg: '#073d09', //cambio a color verde oscuro : SIDE BAR  y head bar , old color: #ffffff
         background: '#f0f5f9',
         hoverColor: '#f6f9fc',
         surface: '#fff',
