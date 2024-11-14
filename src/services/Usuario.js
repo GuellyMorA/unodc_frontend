@@ -1,9 +1,25 @@
 import http from 'axios';
-///import http2 from 'axios';
+import http2 from 'axios';
 const apiUrl = import.meta.env;
 
 class UsuarioService {
 
+  usuarioList() {
+     //const user = JSON.parse(localStorage.getItem('user'));
+     return http2({
+      method:'get',
+      url: `/auth/usuarioList`,
+      baseURL: apiUrl.VITE_API_URL_AUTH,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': apiUrl.VITE_API_URL_TOKEN
+      },
+    })
+    .catch((error) => {
+        return error;
+    });
+
+  }
 
   findByIdUsuario(data) {
     return http.get(`/usuarioFindById/${data}`,).catch((error) => {
@@ -13,12 +29,24 @@ class UsuarioService {
   }
 
   listByFkUsuario(data) {
-    return http.get(`/usuarioListByFk/${data}`,).catch((error) => {
-      return error;
+     
+    //const user = JSON.parse(localStorage.getItem('user'));
+    return http2({
+      method:'get',
+      url: `/auth/usuarioListByFk/${data}`,
+      baseURL: apiUrl.VITE_API_URL_AUTH,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': apiUrl.VITE_API_URL_TOKEN
+      },
+    })
+    .catch((error) => {
+        return error;
     });
 
   }
-  
+
+     
   usuarioCreate(data) {
     return http.post(`/usuario`, data).catch((error) => {
       return error;

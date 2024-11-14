@@ -6,7 +6,12 @@
   <!-- Data Table -->
   <v-data-table :headers="headers" :items="filteredItems"
     :sort-by="[{ key: 'num', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1" :search="search"
-    v-model:page="page" :items-per-page="itemsPerPage">
+    v-model:page="page" :items-per-page="itemsPerPage"
+    rows-per-page-text="Filas por página"
+            no-data-text="No existen registros"
+            no-results-text="Sin resultados"
+            page-text="de"
+    >
 
     <template v-slot:headers="{ props }">
       <tr v-bind="props">
@@ -102,14 +107,14 @@
                   :rules="[v => !!v || 'email es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select v-model="selectedDeptoId"  :items="departamentos"
-                  item-title="departs" item-value="id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange" 
-                ></v-select>
-
+                <v-select v-model="selectedDeptoId"  :items="deptoOptions"
+                  item-title="depto" item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange" 
+                  :rules="[v => !!v || 'departamento es requerido']"></v-select>
+                  
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-select v-model="editedItem.ciudad" :items="ciudadOptions" 
-                  item-title="name" item-value="id" :readonly="lockField" label="Ciudad" return-object
+                  item-title="mun" item-value="mun_id" :readonly="lockField" label="Ciudad" return-object
                   :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
@@ -148,7 +153,10 @@
 
   <template>
 
-    <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color">
+    <v-snackbar v-model="snackbar.visible" :timeout="2000" :color="snackbar.color"
+       :top="'top'"    :vertical="snackbar.mode === 'vertical'"
+      :right="'right'"  :multi-line="snackbar.mode === 'multi-line'"
+    >
       {{ snackbar.message }}
       <template v-slot:action="{ attrs }">
         <v-btn color="blue" text v-bind="attrs" @click="snackbar.visible = false">
@@ -162,6 +170,7 @@
 
 <script>
 import Usuario from '@/services/Usuario';
+import NivelGeografico from '@/services/NivelGeografico';
 import { toast } from 'vue3-toastify';
 
 
@@ -176,7 +185,11 @@ export default {
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: null,
     lockField: false,
-  
+    serviciosDeptos:{
+        deptoId:'',
+        deptos: []
+      },
+
     headers: [
       {
         title: 'Num',
@@ -206,14 +219,15 @@ export default {
       ci_y_complemento: '',
       ci_expedido: '',
       grados_sigla: '',
+      telefono: '',
       email: '',
       departamento: '',
       ciudad: '',
       user_login: '',
       roles_sigla: '',
       password_hash: '',
-      telefono: '',
-      estado: ''
+      rol: '',
+       estado: ''
     },
 
     defaultItem: {
@@ -223,14 +237,15 @@ export default {
       ci_y_complemento: '',
       ci_expedido: '',
       grados_sigla: '',
+      telefono: '',
       email: '',
       departamento: '',
       ciudad: '',
       user_login: '',
       roles_sigla: '',
       password_hash: '',
-      telefono: '',
-      estado: ''
+      rol: '',
+       estado: ''
     },
     viewedItem: {},
 
@@ -240,18 +255,19 @@ export default {
     snackbar: {
       visible: false,
       message: '',
-      color: '',
+      color: "success",
+        mode: "",
+        timeout: 2500,
     },
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
     gradoOptions: ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
-    // departOptions: [{id:1,dpto:'Chuquisaca'},{id:2 , dpto:'La Paz'}, {id:3 , dpto:'Santa Cruz'},{id:4 , dpto: 'Cochabamba'}],
-    ciudadOptions:  [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
     validationErrors:  [],
-   // ciudades:  [{}],
+   
     selectedDeptoId: null,    // Código del país seleccionado
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
-
-    departamentos: [{
+    departamentos: [{}],
+    deptoOptions: [{}],
+    depas: [{
       id: 1, departs: 'Chuquisaca',
       cities: [{ id: 1, name: 'Sucre' }, { id: 2, name: 'Montes' }, { id: 3, name: 'Chaco' }]
         },
@@ -263,15 +279,17 @@ export default {
           id: 3, departs: 'Santa Cruz',
           cities: [{ id: 1, name: 'Santa Cruz' }]
     }],
-
+ // departOptions: [{id:1,dpto:'Chuquisaca'},{id:2 , dpto:'La Paz'}, {id:3 , dpto:'Santa Cruz'},{id:4 , dpto: 'Cochabamba'}],
+    ciudadOptions:  [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
+   
 
     estadoOptions: ['ACTIVO', 'INACTIVO'],
   }),
 
   mounted() {
     username: localStorage.getItem('username');
-    this.listItem();
-
+    this.listByFkUsuario();
+    this.listDeptos();
   },
 
   /*computed: {
@@ -282,6 +300,41 @@ export default {
     },*/
 
   methods: {
+
+    async listDeptos() {
+      NivelGeografico.nivelGeograficoList()
+        .then((response) => {
+          //console.log("DEPAS  : ", this.depas);
+         // console.log("response.data[0]  : ", response.data[0], response.status);
+          if (response.status === 200) {           
+            this.departamentos =   Object.values(response.data[0]);
+            this.departamentos =   Object.values(this.departamentos[0]);
+            console.log("departamentos  : ", this.departamentos);
+            this.deptoOptions =  this.departamentos.map(depart => ({
+                              depto: depart.depto,
+                              depto_id: depart.depto_id,
+                            }));
+              console.log("deptoOptions  : ", this.deptoOptions);               
+          } else {
+            this.showSnackbar('Error recuperando Usuario ' + response, 'red');
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+
+    
+    onDepartChange() {
+      // Encuentra el país seleccionado por su código
+      const departMun = this.departamentos.find(c => c.depto_id === this.selectedDeptoId);
+      // Actualiza las provincias según el país seleccionado
+      this.ciudadOptions = departMun ? departMun.municipios : [];
+      console.log("ciudadOptions  : ", this.ciudadOptions);        
+      // Resetear la provincia seleccionada al cambiar el país
+      this.selectedProvinceCode = 0;
+    },
+
 
     validateForm  () {
     //this.validationErrors = {};
@@ -330,8 +383,8 @@ export default {
 
     },
 
-    async listItem() {
-      Usuario.listByFkUsuario(0)
+    async listByFkUsuario() {
+      Usuario.usuarioList()
         .then((response) => {
           console.log("response  : ", response.data, response.status);
           if (response.status === 200) {
@@ -343,15 +396,6 @@ export default {
         .catch(e => {
           console.log(e);
         });
-    },
-
-    onDepartChange() {
-      // Encuentra el país seleccionado por su código
-      const departamento = this.departamentos.find(c => c.id === this.selectedDeptoId);
-      // Actualiza las provincias según el país seleccionado
-      this.ciudadOptions = departamento ? departamento.cities : [];
-      // Resetear la provincia seleccionada al cambiar el país
-      this.selectedProvinceCode = 0;
     },
 
 
