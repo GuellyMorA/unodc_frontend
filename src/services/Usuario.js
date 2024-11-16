@@ -48,16 +48,41 @@ class UsuarioService {
 
      
   usuarioCreate(data) {
-    return http.post(`/usuario`, data).catch((error) => {
-      return error;
+    return http2({
+      method:'post',
+      url: `/auth/usuario/${data}`,
+      baseURL: apiUrl.VITE_API_URL_AUTH,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': apiUrl.VITE_API_URL_TOKEN
+      },
+    })
+    .catch((error) => {
+        return error;
     });
+
   }
 
-  usuarioUpdate(id) {
-    return http.put(`/usuario/${id}`).catch((error) => {
-      return error;
+
+
+
+  usuarioUpdate(id, data) {
+    return http2({
+      method:'put',
+      url: `/auth/usuario/${id}`,
+      baseURL: apiUrl.VITE_API_URL_AUTH,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': apiUrl.VITE_API_URL_TOKEN
+      },      
+    data:`${data}`
+    })
+    .catch((error) => {
+        return error;
     });
+
   }
+
 
 
   usuarioDelLogico(id) {

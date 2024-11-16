@@ -139,7 +139,7 @@ export default {
        title: 'Num',
        align: 'start',
        sortable: false,
-       key: 'num',
+       key: 'numxxxx',
      },
      { title: 'CI', key: 'ci_y_complemento' },
      { title: 'Grado', key: 'grados_sigla' },

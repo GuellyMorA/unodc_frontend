@@ -12,7 +12,7 @@ class NivelGeograficoService {
 
   }
 
-  listByFkNivelGeografico(data) {
+  nivelGeograficoListByFk(data) {
     return http.get(`/nivelGeograficoListByFk/${data}`,).catch((error) => {
       return error;
     });

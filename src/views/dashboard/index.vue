@@ -5,11 +5,10 @@ import TrafficDistribution from "@/components/dashboards/TrafficDistribution.vue
 import ProductSales from "@/components/dashboards/ProductSales.vue";
 import UpcommingSchedule from "@/components/dashboards/UpcommingSchedule.vue";
 import TopPayingClients from "@/components/dashboards/TopPayingClients.vue";
-import ProductCards from "@/components/dashboards/ProductCards.vue";
-import axios from "axios";
+
 
 onMounted(async() => {
-    console.log("data..........+++++++++");
+    console.log("ingreso a dashboard");
     // const items = await axios.get('item').then(data => {
     //     console.log(data.data);
     // })

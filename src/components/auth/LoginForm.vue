@@ -20,7 +20,7 @@ const submit = async (event: any) => {
     // return true;
     const respuesta = await Auth.login(form.value).then((res) => {
         if (res.status === 200) {
-            console.log('res', res.data);
+            console.log('Auth.login: ', res.data);
             if (res.data.codigo_sie) {
                 localStorage.setItem('user', JSON.stringify(res.data));
                 localStorage.setItem('username', form.value.user_login);

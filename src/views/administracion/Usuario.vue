@@ -5,7 +5,7 @@
 
   <!-- Data Table -->
   <v-data-table :headers="headers" :items="filteredItems"
-    :sort-by="[{ key: 'num', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1" :search="search"
+    :sort-by="[{ key: 'id', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1" :search="search"
     v-model:page="page" :items-per-page="itemsPerPage"
     rows-per-page-text="Filas por página"
             no-data-text="No existen registros"
@@ -95,8 +95,9 @@
                   label="ci_expedido" :rules="[v => !!v || 'Nombres es requerido']"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItem.grados_sigla" :items="gradoOptions" :readonly="lockField" label="grados"
-                  :rules="[v => !!v || 'grado es requerido']"></v-select>
+                <v-select v-model="editedItem.grado" :items="gradoOptions" 
+                          item-title="grado" item-value="grados_sigla" :readonly="lockField" label="grados"  @update:modelValue="onGradoChange" 
+                          :rules="[v => !!v || 'grado es requerido']"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field v-model="editedItem.telefono" :readonly="lockField" label="telefono"
@@ -107,13 +108,13 @@
                   :rules="[v => !!v || 'email es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select v-model="selectedDeptoId"  :items="deptoOptions"
-                  item-title="depto" item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange" 
-                  :rules="[v => !!v || 'departamento es requerido']"></v-select>
+                <v-select v-model="editedItem.departamento"  :items="deptoOptions"
+                         item-title="depto" item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange" 
+                        :rules="[v => !!v || 'departamento es requerido']"></v-select>
                   
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItem.ciudad" :items="ciudadOptions" 
+                <v-select v-model="editedItem.municipio" :items="munOptions" 
                   item-title="mun" item-value="mun_id" :readonly="lockField" label="Ciudad" return-object
                   :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
               </v-col>
@@ -126,8 +127,13 @@
                   :rules="[v => !!v || 'password es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItem.estado" :items="estadoOptions" :readonly="lockField"
-                  label="Estado del usuario" :rules="[v => !!v || 'estado es requerido']"></v-select>
+                <v-text-field v-model="editedItem.roles_sigla" :readonly="true" label="Rol"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6" md="4">
+                <v-select v-model="editedItem.estado" :items="estadoOptions" 
+                item-title="est" item-value="transac" :readonly="lockField" label="Estado del usuario" @update:modelValue="onEstadoChange" 
+                :rules="[v => !!v || 'estado es requerido']"></v-select>
               </v-col>
 
 
@@ -172,7 +178,7 @@
 import Usuario from '@/services/Usuario';
 import NivelGeografico from '@/services/NivelGeografico';
 import { toast } from 'vue3-toastify';
-
+import Grado from '@/services/Grado';
 
 export default {
 
@@ -183,19 +189,16 @@ export default {
     dialog: false,
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
-    username: null,
+    username: '',
     lockField: false,
-    serviciosDeptos:{
-        deptoId:'',
-        deptos: []
-      },
+ arrayUsuario: [],
 
     headers: [
       {
         title: 'Num',
         align: 'start',
         sortable: false,
-        key: 'num',
+        key: 'id',
         class: 'background'
       },
       { title: 'CI', key: 'ci_y_complemento', class: 'success--text title' },
@@ -213,42 +216,53 @@ export default {
 
     // ... propiedades del formulario 
     editedItem: {
+      id:null,
       nombres: '',
       apellido_pat: '',
       apellido_mat: '',
       ci_y_complemento: '',
       ci_expedido: '',
+      grado: '',
       grados_sigla: '',
       telefono: '',
       email: '',
       departamento: '',
-      ciudad: '',
+      depto_id: '',
+      municipio: '',
+      mun_id: '',
       user_login: '',
       roles_sigla: '',
       password_hash: '',
       rol: '',
-       estado: ''
+      estado: '',
+      transaccion:'',
+      username:''
     },
 
     defaultItem: {
+      id:null,
       nombres: '',
       apellido_pat: '',
       apellido_mat: '',
       ci_y_complemento: '',
       ci_expedido: '',
+      grado: '',
       grados_sigla: '',
       telefono: '',
       email: '',
       departamento: '',
-      ciudad: '',
+      depto_id: '',
+      municipio: '',
+      mun_id: '',
       user_login: '',
       roles_sigla: '',
       password_hash: '',
       rol: '',
-       estado: ''
+      estado: '',
+      transaccion:'',
+      username:''
     },
     viewedItem: {},
-
 
     viewDialog: false,
 
@@ -260,13 +274,16 @@ export default {
         timeout: 2500,
     },
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
-    gradoOptions: ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
+    gradoOptions: [], // ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
     validationErrors:  [],
    
     selectedDeptoId: null,    // Código del país seleccionado
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
     departamentos: [{}],
     deptoOptions: [{}],
+    munOptions:  [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
+   
+    estadoOptions: [{est:'ACTIVO', transac: 'ACTIVAR'},{est: 'INACTIVO', transac: 'INACTIVAR'}   ],
     depas: [{
       id: 1, departs: 'Chuquisaca',
       cities: [{ id: 1, name: 'Sucre' }, { id: 2, name: 'Montes' }, { id: 3, name: 'Chaco' }]
@@ -279,17 +296,17 @@ export default {
           id: 3, departs: 'Santa Cruz',
           cities: [{ id: 1, name: 'Santa Cruz' }]
     }],
- // departOptions: [{id:1,dpto:'Chuquisaca'},{id:2 , dpto:'La Paz'}, {id:3 , dpto:'Santa Cruz'},{id:4 , dpto: 'Cochabamba'}],
-    ciudadOptions:  [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
-   
+ // departOptions: [{id:1,depto:'Chuquisaca'},{id:2 , depto:'La Paz'}, {id:3 , depto:'Santa Cruz'},{id:4 , depto: 'Cochabamba'}],
+  
 
-    estadoOptions: ['ACTIVO', 'INACTIVO'],
   }),
 
   mounted() {
     username: localStorage.getItem('username');
-    this.listByFkUsuario();
-    this.listDeptos();
+    this.usuarioList();
+    this.deptoList();
+    this.gradoList();
+
   },
 
   /*computed: {
@@ -301,7 +318,26 @@ export default {
 
   methods: {
 
-    async listDeptos() {
+
+    async gradoList() {
+      Grado.gradoList()
+        .then((response) => {
+          //console.log("DEPAS  : ", this.depas);
+         // console.log("response.data[0]  : ", response.data[0], response.status);
+          if (response.status === 200) {   
+
+            this.gradoOptions =   Object.values(response.data);
+            console.log("gradoOptions  : ", this.gradoOptions);
+          } else {
+            this.showSnackbar('Error recuperando Usuario ' + response, 'red');
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    },
+
+    async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
           //console.log("DEPAS  : ", this.depas);
@@ -309,7 +345,7 @@ export default {
           if (response.status === 200) {           
             this.departamentos =   Object.values(response.data[0]);
             this.departamentos =   Object.values(this.departamentos[0]);
-            console.log("departamentos  : ", this.departamentos);
+         //   console.log("departamentos  : ", this.departamentos);
             this.deptoOptions =  this.departamentos.map(depart => ({
                               depto: depart.depto,
                               depto_id: depart.depto_id,
@@ -326,54 +362,126 @@ export default {
 
     
     onDepartChange() {
-      // Encuentra el país seleccionado por su código
-      const departMun = this.departamentos.find(c => c.depto_id === this.selectedDeptoId);
-      // Actualiza las provincias según el país seleccionado
-      this.ciudadOptions = departMun ? departMun.municipios : [];
-      console.log("ciudadOptions  : ", this.ciudadOptions);        
-      // Resetear la provincia seleccionada al cambiar el país
-      this.selectedProvinceCode = 0;
+      // Encuentra el depart seleccionado por su id
+      const departMun = this.departamentos.find(c => c.depto_id === this.editedItem.departamento);
+      // Actualiza las municip según el depart seleccionado
+      this.munOptions = departMun ? departMun.municipios : [];
+      console.log("munOptions  : ", this.munOptions);        
+      // Resetear la mun seleccionada al cambiar el país
+      this.editedItem.municipio = '';
+
+      this.editedItem.depto_id= this.editedItem.departamento;
+  
     },
 
+    onEstadoChange() {
+      // Encuentra el depart seleccionado por su id
+      const estado = this.estadoOptions.find(c => c.transac === this.editedItem.estado);
+      // Actualiza las municip según el depart seleccionado
+    
+      this.editedItem.estado= estado.est;
+      this.editedItem.transaccion= estado.transac;
+    },
+
+    onGradoChange() {
+      // Encuentra el depart seleccionado por su id
+      const grado = this.gradoOptions.find(c => c.grado === this.editedItem.grado);
+      // Actualiza las municip según el depart seleccionado
+      console.log("gradoOptions  : ", this.gradoOptions);  
+      this.editedItem.grados_sigla= grado.sigla;
+      //this.editedItem.grado= grado.grado;
+    },
 
     validateForm  () {
-    //this.validationErrors = {};
+          //this.validationErrors = {};
 
-    if (!this.editedItem.nombres || !this.editedItem.apellido_pat) this.validationErrors['nombres'] = true;
-    else delete this.validationErrors['nombres'];
+          if (!this.editedItem.nombres || !this.editedItem.apellido_pat) this.validationErrors['nombres'] = true;
+          else delete this.validationErrors['nombres'];
 
-   
-    return !Object.keys(this.validationErrors).length;
+        
+          return !Object.keys(this.validationErrors).length;
     },
 
     save() {
       try {
+        /*
+        if (!validateForm()) {
+            toast.info('Debe ingresar los datos requeridos', {
+                autoClose: 3000,
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            dialog.value = false;
+            dialogSave.value = false;
+            return false;
+        }
+        const dateParts = (form.value.fecha || '').split("/");
+          */
+       // if( this.editedItem && this.editedItem ){
+           // const payload1 = {
+          //  console.log('editedItem : ',this.editedItem);
+   
+                //this.editedItem.depto_id= this.editedItem.departamento,
+                //this.editedItem.mun_id= this.editedItem.municipio.mun_id,            
+               // fec_ejecucion:   new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]).toISOString(), // form.value.fecha,        
+                //estado: 'ACTIVO',
+              //  this.editedItem.depto_id= this.editedItem.departamento;
+               
+               
+                this.editedItem.mun_id= this.editedItem.municipio.mun_id ? this.editedItem.municipio.mun_id : this.editedItem.mun_id  ;
+               // this.editedItem.transaccion= this.editedItem.estado;
+                //fec_cre: new Date()
+            //}
+           console.log('editedItem 2 : ',[this.editedItem][0]);
+              
+      // this.arrayUsuario =  JSON.stringify(this.editedItem); //.replace(/,/g, ', ');   //  JSON.parse(this.editedItem); //  Object.entries(this.editedItem);
+
+         console.log('editedItem 2 : ',  JSON.stringify(this.editedItem) );
+      
         if (this.editedIndex > -1) {   // Update person
-          Object.assign(this.people[this.editedIndex], this.editedItem)
-          this.showSnackbar('Usuario modificado correctamente!', 'green')
-          this.close()
+           Object.assign(this.people[this.editedIndex], this.editedItem)
+           
+           Usuario.usuarioUpdate(this.editedItem.id,  JSON.stringify(this.editedItem) )
+            .then((response) => {
+              console.log("usuarioUpdate  : ", response.status, response);
+              if (response.status === 200) {
+               // this.people = response.data;
+
+                this.showSnackbar('Usuario modificado correctamente !', 'green')
+                this.close()
+              } else {
+                this.showSnackbar('Error modificando Usuario ' + response, 'red');
+
+              }
+            })
+            .catch(e => {
+              this.showSnackbar('Log Error modificando Usuario ' + e, 'red');
+              console.log(e);
+            });
+
+
         } else {  // Add new person
           this.people.push(this.editedItem);
 
           Usuario.usuarioCreate(this.editedItem)
             .then((response) => {
-              console.log("response  : ", response.status, response);
+              console.log("usuarioCreate  : ", response.status, response);
               if (response.status === 200) {
                 this.people = response.data;
 
-                this.showSnackbar('Usuario saved successfully!', 'green')
+                this.showSnackbar('Usuario creado correctamente!', 'green')
                 this.close()
               } else {
-                this.showSnackbar('Error creating Usuario ' + response, 'red');
+                this.showSnackbar('Error creando Usuario ' + response, 'red');
 
               }
             })
             .catch(e => {
+              this.showSnackbar('Log Error creando Usuario ' + e, 'red');
               console.log(e);
             });
 
-          this.showSnackbar('Usuario creado correctamente!', 'green')
-          this.close()
+         // this.showSnackbar('Usuario creado correctamente!', 'green')
+         // this.close()
         }
 
       } catch (error) {
@@ -383,10 +491,10 @@ export default {
 
     },
 
-    async listByFkUsuario() {
+    async usuarioList() {
       Usuario.usuarioList()
         .then((response) => {
-          console.log("response  : ", response.data, response.status);
+          console.log("usuarioList  : ", response.data, response.status);
           if (response.status === 200) {
             this.people = response.data;
           } else {
@@ -505,10 +613,10 @@ export default {
     },
   },
 
-  created() {
+ // created() {
     // this.initialize()
     //this.listByFkUsuario () 
-  },
+  //},
 
 
 }
