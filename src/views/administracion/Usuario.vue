@@ -1,16 +1,30 @@
 <template>
+
+
+<v-alert
+        v-if="loading"
+        type="info"
+        dismissible
+      >
+        Cargando datos...
+      </v-alert>
+
+
   <!-- Search Field -->
   <v-text-field v-model="search" class="pa-2" label="Buscar Usuario" append-icon="mdi-magnify" single-line
     hide-details></v-text-field>
 
-  <!-- Data Table -->
+  <!-- Data Table -->  <!-- v-model:page="page" -->
   <v-data-table :headers="headers" :items="filteredItems"
     :sort-by="[{ key: 'id', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1" :search="search"
-    v-model:page="page" :items-per-page="itemsPerPage"
-    rows-per-page-text="Filas por página"
-            no-data-text="No existen registros"
+  
+    :items-per-page="itemsPerPage"
+
+            rows-per-page-text="Filas por página"
+            no-data-text="No existen registros."
             no-results-text="Sin resultados"
             page-text="de"
+            items-per-page-text="Registros por pagina "
     >
 
     <template v-slot:headers="{ props }">
@@ -47,12 +61,12 @@
       <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
     </template>
 
-    <template v-slot:bottom>
+ <!--   <template v-slot:bottom>
       <div class="text-center pt-2">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
-      </div>
+      </div>    
 
-    </template>
+    </template>-->
   </v-data-table>
 
   <!-- Add New Person Button -->
@@ -183,13 +197,17 @@ import Grado from '@/services/Grado';
 export default {
 
   data: () => ({
+
+    loading: true,
+
     page: 1,
     itemsPerPage: 5,
     search: '',
     dialog: false,
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
-    username: '',
+    username: localStorage.getItem('username'),
+
     lockField: false,
  arrayUsuario: [],
 
@@ -302,11 +320,12 @@ export default {
   }),
 
   mounted() {
-    username: localStorage.getItem('username');
+    this.loading = true;
+    //this.username= localStorage.getItem('username');
     this.usuarioList();
     this.deptoList();
     this.gradoList();
-
+    this.loading = false;
   },
 
   /*computed: {
