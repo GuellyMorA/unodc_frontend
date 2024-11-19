@@ -133,12 +133,22 @@
                   :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="user_login"
-                  :rules="[v => !!v || 'user es requerido']"></v-text-field>
+                <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="usuario"
+                   :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="password_hash"
-                  :rules="[v => !!v || 'password es requerido']"></v-text-field>
+                <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="password"
+                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+            :rules="[rules.required, rules.min]"
+            :type="show1 ? 'text' : 'password'"
+            hint="Min. 8 caracteres"
+          
+            name="input-10-1"
+            counter
+            @click:append="show1 = !show1"
+                  
+                  
+                  ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
             
@@ -224,7 +234,18 @@ export default {
     username: localStorage.getItem('username'),
 
     lockField: false,
-    arrayUsuario: [],
+  
+    show1: false,
+        show2: true,
+        password: 'Password',
+        rules: {
+          required: value => !!value || 'Requirido.',
+          min: v => v.length >= 8 || 'Min. 8 caracteres',
+          emailMatch: () => `The email and password you entered don't match`,
+        },
+
+
+
 
     headers: [
       {
@@ -276,11 +297,10 @@ export default {
       municipio: '',
       mun_id: '',
       user_login: '',
-      roles_sigla: '',
-      password_hash: '',
+        password_hash: '',
+        u_rol_id:'',
+        roles_sigla: '',         
       rol: '',
-      u_rol_id:'',
-
       estado: '',
       transaccion: '',
     
@@ -309,8 +329,9 @@ export default {
       municipio: '',
       mun_id: '',
       user_login: '',
-      roles_sigla: '',
-      password_hash: '',
+        password_hash: '',
+        u_rol_id:'',
+        roles_sigla: '',         
       rol: '',
       estado: '',
       transaccion: '',
@@ -519,7 +540,7 @@ export default {
     },
 
     usuariosRolUpdate(){
-          this.editedItemRolUsu.id = this.editedItemUsuario.u_rol_id;
+          this.editedItemRolUsu.id = this.editedItemUsuario.u_rol_id==='' ? this.editedItemRolUsu.id  : this.editedItemUsuario.u_rol_id;
           this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
           this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.roles_sigla;
           this.editedItemRolUsu.descripcion = 'Cambio de rol';
@@ -574,7 +595,8 @@ export default {
 
               if (response.status === 201) {
               
-
+                this.editedItemUsuario.u_rol_id= response.data.id;
+                this.editedItemRolUsu.id= response.data.id;
                 console.log("UsuariosRolCreate  : ", response.status, response);
                 this.showSnackbar('Usuario rol creado correctamente!', 'green')
                // this.close()
