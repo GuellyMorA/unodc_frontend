@@ -50,14 +50,17 @@ class UsuarioService {
   usuarioCreate(data) {
     return http2({
       method:'post',
-      url: `/auth/usuario/${data}`,
+      url: `/auth/usuario`,
       baseURL: apiUrl.VITE_API_URL_AUTH,
       headers: {
         "Content-Type": "application/json",
         'Authorization': apiUrl.VITE_API_URL_TOKEN
       },
+      data:`${data}`
     })
     .catch((error) => {
+      console.log("usuarioCreate  : ", error);
+
         return error;
     });
 

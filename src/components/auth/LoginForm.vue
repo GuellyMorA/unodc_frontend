@@ -28,6 +28,7 @@ const submit = async (event: any) => {
                 return res;
             } else {
                 localStorage.setItem('user', JSON.stringify({codigo_sie: 80730460, token: res.data.token}));
+                localStorage.setItem('username', form.value.user_login);
                 router.push('/');
                 return res;                
                 // toast.error('Usuario no tiene asignado una unidad educativa', {
