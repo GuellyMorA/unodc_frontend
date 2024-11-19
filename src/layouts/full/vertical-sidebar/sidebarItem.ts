@@ -40,6 +40,12 @@ const sidebarItem: menu[] = [
     to: "/administracion/admUsuario",
   },
   {
+    title: "Form. Denuncias",
+    icon: CircleDotIcon,
+    BgColor: 'primary',
+    to: "/denuncia/FormDenuncia",
+  },
+  {
     title: "Seguimiento",
     icon: AlertCircleIcon,
     BgColor: 'primary',

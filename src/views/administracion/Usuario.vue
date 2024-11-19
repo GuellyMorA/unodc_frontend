@@ -94,15 +94,15 @@
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
-                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
-                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-text-field v-model="editedItemUsuario.ci_y_complemento" :readonly="lockField" label="ci_y_complemento"
-                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+                  :rules="[v => !!v || 'CI es requerido']"></v-text-field>
               </v-col>
               <v-col cols="12" sm="6" md="4">
                 <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField"

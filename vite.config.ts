@@ -34,4 +34,9 @@ export default defineConfig({
     //         treeshake:  false 
     //     }
     // },
+    build: {
+        rollupOptions: {
+          external: ['@unhead/vue'], // Marca el paquete como externo
+        },
+    },
 });

@@ -18,6 +18,12 @@ const MainRoutes = {
             requiresAuth: true,
             component: () => import('@/views/administracion/Usuario.vue')
         },
+        {
+            name: 'DenunciaFormDenuncia',
+            path: '/denuncia/FormDenuncia',
+            requiresAuth: true,
+            component: () => import('@/views/denuncia/FormDenuncia.vue')
+        },
 
 
 

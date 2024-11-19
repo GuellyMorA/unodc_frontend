@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  
   
   <v-alert
           v-if="loading"
@@ -7,71 +7,172 @@
           dismissible
         >
           Cargando datos...
-        </v-alert>
-  
-  
-    <!-- Search Field -->
-    <v-text-field v-model="search" class="pa-2" label="Buscar Usuario" append-icon="mdi-magnify" single-line
-      hide-details></v-text-field>
-  
-    <!-- Data Table -->  <!-- v-model:page="page" -->
-    <v-data-table :headers="headers" :items="filteredItems"
-      :sort-by="[{ key: 'id', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1" :search="search"
+  </v-alert>
+  <h1>Formulario de denuncias</h1>
+<v-container>
+  <v-text-field  label="EL PRESENTE FORMULARIO RECIBE DENUNCIAS DE CORRUPCION, MALOS TRATOS Y OTROS COMETIDOS POR FUNCIONARIOS POLICIALES Y SERA REVISADO POR EL DEPARTAMENTO NACIONAL DE TRANSPARENCIA DE LA POLICIA BOLIVIANA."></v-text-field>
+
+  <v-card class="mx-auto" max-width="700" >
+    <v-card-title>
+            <span class="text-h5"> Datos del Denunciante </span>
+      </v-card-title>
+        <v-card-text>
+          <v-container>  
+          
+        
+                <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="nombres"
+                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+             
+             
+                <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
+                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+             
+             
+                <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
+                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+                       
+                <v-text-field v-model="editedItemUsuario.email" :readonly="lockField" label="email"
+                  :rules="[v => !!v || 'email es requerido']"></v-text-field>
+             
+                  <v-text-field v-model="editedItemUsuario.genero_sexo" :readonly="lockField" label="genero_sexo"
+                  :rules="[v => !!v || 'genero_sexo es requerido']"></v-text-field>
+                         
+             
+                <v-text-field v-model="editedItemUsuario.telefono" :readonly="lockField" label="telefono"
+                  :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
+                
+                  <v-text-field v-model="editedItemUsuario.direccion" :readonly="lockField" label="Donde se encuentra"
+                  :rules="[v => !!v || 'Ubicacion es requerido']"></v-text-field>
+             
+                
+          </v-container>
+      </v-card-text>
+    <v-divider></v-divider>
+
+  </v-card>
+
+  <v-card class="mx-auto  mt-4" max-width="700" >
+    <v-card-title>
+            <span class="text-h5"> Datos del Denunciado </span>
+      </v-card-title>
+        <v-card-text>
+          <v-container>           
+                <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" 
+                          item-title="grado" item-value="grados_sigla" :readonly="lockField" label="grados"  @update:modelValue="onGradoChange" 
+                          :rules="[v => !!v || 'grado es requerido']"></v-select>
+            
+
+                <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="nombres"
+                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+             
+             
+                <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
+                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+             
+             
+                <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
+                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemUsuario.genero_sexo" :readonly="lockField" label="genero_sexo"
+                  :rules="[v => !!v || 'genero_sexo es requerido']"></v-text-field>
+                                     
+                <v-text-field v-model="editedItemUsuario.puesto_cargo_funcion" :readonly="lockField" label="Cargo-funcion"
+                  :rules="[v => !!v || 'Cargo-funcion es requerido']"></v-text-field>
+             
+                          
+             
+                <v-text-field v-model="editedItemUsuario.unidad_policial_desc" :readonly="lockField" label="unidad_policial"
+                  :rules="[v => !!v || 'unidad_policial es requerido']"></v-text-field>
+                
+                  <v-text-field v-model="editedItemUsuario.lugar_hecho" :readonly="lockField" label="lugar del hecho"
+                  :rules="[v => !!v || 'lugar del hecho es requerido']"></v-text-field>                            
+
+                <v-select v-model="editedItemUsuario.departamento"  :items="deptoOptions"
+                         item-title="depto" item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange" 
+                        :rules="[v => !!v || 'departamento es requerido']"></v-select>                               
+             
+                <v-select v-model="editedItemUsuario.municipio" :items="munOptions" 
+                  item-title="mun" item-value="mun_id" :readonly="lockField" label="Ciudad" return-object
+                  :rules="[v => !!v || 'Ciudad es requerido']"></v-select>                          
+
+          </v-container>
+        </v-card-text>
+
+
+    <v-divider></v-divider>
+
+  </v-card>
+
+  <v-card class="mx-auto  mt-4" max-width="700" >
+    <v-card-title>
+            <span class="text-h5"> Detalles del hecho </span>
+      </v-card-title>
+        <v-card-text>
+          <v-container>     
+            
+
+            <v-text-field
+          label="Selecciona una fecha"
+          v-model="formattedDate"
+          @focus="showDatePicker = true"
+          readonly
+        ></v-text-field>
+
+        <v-date-picker
+          v-if="showDatePicker"
+          v-model="selectedDate"
+          @input="updateDate"
+          @blur="showDatePicker = false"
+        ></v-date-picker>   
+      
+
+                <v-textarea v-model="editedItemUsuario.detalle_hecho" :readonly="lockField" label="detalle_hecho"
+                  :rules="[v => !!v || 'detalle_hecho es requerido']"></v-textarea>
+           
+
+       <label>Adjuntar documentacion en formato PDF:</label>
+      <input type="file" @change="cargarArchivo" />
+      <br />
+      <label>Adjuntar documentacion en formato Video:</label>
+      <input type="file" @change="cargarArchivo" />
+      <br />
+      <label>Adjuntar documentacion en formato Audio:</label>
+      <input type="file" @change="cargarArchivo" />
+      <br />
+   <v-checkbox
+
+      label="Reserva de identidad ?"      required  
+    ></v-checkbox>
+             
     
-      :items-per-page="itemsPerPage"
-  
-              rows-per-page-text="Filas por página"
-              no-data-text="No existen registros."
-              no-results-text="Sin resultados"
-              page-text="de"
-              items-per-page-text="Registros por pagina "
-      >
-  
-      <template v-slot:headers="{ props }">
-        <tr v-bind="props">
-          <th v-for="header in headers" :key="header.value" class="text-center">
-            {{ header.title }}
-          </th>
-        </tr>
-      </template>
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Usuarios del sistema</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-  
-  
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
-      <!-- Action Buttons Column -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-        <v-icon small @click="viewItem(item)"> mdi-eye</v-icon>
-        <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
-      </template>
-  
-   <!--   <template v-slot:bottom>
-        <div class="text-center pt-2">
-          <v-pagination v-model="page" :length="pageCount"></v-pagination>
-        </div>    
-  
-      </template>-->
-    </v-data-table>
-  
+     
+    <v-checkbox
+     
+      label="Estoy de acuerdo que todos mis datos seran tratados con absoluta reserva y confidencialidad por la Inspectoria General y Departamento Nacional de Transparencia de la Policia Boliviana."      required  
+    ></v-checkbox>
+    <v-checkbox
+      
+      label="Declaro conocer el ARTICULO 166° (Código Penal).- (ACUSACION Y DENUNCIA FALSA). El que a sabiendas acusare o denunciare como autor o partícipe de un delito de acción pública a una persona que no lo cometió, dando lugar a que se inicie el proceso criminal correspondiente, será sancionado con privación de libertad de uno a tres años. Si como consecuencia sobreviniere la condena de la persona denunciada o acusada, la pena será de privación de libertad de dos a seis años"      required  
+    ></v-checkbox>
+
+
+  </v-container>
+        </v-card-text>
+
+
+    <v-divider></v-divider>
+
+
+
+  </v-card>
+</v-container>
+
+
+<v-container>
+
+
     <!-- Add New Person Button -->
     <v-btn class="custom-green-btn mt-4" @click="addNewPerson">
-      Adicionar Usuario
+      Enviar Denuncia
     </v-btn>
   
   
@@ -224,7 +325,13 @@
     data: () => ({
   
       loading: true,
+      date: new Date('2018-03-02'),
+      picker: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+      selectedDate: null, // Para almacenar la fecha seleccionada
+      showDatePicker: false, // Para controlar la visibilidad del selector de fecha
   
+
+
       page: 1,
       itemsPerPage: 5,
       search: '',
@@ -391,19 +498,76 @@
       this.gradoList();
       this.loading = false;
       this.rolList();
-  
-  
+      this.formattedDate();
     },
   
-    /*computed: {
-        // Opciones para el primer combo de países
-        departOptions() {
-          return this.departamentos
-        },
-      },*/
+/*    computed: {
+      formattedDate() {
+      // Formato de la fecha
+      return this.selectedDate ? this.selectedDate.substring(0, 10) : '';
+    },
+    <v-date-picker elevation="24"  color="primary"  
+            v-model="picker"
+                :allowed-dates="allowedDates"
+                max="2025-03-20"
+                min="2016-06-15"></v-date-picker>
+      },
+      
+      
+    <vue-recaptcha
+        sitekey="TU_SITE_KEY" 
+        @verify="onVerify"
+        @expired="onExpired"
+      ></vue-recaptcha>
+
+      <v-btn type="submit" :disabled="!isCaptchaVerified" color="primary">Registrar</v-btn>
+
+      
+      
+      */
   
     methods: {
-  
+      onVerify(response) {
+      this.isCaptchaVerified = true; // CAPTCHA verificado
+      console.log("CAPTCHA verificado:", response);
+    },
+    onExpired() {
+      this.isCaptchaVerified = false; // CAPTCHA expirado
+    },
+    async onSubmit() {
+      if (this.$refs.form.validate() && this.isCaptchaVerified) {
+        // Aquí puedes manejar el registro, como enviar los datos a una API
+
+        const userData = {
+          name: this.name,
+          email: this.email,
+          password: this.password,
+        };
+
+        console.log("Datos del usuario:", userData);
+        alert('Registro exitoso');
+      } else {
+        alert('Por favor completa todos los campos y verifica el CAPTCHA');
+      }
+    },
+
+
+
+
+      formattedDate() {
+      // Formato de la fecha
+      return this.selectedDate ? this.selectedDate.substring(0, 10) : '';
+    },
+      updateDate(date) {
+      this.selectedDate = date; // Actualiza la fecha seleccionada
+      this.showDatePicker = false; // Cierra el selector de fecha
+    },
+
+      allowedDates: val => {
+        return (
+          parseInt(this.$vuetify.date.toISO(val).split('-')[2], 10) % 2 === 0
+        )
+      },
   
       async gradoList() {
         Grado.gradoList()
