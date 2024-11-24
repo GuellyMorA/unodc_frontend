@@ -15,35 +15,34 @@ const form = ref({
 });
 
 const submit = async (event: any) => {
-    // localStorage.setItem('user', JSON.stringify({}));
+    // localStorage.setItem('username', JSON.stringify({}));
     // router.push('/');
     // return true;
     const respuesta = await Auth.login(form.value).then((res) => {
         if (res.status === 200) {
             console.log('Auth.login: ', res.data);
             if (res.data.codigo_sie) {
-                localStorage.setItem('user', JSON.stringify(res.data));
+                //localStorage.setItem('user', JSON.stringify(res.data));
                 localStorage.setItem('username', form.value.user_login);
+
                 router.push('/');
                 return res;
             } else {
-                localStorage.setItem('user', JSON.stringify({codigo_sie: 80730460, token: res.data.token}));
-                localStorage.setItem('username', form.value.user_login);
+              //  localStorage.setItem('username', JSON.stringify({codigo_sie: 80730460, token: res.data.token}));
+              localStorage.setItem('username',form.value.user_login ); 
+              localStorage.setItem('userJson',JSON.stringify(res.data ));
+
                 router.push('/');
                 return res;                
-                // toast.error('Usuario no tiene asignado una unidad educativa', {
-                //     autoClose: 3000,
-                //     position: toast.POSITION.TOP_RIGHT
-                // });
-                // localStorage.removeItem('user');
-                // return res;
+           
+
             }
         } else {
             toast.error('Usuario y contraseña no válido', {
                 autoClose: 3000,
                 position: toast.POSITION.TOP_RIGHT
             });
-            localStorage.removeItem('user');
+            localStorage.removeItem('username');
             localStorage.removeItem('username');
             return res;
         }

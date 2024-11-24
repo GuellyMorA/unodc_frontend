@@ -4,7 +4,8 @@ import { useRouter } from "vue-router";
 const router = useRouter();
 
 const logout = async (event: any) => {
-    localStorage.removeItem("user");    
+    console.log("localStorage.removeItem(username)  : ",   localStorage.getItem('username'));
+    localStorage.removeItem("username");    
     router.push('/auth/login');
 };
 
@@ -19,7 +20,7 @@ const logout = async (event: any) => {
         <template v-slot:activator="{ props }">
             <v-btn class="" variant="text" v-bind="props" icon>
                 <v-avatar size="35">
-                    <img src="@/assets/images/cerrar.png" height="35" alt="user" />
+                    <img src="@/assets/images/cerrar.png" height="35" alt="username" />
                 </v-avatar>
             </v-btn>
         </template>

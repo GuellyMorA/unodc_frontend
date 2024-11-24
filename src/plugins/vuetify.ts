@@ -1,27 +1,31 @@
 import { createVuetify } from 'vuetify';
-import { VDataTable } from 'vuetify/labs/VDataTable'
+
 
 import '@mdi/font/css/materialdesignicons.css';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { BLUE_THEME } from '@/theme/LightTheme';
-import DayJsAdapter from '@date-io/dayjs'
-import { VDatePicker } from 'vuetify/lib/labs/components.mjs';// Import the VDatePicker
+
 //import { VueRecaptcha } from 'vue-recaptcha';
-
-//import { VDatePicker } from 'vuetify/lib'; 
-
-
+import { VDataTable } from 'vuetify/labs/VDataTable'
+import { VDatePicker } from 'vuetify/labs/VDatePicker'
+//import { VDateInput } from 'vuetify/labs/VDateInput'
+//import DayJsAdapter from '@date-io/dayjs'
+//import VueMoment from 'vue-moment';
+//import moment from 'moment';
+//import { useDate } from 'vuetify/labs/useDate'
+//import AirDatepicker from 'air-datepicker';
 
 export default createVuetify({
  components : {
         VDataTable,
         VDatePicker,
-      
-        date: {
+        //AirDatepicker
+        
+     /*   date: {
         adapter: DayJsAdapter,
       }, 
-
+*/
       },
     directives,
  

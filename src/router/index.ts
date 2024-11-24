@@ -31,9 +31,9 @@ export const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     // const auth = useAuthStore();
-    let user = localStorage.getItem('user');
-
-    if (to.meta.requiresAuth && !user) {
+    let username = localStorage.getItem('username');
+    console.log("to.meta.requiresAuth   : ", to.meta.requiresAuth );
+    if (to.meta.requiresAuth && !username) {
         next('/auth/login');
     } else {
         const store = useNavbarStore();  
@@ -45,3 +45,4 @@ router.beforeEach((to, from, next) => {
         next();
     }
 });
+//export default router;

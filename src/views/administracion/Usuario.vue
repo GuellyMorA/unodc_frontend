@@ -911,6 +911,8 @@ export default {
   /* Add more styles as needed */
 }
 
+
+
 /*
 .table-header {
   background:  #0c7e0f !important;
@@ -919,4 +921,5 @@ export default {
 --toastify-color-dark
 }
 
- */</style>
+ */
+</style>

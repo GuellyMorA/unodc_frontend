@@ -19,19 +19,7 @@ class AuthService {
         return error;
     });
 
-    // return http.create({
-    //   withCredentials: true,
-    //   method:'post',
-    //   url: `/auth`,
-    //   baseURL: 'https://api.infraestructura.sie.gob.bo/api',
-    //   data: form,
-    //   headers: {
-    //     "Content-Type": "application/json"
-    //   },
-    // })
-    // .patch((error) => {
-    //     return error;
-    // });
+ 
   }
 
  

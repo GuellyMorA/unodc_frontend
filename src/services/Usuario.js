@@ -5,7 +5,6 @@ const apiUrl = import.meta.env;
 class UsuarioService {
 
   usuarioList() {
-     //const user = JSON.parse(localStorage.getItem('user'));
      return http2({
       method:'get',
       url: `/auth/usuarioList`,
@@ -30,7 +29,6 @@ class UsuarioService {
 
   listByFkUsuario(data) {
      
-    //const user = JSON.parse(localStorage.getItem('user'));
     return http2({
       method:'get',
       url: `/auth/usuarioListByFk/${data}`,

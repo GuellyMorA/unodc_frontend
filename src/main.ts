@@ -14,6 +14,12 @@ import 'vue3-toastify/dist/index.css';
 
 import axios from 'axios';
 
+
+//import moment from 'moment';
+
+
+
+
 const apiUrl = import.meta.env;
 
 axios.defaults.baseURL = apiUrl.VITE_API_URL;
@@ -37,3 +43,5 @@ app.use(
     } as ToastContainerOptions,
 );
 app.use(vuetify).mount('#app');
+
+//app.use(moment);
