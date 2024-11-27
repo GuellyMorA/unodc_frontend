@@ -58,7 +58,7 @@
 
           <v-row>
             <v-col class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.ubicdonde" :readonly="lockField" label="Donde se encuentra"
+              <v-text-field v-model="denPerDnte.ubic_donde" :readonly="lockField" label="Donde se encuentra"
                 :rules="[v => !!v || 'Ubicacion es requerido']"></v-text-field>
             </v-col>
           </v-row>
@@ -117,7 +117,7 @@
           <v-row>
 
             <v-col cols="4" class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho"
+              <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho (Calle,Edif...)"
                 :rules="[v => !!v || 'lugar del hecho es requerido']"></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
@@ -145,11 +145,11 @@
           <v-row>
             <v-col cols="4" class="p-0 py-0 px-0">
           <!--      <div class="d-flex align-center">    style="width: 400px;" -->
-                <v-text-field v-model="formattedDate" :readonly="lockField" label="Fecha del hecho" @input="handleInput"
-                  placeholder="DD/MM/AAAA" hide-details required></v-text-field>
+                <v-text-field v-model="denPerDnte.fec_registro_hecho" :readonly="lockField" label="Fecha del hecho"  @input="handleInputDate"
+                  placeholder="DD/MM/AAAA" required></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
-                  <v-text-field v-model="denPerDnte.hora_registro_hecho" :readonly="lockField" label="Hora aprox. del hecho"
+                  <v-text-field v-model="denPerDnte.hora_registro_hecho" :readonly="lockField" label="Hora aprox. del hecho" @input="handleInputHour"
                   placeholder="hh:mm" hide-details required></v-text-field>
             <!--</div>  -->  
 
@@ -176,7 +176,7 @@
             :accept="fileType.accept"
             :show-size="true"
             :rules="[rules.required]"
-            @change="handleFileChange(index)"
+            multiple    @change="checkJSON"
           ></v-file-input>
         </v-col>
         <v-col cols="12" md="6" v-for="(preview, index) in previews" :key="index" >
@@ -186,7 +186,28 @@
           </div>
         </v-col>
           </v-row>    
+          <v-row>
+              <v-col cols="4" class="p-0 py-4 px-4">
+              
+                <div class="container">
+    <h1>File Upload with Vue 3</h1>
 
+    <div class="single-upload">
+      <h3>Upload a Single File</h3>
+      <input type="file" @change="onSingleFileChange" />
+      <button @click="uploadSingleFile">Upload</button>
+      <p v-if="singleUploadResponse">{{ singleUploadResponse }}</p>
+    </div>
+
+    <div class="multiple-upload">
+      <h3>Upload Multiple Files</h3>
+      <input type="file" multiple @change="onMultipleFilesChange" />
+      <button @click="uploadMultipleFiles">Upload</button>
+      <p v-if="multipleUploadResponse">{{ multipleUploadResponse }}</p>
+    </div>
+  </div>
+  </v-col>
+          </v-row> 
         <v-row>
             <v-col class="p-0 py-0 px-0">    
               <v-btn @click="downloadFile" :disabled="isLoading" color="primary">
@@ -197,9 +218,9 @@
               <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color">{{ snackbar.message }}</v-snackbar>
 
 
-  <div v-for="file in files1" :key="file.id">
-    <button @click="downloadFile1(file)">Descargar {{ file.name }}</button>
-  </div>
+          <div v-for="file in files1" :key="file.id">
+            <button @click="downloadFile1(file)">Descargar {{ file.name }}</button>
+          </div>
             </v-col>      
           </v-row>
           
@@ -209,21 +230,21 @@
                 <label for="file3">Reserva de identidad ? : </label>
               </v-col>
               <v-col cols="3" class="p-0 py-0 px-0">
-                <v-checkbox label="Si"    v-model="reservaIdentSi"  value="si"></v-checkbox>           
+                <v-checkbox  value="true"   v-model="denPerDnte.reserva_identidad_si" label="Si" ></v-checkbox>           
               </v-col>
               <v-col cols="3" class="p-0 py-0 px-0">
-                <v-checkbox label="No"  v-model="reservaIdentNo"  value="no"></v-checkbox>           
+                <v-checkbox  value="false"  v-model="denPerDnte.reserva_identidad_no" label="No" ></v-checkbox>           
                 </v-col>
           </v-row>
 
           <v-row>
             <v-col class="p-0 py-0 px-0">         
 
-              <v-checkbox
+              <v-checkbox  value="false"  v-model="reserva_datos" 
                 label="Estoy de acuerdo que todos mis datos seran tratados con absoluta reserva y confidencialidad por la Inspectoria General y Departamento Nacional de Transparencia de la Policia Boliviana."
                 required></v-checkbox>
 
-              <v-checkbox
+              <v-checkbox  value="false"  v-model="articulo_166_cp" 
                 label="Declaro conocer el ARTICULO 166° (Código Penal).- (ACUSACION Y DENUNCIA FALSA). El que a sabiendas acusare o denunciare como autor o partícipe de un delito de acción pública a una persona que no lo cometió, dando lugar a que se inicie el proceso criminal correspondiente, será sancionado con privación de libertad de uno a tres años. Si como consecuencia sobreviniere la condena de la persona denunciada o acusada, la pena será de privación de libertad de dos a seis años"
                 required></v-checkbox>
 
@@ -254,14 +275,14 @@
         <v-btn class="custom-green-btn mt-4" color="primary" @click="validateCaptcha">Validar</v-btn>
 
         <!-- Add New Person Button -->
-        <v-btn class="custom-green-btn mt-4" @click="">
+        <v-btn class="custom-green-btn mt-4" @click="denunciaSave">
           Enviar Denuncia
         </v-btn>
       </v-card-text>
     </v-card>
 
     <template>
-      <v-snackbar v-model="snackbar.visible" :timeout="2000" :color="snackbar.color" :top="'top'"
+      <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color" :top="'top'"
         :vertical="snackbar.mode === 'vertical'" :right="'right'" :multi-line="snackbar.mode === 'multi-line'">
         {{ snackbar.message }}
         <template v-slot:action="{ attrs }">
@@ -271,6 +292,7 @@
         </template>
       </v-snackbar>
     </template>
+
   </v-container>
 </template>
 
@@ -280,39 +302,48 @@
 //import { toast } from 'vue3-toastify/index';
 import { toast } from 'vue3-toastify';
 
-import Usuario from '@/services/Usuario';
 import NivelGeografico from '@/services/NivelGeografico';
 import Grado from '@/services/Grado';
 import Rol from '@/services/Rol';
-import UsuariosRol from '@/services/UsuariosRol';
 
 import Denuncia from '@/services/Denuncia';
 import Denunciado from '@/services/Denunciado';
 import Denunciante from '@/services/Denunciante';
 import axios from 'axios';
 import { downloadFile } from '../../utils/fileDownloader';
+import DocumentosPath from '@/services/DocumentosPath';
+
+
 
 export default {
-  name: 'Breadcrumbs',// router.currentRoute.value.path
+
+ 
   data: () => ({
+    singleFile: null,
+      multipleFiles: [],
+      singleUploadResponse: "",
+      multipleUploadResponse: "",
+
+
+
     files1: [
     { id: 1, name: 'archivo1.pdf' },
     { id: 2, name: 'imagen.jpg' }
   ],
-    files: Array(5).fill(null), // Array para almacenar 5 archivos
+    files: Array(1).fill(null), // Array para almacenar 5 archivos
     previews: Array(5).fill(null), // Array para almacenar vistas previas de los archivos
  
-
     fileTypes: [
-        { label: 'Cargar Imagen (JPEG/PNG)', accept: 'image/jpeg,image/png' },
+        { label: 'Cargar Imagen (JPEG/PNG)', accept: 'image/jpeg,image/png,image/bmp' },
         { label: 'Cargar PDF', accept: 'application/pdf' },
        // { label: 'Cargar Texto (TXT)', accept: 'text/plain' },
         { label: 'Cargar Archivo de Word', accept: '.doc,.docx' },
         //{ label: 'Cargar Archivo de Excel', accept: '.xls,.xlsx' },
         { label: 'Cargar Archivo de Video', accept: 'video/*' },
         { label: 'Cargar Archivo de Audio', accept:  'audio/*' },
-      ],
-     snackbar: {
+    ],
+
+    snackbar: {
       visible: false,
       message: '',
       color: "success",
@@ -321,20 +352,21 @@ export default {
     },
 
 
-      isLoading: false,
+    isLoading: false,
  
     selectedFileName: '...',
 
 
-
-
+    name: 'Breadcrumbs',// router.currentRoute.value.path 
     breadcrumbs: [],
     loading: true,
     reservaIdentSi: null, // Inicialmente null, se actualizará al seleccionar una opción
     reservaIdentNo: null, // Inicialmente null, se actualizará al seleccionar una opción
+    reserva_datos: '',
+    articulo_166_cp: '',
 
     captcha: '',
-    value: '',
+    //value: '',
     formattedDate: '',
     rawDate: '', // Almacena el valor crudo ingresado
 
@@ -383,53 +415,30 @@ export default {
     people: [],
     editedIndex: -1,
 
-    docsPath:[],
+ 
 
-    editedItemDocsPath: {
-      id: null,
-      cod_denuncia: '',
-      orden: '',
-      origen: '',
-      documento_path: '',
-      descripcion: '',
-      fec_registro: '',
-      usu_cre: null,
-      fec_cre: null,
-      usu_mod: null,
-      fec_mod: null,
-      estado: '',
-      transaccion: ''
-    },
-
-
-
-
-    editedItemRolUsu: {
-      id: null,
-      usuarios_id: null,
-      roles_sigla: '',
-      descripcion: null,
-      estado: '',
-      transaccion: '',
-      usu_cre: null,
-      usu_mod: null,
-      fec_mod: null,
-    },
-
+    codDenuncia: '',
 
     // propiedades del formulario 
     denPerDnte: {
       fila: '',
       id: null,
       cod_denuncia: '',
+      tipo_personas: '',
+      sigla: '',
       lugar_hecho: '',
       depto_id: '',
       departamento: '',
       mun_id: '',
       municipio: '',
+      grados_sigla: '',
+      grado: '',
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
+      reserva_identidad:'',
+      reserva_identidad_si: '',
+      reserva_identidad_no: '',
       id_dnte: null,
       apellido_pat: '',
       apellido_mat: '',
@@ -438,29 +447,36 @@ export default {
       genero_sexo: '',
       email: '',
       telefono: '',
-      ubicdonde: '',
+      ubic_donde: '',
+      direccion: '',
+      
+      orden:0,
+
+         estado: '',
+      transaccion: '',
       usu_cre: null,
       fec_cre: null,
       usu_mod: null,
       fec_mod: null,
-      estado: '',
-      transaccion: ''
+   
     },
 
     denunciado: {
       fila: '',
-      id: null,
+      id: null,   //  id de la tabla padre denuncia
+      id_dndo: null,
       cod_denuncia: '',
+      tipo_personas: '',
       depto_id: '',
       departamento: '',
       mun_id: '',
       municipio: '',
-      grado_sigla: '',
+      grados_sigla: '',
       grado: '',
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
-      id_dndo: null,
+
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
@@ -468,18 +484,42 @@ export default {
       genero_sexo: '',
       email: '',
       telefono: '',
-      ubicdonde: '',
+      ubic_donde: '',
+      direccion: '',
       puesto_cargo_funcion: '',
       unidad_policial_desc: '',
+      orden:0,
+      
+      estado: '',
+      transaccion: '',
+      usu_cre: null,
+      fec_cre: null,
+      usu_mod: null,
+      fec_mod: null 
+
+    },
+    documentosPath: {
+      id: null,
+      denuncia_personas_id: 0,
+      denunciante_id: null,
+    //  cod_denuncia: '',
+      orden: 0,
+      origen: '',
+      documento_path: '',
+      descripcion: '',
+      justificacion_legal: '',
+      fec_registro: '',
+      file_binary: '',
+      estado: '',
+      transaccion: '',
       usu_cre: null,
       fec_cre: null,
       usu_mod: null,
       fec_mod: null,
-      estado: '',
-      transaccion: '',
 
     },
-
+   docsPath:[],
+  
     defaultItem: {
       id: null,
       nombres: '',
@@ -530,29 +570,15 @@ export default {
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
     departamentos: [{}],
     deptoOptions: [{}],
-    munOptions: [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
+    munOptions: [{}],          //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
 
     estadoOptions: [{ est: 'ACTIVO', transac: 'ACTIVAR' }, { est: 'INACTIVO', transac: 'INACTIVAR' }],
-    depas: [{
-      id: 1, departs: 'Chuquisaca',
-      cities: [{ id: 1, name: 'Sucre' }, { id: 2, name: 'Montes' }, { id: 3, name: 'Chaco' }]
-    },
-    {
-      id: 2, departs: 'La Paz',
-      cities: [{ id: 1, name: 'La Paz' }, { id: 2, name: 'Santa Cruz' }]
-    },
-    {
-      id: 3, departs: 'Santa Cruz',
-      cities: [{ id: 1, name: 'Santa Cruz' }]
-    }],
-    // departOptions: [{id:1,depto:'Chuquisaca'},{id:2 , depto:'La Paz'}, {id:3 , depto:'Santa Cruz'},{id:4 , depto: 'Cochabamba'}],
-
+  
 
   }),
 
   mounted() {
     const fileInputs = document.querySelectorAll('.file-input');
-
     fileInputs.forEach(input => {
       input.addEventListener('change', function () {
         const label = this.previousElementSibling;
@@ -566,29 +592,81 @@ export default {
       });
     });
 
-
-
-    //this.username= localStorage.getItem('username');
-
     this.deptoList();
     this.onDepartChange();
     this.gradoList();
-    // this.rolList();
-    //this.formattedDate();//
-
+   
     this.generateCaptcha();
     this.updateBreadcrumbs();
 
-    this.denunciaGetByCod();
+    this.denunciaPersonasGetByCod();
     this.denunciadoListByCod();
-    this.denunciadoListByCod();
-
-    //this.loading = false;   
+    this.documentosPathListByCod();
+  
   },
 
 
 
   methods: {
+    checkJSON: function(e) {
+    console.log("JSON checking")
+    console.log(JSON.stringify(e))
+    console.log(e.target.files)
+    this.multipleFiles = Array.from(e.target.files);
+
+    return
+  },
+
+    onSingleFileChange(event) {
+      this.singleFile = event.target.files[0];
+    },
+    onMultipleFilesChange(event) {
+      this.multipleFiles = Array.from(event.target.files);
+    },
+    async uploadSingleFile() {
+      if (!this.singleFile) {
+        alert("Please select a file first.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("file", this.singleFile);
+
+      try {
+        const response = await axios.post("/documentosPath2", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        this.singleUploadResponse = response.data.message;
+      } catch (error) {
+        console.error("Error uploading single file:", error.response?.data || error.message);
+      }
+    },
+    async uploadMultipleFiles() {
+      if (this.multipleFiles.length === 0) {
+        alert("Please select files first.");
+        return;
+      }
+
+      const formData = new FormData();
+      this.multipleFiles.forEach((file, index) => {
+        formData.append("files", file);
+      });
+
+      try {
+        const response = await axios.post("/documentosPath2", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        this.multipleUploadResponse = response.data.message;
+      } catch (error) {
+        console.error("Error uploading multiple files:", error.response?.data || error.message);
+      }
+    },
+   // {{ id: number; name: string; }} file1
+
     downloadFile1(file1) {
       // Aquí puedes implementar la lógica para descargar el archivo
       // Por ejemplo, creando un enlace temporal y haciendo clic en él:
@@ -600,7 +678,7 @@ export default {
       document.body.removeChild(link);
     },
 
-  async downloadFile() { //  en utils
+    async downloadFile() { //  en utils
       this.isLoading = true;
       this.snackbar.visible = false;
 
@@ -636,13 +714,14 @@ export default {
     },
     */ 
     
-    
-    handleFileChange(index) {
+       // Esta función puede manejar cualquier lógica al cambiar el archivo
+   
+    handleFileChange(index) {   //    @change="handleFileChange(index)"
         const newFiles = this.files[index]
-        if (newFiles && newFiles.target.files.length > 0) {
+        if (newFiles && newFiles.length > 0) {
           const file = newFiles.target.files[0] // Solo tomamos el primer archivo
           const reader = new FileReader()
-
+          console.log(`Archivo seleccionado en el índice ${index}:`, this.files[index]);
          /* reader.onload = e => {
             this.previews[index] = e.target.result // Guarda la vista previa del archivo
           }
@@ -665,14 +744,128 @@ export default {
         }
       },
 
+
+    async enviarArchivos() {
+      try {
+        //this.uploadSingleFile();
+        //this.uploadMultipleFiles();
+       // return;
+       
+            const formData = new FormData();
+      this.multipleFiles.forEach((file, index) => {
+        formData.append("files", file);
+      });
+          //  formData.append('my_field', 'my value');
+           // formData.append('files', (this.files[0]));
+            //formData.append('my_file', new Blob(this.files[0]));
+           // formData.append('fileBinary', fileBinary);
+           /* const response = await fetch('https://tu-backend.com/api/upload', {
+              method: 'POST',
+              body: formData,
+            });
+
+            if (!response.ok) {
+              throw new Error(`Error al enviar el archivo en el índice ${i}: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log(`Archivo en el índice ${i} enviado correctamente:`, data);
+          } else {
+            console.log(`No hay archivo seleccionado en el índice ${i}`);
+          }*/
+
+        //for (let i = 0; i < this.files.length; i++) {
+        this.files.forEach((file, index) => {
+          const fileBinary = file; //s[i];
+          if (fileBinary) { // Asegúrate de que el archivo no esté vacío
+            
+                this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
+               // this.documentosPath.cod_denuncia = this.denPerDnte.cod_denuncia;
+                this.documentosPath.denunciante_id = this.denPerDnte.id_dnte;
+                this.documentosPath.orden = parseInt(this.documentosPath.orden)==1 ? parseInt(this.documentosPath.orden) : parseInt(this.denunciado.orden)  + 1;
+                this.documentosPath.origen = 'DENUNCIANTE';
+                this.documentosPath.documento_path =   'uploads/evidencia_denuncias' ;
+               // this.documentosPath.file_binary =  this.files[i];
+
+                this.documentosPath.fec_registro= this.denPerDnte.fec_registro_hecho; //new Date();    
+                this.documentosPath.descripcion=  'SE ADJUNTA ARCHIVOS DE EVIDENCIA POR EL DENUNCIANTE DESDE UNA PAGINA WEB PUBLICA';
+                this.documentosPath.justificacion_legal = 'TRANSPARENCIA INSTITUCIONAL';
+                this.documentosPath.estado = 'ACTIVO';
+                this.documentosPath.transaccion = 'ACTIVAR';
+                this.documentosPath.usu_cre = this.username;
+
+              //  formData.append("file", file);// formData.append(`files[${index}].name`, file);
+               // formData.append(`files[${index}]`, file);// formData.append(`file_${index}`, file);//formData.append('file', file);
+               
+    
+              }
+        }); 
+               // formData.append(`file_binary_${i}`, this.files[i]); // Suponiendo que files[index] es un array de archivos
+                //formData.append('documentosPath', this.documentosPath); // Suponiendo que files[index] es un array de archivos
+                //console.log(Array.from(formData.entries()));  
+                  console.log('this.files[0]:  ', this.files[0]);
+                  console.log('this.files[0]:  ', Array.from(this.files[0]));
+
+                for (let [key, value] of formData.entries()) {
+                      console.log(key, value);
+                    }
+                const apiUrl = import.meta.env;
+                axios.post('/documentosPath2', formData, {
+                        headers: {
+                          "Content-Type": "multipart/form-data",
+                          'Authorization': apiUrl.VITE_API_URL_TOKEN
+                        },
+                        
+                      })
+                      .then(response => {
+                        console.log('Archivos subidos:', response.data);
+                        // Actualizar el estado de la aplicación, mostrar mensajes de éxito, etc.
+                      })
+                      .catch(error => {
+                        console.error('Error al subir los archivos:', error);
+                        // Mostrar mensajes de error al usuario
+                      });
+
+                 /*
+                await DocumentosPath.documentosPathCreate(this.documentosPath)
+                  .then((response) => {
+                    if (response.status === 200) {
+
+                      //this.documentosPath.u_rol_id = response.data.id;
+                      //this.denunciado.id = response.data.id;
+                      console.log("denuncianteCreate  : ", response.status, response);
+                      this.showSnackbar('Denunciante creado correctamente!', 'green')
+                      // this.close()
+                    } else {
+
+                      console.log("denuncianteCreate  : ", response.status, "error:   : ", response.response.request.response);
+                      this.showSnackbar('Error creando denuncianteCreate: ' + response.response.request.response, 'red');
+                      toast.info('Error creando Denunciante: ' + 'Revise logs con el Administrador del sistema', {
+                        autoClose: 5000,
+                        position: toast.POSITION.TOP_RIGHT,
+
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    this.showSnackbar('Log Error creando Denunciante: ' + error, 'red');
+                    console.log('Log Error creando Denunciante: ', error);
+                  })*/
+       
+      } catch (error) {
+        console.error('Error en la carga de archivos:', error);
+      }
+    },
+
+
     onFileChange(event) {
       const formData = new FormData();
       formData.append('file', event.target.files[0]);
 
-      const data = {
+   /*   const data = {
         isMarried: this.isMarried
       };
-
+      */
 
       axios.post('/upload', formData, {
         headers: {
@@ -687,14 +880,11 @@ export default {
         });
     },
 
-  
-
-
 
     async gradoList() {
       Grado.gradoList()
         .then((response) => {
-          //console.log("DEPAS  : ", this.depas);
+
           // console.log("response.data[0]  : ", response.data[0], response.status);
           if (response.status === 200) {
 
@@ -711,8 +901,7 @@ export default {
     async rolList() {
       Rol.rolList()
         .then((response) => {
-          //console.log("DEPAS  : ", this.depas);
-          // console.log("response.data[0]  : ", response.data[0], response.status);
+        
           if (response.status === 200) {
 
             this.rolOptions = Object.values(response.data);
@@ -728,7 +917,7 @@ export default {
     async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
-          //console.log("DEPAS  : ", this.depas);
+         
           // console.log("response.data[0]  : ", response.data[0], response.status);
           if (response.status === 200) {
             this.departamentos = Object.values(response.data[0]);
@@ -747,8 +936,100 @@ export default {
           console.log(e);
         });
     },
+    async denunciaPersonasList() {
+         await  Denuncia.denunciaPersonasList() 
+        .then( (response) => {
+        
+          if (response.status === 200) {
+            const fechaActual = new Date();             
+            const denunciaPersonasMaxId =  String(parseInt(response.data[0].latestId) +1);
+            this.codDenuncia = 'SD-'+ denunciaPersonasMaxId.padStart(4, '0') +'-' + fechaActual.getMonth()+'-' + fechaActual.getFullYear(); ; 
+            console.log("this.codDenuncia  : ", this.codDenuncia);
+          } else {
+            this.showSnackbar('Error recuperando denunciaPersonasList ' + response, 'red');
+          }
+        })
+        .catch(error => {
+             this.showSnackbar('Error recuperando denunciaPersonasList ' + error, 'red');
+
+        });
+    },
+
+  
+
+    async denunciaPersonasGetByCod() {
+          Denuncia.denunciaPersonasGetByCod('C-002-10-24') //  this.denPerDnte.id
+        .then((response) => {
+          console.log("denunciaPersonasGetByCod  : ", response.data, response.status);
+          if (response.status === 200) {
+            this.denPerDnte = response.data[0];
+          } else {
+            this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + response, 'red');
+          }
+        })
+        .catch(error => {
+           this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + error, 'red'); 
+        });
+    },
+
+    async denunciadoListByCod() {
+      Denunciado.denunciadoListByCod('C-002-10-24')
+        .then((response) => {
+          console.log("denunciadoListByCod 1  : ", response.data, response.status);
+          if (response.status === 200) {
+            this.denunciado = response.data[0];
+            this.loading = false;
+          } else {
+            this.showSnackbar('Error recuperando denunciadoListByCod ' + response, 'red');
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Error recuperando denunciadoListByCod ' + error, 'red'); 
+        });
+    },
+
+    async denuncianteCreate() {
+      //this.denPerDnte.id = this.denPerDnte.id;
+     // this.denPerDnte.cod_denuncia = this.denPerDnte.cod_denuncia;
+      this.denPerDnte.tipo_personas = 'DENUNCIANTE';
+      this.denPerDnte.orden = parseInt(this.denPerDnte.orden)==1 ? parseInt(this.denPerDnte.orden) : parseInt(this.denunciado.orden)  + 1;
+      this.denPerDnte.grados_sigla = 'CIVIL';
+      this.denPerDnte.genero_sexo_sigla=  this.denPerDnte.genero_sexo_sigla ? this.denPerDnte.genero_sexo_sigla:  this.denPerDnte.genero_sexo;
+
+      this.denunciado.direccion =    this.denunciado.ubic_donde ;
+      this.denPerDnte.estado = 'ACTIVO';
+      this.denPerDnte.transaccion = 'ACTIVAR';
+      this.denPerDnte.usu_cre = this.username;
+  
+
+      await Denunciante.denuncianteCreate(this.denPerDnte)
+        .then((response) => {
+          if (response.status === 201) {
+
+            //this.denPerDnte.u_rol_id = response.data.id;
+            //this.denunciado.id = response.data.id;
+            console.log("denuncianteCreate  : ", response.status, response);
+            this.showSnackbar('Denunciante creado correctamente!', 'green')
+            // this.close()
+          } else {
+
+            console.log("denuncianteCreate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error creando denuncianteCreate: ' + response.response.request.response, 'red');
+            toast.info('Error creando Denunciante: ' + 'Revise logs con el Administrador del sistema', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
+
+            });
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Log Error creando Denunciante: ' + error, 'red');
+          console.log('Log Error creando Denunciante: ', error);
+        })
+    },
+
     async documentosPathListByCod() {
-      DocumentosPath.denunciadoListByCod('C-002-10-24') //  this.denPerDnte.id
+         await DocumentosPath.documentosPathListByCod('C-002-10-24') //  this.denPerDnte.id
         .then((response) => {
           console.log("documentosPathListByCod  : ", response.data, response.status);
           if (response.status === 200) {
@@ -758,71 +1039,38 @@ export default {
             this.showSnackbar('Error recuperando documentosPathListByCod ' + response, 'red');
           }
         })
-        .catch(e => {
-          console.log(e);
-        });
-    },
-    async denunciaGetByCod() {
-      Denuncia.denunciaGetByCod('C-002-10-24') //  this.denPerDnte.id
-        .then((response) => {
-          console.log("denunciaGetByCod  : ", response.data, response.status);
-          if (response.status === 200) {
-            this.denPerDnte = response.data[0];
-          } else {
-            this.showSnackbar('Error recuperando denunciaListByCod ' + response, 'red');
-          }
-        })
-        .catch(e => {
-          console.log(e);
+        .catch(error => {
+             this.showSnackbar('Error recuperando documentosPathListByCod ' + error, 'red'); 
+
         });
     },
 
-    async denunciadoListByCod() {
-      Denunciado.denunciadoListByCod('C-002-10-24')
+    async documentosPathCreate() {
+      this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
+      this.documentosPath.denunciante_id = this.denPerDnte.id;
+     // this.documentosPath.cod_denuncia = this.denPerDnte.cod_denuncia;
+      this.documentosPath.orden = parseInt(this.documentosPath.orden)==1 ? parseInt(this.documentosPath.orden) : parseInt(this.documentosPath.orden)  + 1;
+     // this.documentosPath.direccion = 'N/A';
+      
+      
+      this.documentosPath.estado = 'ACTIVO';
+      this.documentosPath.transaccion = 'ACTIVAR';
+      this.documentosPath.usu_cre = this.username;
+  
+      await DocumentosPath.documentosPathCreate(this.documentosPath)
         .then((response) => {
-          console.log("denunciadoListByCod  : ", response.data, response.status);
-          if (response.status === 200) {
-            this.denunciado = response.data[0];
-            this.loading = false;
+          if (response.status === 201) {
+
+            //this.denPerDnte.u_rol_id = response.data.id;
+            //this.documentosPath.id = response.data.id;
+            console.log("documentosPathCreate  : ", response.status, response);
+            this.showSnackbar('documentosPath creado correctamente!', 'green')
+           
           } else {
-            this.showSnackbar('Error recuperando denun ' + response, 'red');
-          }
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
 
-
-    usuariosRolUpdate() {
-      this.editedItemRolUsu.id = this.denPerDnte.u_rol_id === '' ? this.editedItemRolUsu.id : this.denPerDnte.u_rol_id;
-      this.editedItemRolUsu.usuarios_id = this.denPerDnte.id;
-      this.editedItemRolUsu.roles_sigla = this.denPerDnte.roles_sigla;
-      this.editedItemRolUsu.descripcion = 'Cambio de rol';
-      this.editedItemRolUsu.estado = 'ACTIVO';
-      this.editedItemRolUsu.transaccion = 'MODIFICAR';
-      this.editedItemRolUsu.usu_mod = this.username;
-      this.editedItemRolUsu.fec_mod = new Date();
-
-
-      UsuariosRol.UsuariosRolUpdate(this.editedItemRolUsu.id, JSON.stringify(this.editedItemRolUsu))
-        .then((response) => {
-          if (response.status === 200) {
-            console.log("usuarioUpdate  : ", response.status, response);
-
-            //  this.showSnackbar('Usuario rol modificado correctamente !', 'green')
-            toast.success('Usuario rol modificado correctamente ! ', {
-              autoClose: 3000,
-              position: toast.POSITION.TOP_RIGHT,
-              // toastClassName: 'custom-toast', // Add your custom class name here
-
-            });
-            //this.close()
-          } else {
-            console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error modificando Usuario rol: ' + response.response.request.response, 'red');
-
-            toast.info('Error modificando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
+            console.log("documentosPathCreate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error creando documentosPathCreate: ' + response.response.request.response, 'red');
+            toast.info('Error creando documentosPath: ' + 'Revise logs con el Administrador del sistema', {
               autoClose: 5000,
               position: toast.POSITION.TOP_RIGHT,
 
@@ -830,36 +1078,39 @@ export default {
           }
         })
         .catch(error => {
-          this.showSnackbar('Log Error modificando Usuario rol ' + error, 'red');
-          console.log('Log Error modificando Usuario rol: ', error);
-        });
-
+          this.showSnackbar('Log Error creando documentosPath: ' + error, 'red');
+          console.log('Log Error creando documentosPath: ', error);
+        })
     },
 
+    async denunciadoCreate() {
+      this.denunciado.id = this.denPerDnte.id;
+      this.denunciado.cod_denuncia = this.denPerDnte.cod_denuncia;
+      this.denunciado.tipo_personas = 'DENUNCIADO';
+      this.denunciado.orden = parseInt(this.denunciado.orden)==1 ? parseInt(this.denunciado.orden) : parseInt(this.denunciado.orden)  + 1;
+      this.denunciado.direccion = 'N/A';
+      this.denunciado.genero_sexo_sigla=  this.denunciado.genero_sexo_sigla ? this.denunciado.genero_sexo_sigla:  this.denunciado.genero_sexo;
 
-    usuariosRolCreate() {
-      this.editedItemRolUsu.usuarios_id = this.denPerDnte.id;
-      this.editedItemRolUsu.roles_sigla = this.denPerDnte.rol;
-      this.editedItemRolUsu.descripcion = 'Asignaion de rol';
-      this.editedItemRolUsu.estado = 'ACTIVO';
-      this.editedItemRolUsu.transaccion = 'ACTIVAR';
-      this.editedItemRolUsu.usu_cre = this.username;
-
-      UsuariosRol.UsuariosRolCreate(JSON.stringify(this.editedItemRolUsu))
+      
+      
+      this.denunciado.estado = 'ACTIVO';
+      this.denunciado.transaccion = 'ACTIVAR';
+      this.denunciado.usu_cre = this.username;
+  
+      await Denunciado.denunciadoCreate(this.denunciado)
         .then((response) => {
-
           if (response.status === 201) {
 
-            this.denPerDnte.u_rol_id = response.data.id;
-            this.editedItemRolUsu.id = response.data.id;
-            console.log("UsuariosRolCreate  : ", response.status, response);
-            this.showSnackbar('Usuario rol creado correctamente!', 'green')
+            //this.denPerDnte.u_rol_id = response.data.id;
+            //this.denunciado.id = response.data.id;
+            console.log("DenunciadoCreate  : ", response.status, response);
+          this.showSnackbar('Denunciado creado correctamente!', 'green')
             // this.close()
           } else {
 
-            console.log("UsuariosRolCreate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error creando usuario Rol: ' + response.response.request.response, 'red');
-            toast.info('Error creando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
+            console.log("DenunciadoCreate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error creando DenunciadoCreate: ' + response.response.request.response, 'red');
+            toast.info('Error creando Denunciado: ' + 'Revise logs con el Administrador del sistema', {
               autoClose: 5000,
               position: toast.POSITION.TOP_RIGHT,
 
@@ -867,12 +1118,12 @@ export default {
           }
         })
         .catch(error => {
-          this.showSnackbar('Log Error creando Usuario rol: ' + error, 'red');
-          console.log('Log Error creando Usuario rol: ', error);
+          this.showSnackbar('Log Error creando Denunciado: ' + error, 'red');
+          console.log('Log Error creando Denunciado: ', error);
         })
     },
 
-    saveUsuarios() {
+    async denunciaSave() {
       try {
 
         if (!this.validateForm()) {
@@ -884,86 +1135,60 @@ export default {
           return false;
         }
 
-        // if( this.denPerDnte && this.denPerDnte ){
-        // const dateParts = (form.value.fecha || '').split("/");      
-        // fec_ejecucion:   new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]).toISOString(), // form.value.fecha,        
-
         this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
-
-        console.log('denPerDnte 2 : ', JSON.stringify(this.denPerDnte));
+        console.log('denPerDnte 2 : ',this.denPerDnte);
 
         if (this.editedIndex > -1) {   // Update person
-
 
           // this.denPerDnte.estado = 'ACTIVO';
           this.denPerDnte.transaccion = 'MODIFICAR';
           this.denPerDnte.usu_mod = this.username;
           this.denPerDnte.fec_mod = new Date();
 
-          Usuario.usuarioUpdate(this.denPerDnte.id, JSON.stringify(this.denPerDnte))
-            .then((response) => {
-              if (response.status === 200) {
-                // this.people = response.data;
-                Object.assign(this.people[this.editedIndex], this.denPerDnte)
-
-                console.log("usuarioUpdate  : ", response.status, response);
-                // toast('Wow so easy !', { containerId: 'A' });
-                this.usuariosRolUpdate();
-
-
-                //  this.showSnackbar('Usuario modificado correctamente !', 'green')
-                toast.success('Usuario modificado correctamente ! ', {
-                  autoClose: 3000,
-                  position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // Add your custom class name here
-
-                });
-                this.close()
-              } else {
-                console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Usuario: ' + response.response.request.response, 'red');
-
-                toast.info('Error modificando Usuario: ' + 'Revise el usuario de logueo', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-
-                });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error modificando Usuario ' + error, 'red');
-              console.log('Log Error modificando Usuario: ', error);
-            });
-
-
-
+       
 
         } else {  // Add new person
+          var dateParts = this.denPerDnte.fec_registro_hecho.split("/"); //"2024-05-17";// 
+          this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
 
+          this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? this.denPerDnte.reserva_identidad_si:  this.denPerDnte.reserva_identidad_no
 
-          this.denPerDnte.estado = 'ACTIVO';
-          this.denPerDnte.transaccion = 'ACTIVAR';
+          await this.denunciaPersonasList() ;
+
+          this.denPerDnte.cod_denuncia = this.codDenuncia;         
+          this.denPerDnte.sigla = 'INTERNET';
+          this.denPerDnte.estado = 'SOLICITADO';
+          this.denPerDnte.transaccion = 'CREAR';
           this.denPerDnte.usu_cre = this.username;
 
 
-          Usuario.usuarioCreate(JSON.stringify(this.denPerDnte))
+          await Denuncia.denunciaCreate(this.denPerDnte)
             .then((response) => {
 
               if (response.status === 201) {
                 //  this.people = response.data;
-                this.people.push(this.denPerDnte);
+               // this.people.push(this.denPerDnte);
 
                 this.denPerDnte.id = response.data.id;
-                this.usuariosRolCreate();
+                this.denuncianteCreate();
+                this.denunciadoCreate();
+                this.enviarArchivos() ;
 
-                console.log("usuarioCreate  : ", response.status, response);
-                this.showSnackbar('Usuario creado correctamente!', 'green')
-                this.close()
+                console.log("denunciaCreate  : ", response.status, response);
+                this.showSnackbar('denuncia creada correctamente!', 'green')
+
+                toast.success('denuncia creada correctamente ! ', {
+                  autoClose: 5000,
+                  position: toast.POSITION.TOP_RIGHT,
+                  // toastClassName: 'custom-toast', // Add your custom class name here
+
+                });
+               // this.close()
               } else {
 
-                console.log("usuarioCreate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error creando Usuario: ' + response.response.request.response, 'red');
-                toast.info('Error creando Usuario: ' + 'Revise el usuario de logueo', {
+                console.log("denuncia  : ", response.status, "error:   : ", response.response.request.response);
+                this.showSnackbar('Error creando denuncia: ' + response.response.request.response, 'red');
+                toast.info('Error creando Denuncia: ' + 'Revise logs con el Administrador del sistema', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
 
@@ -975,7 +1200,7 @@ export default {
               console.log('Log Error creando Usuario: ', error);
             });
 
-          // this.showSnackbar('Usuario creado correctamente!', 'green')
+          // this.showSnackbar('denunciadoCreate creado correctamente!', 'green')
           // this.close()
 
 
@@ -996,19 +1221,38 @@ export default {
       if (!this.denPerDnte.nombres || !this.denPerDnte.apellido_pat || !this.denPerDnte.apellido_mat) this.validationErrors.nombres = { value: true };
       else delete this.validationErrors.nombres;
 
-      if (!this.denPerDnte.ci_y_complemento || !this.denPerDnte.ci_expedido || !this.denPerDnte.grado) this.validationErrors.ci_y_complemento = { value: true };
-      else delete this.validationErrors.ci_y_complemento;
+     // if (!this.denPerDnte.ci_y_complemento || !this.denPerDnte.ci_expedido || !this.denPerDnte.grado) this.validationErrors.ci_y_complemento = { value: true };
+     // else delete this.validationErrors.ci_y_complemento;
 
-      if (!this.denPerDnte.telefono || !this.denPerDnte.email || !this.denPerDnte.departamento) this.validationErrors.telefono = { value: true };
-      else delete this.validationErrors.telefono;
+      if (!this.denPerDnte.email ||  !this.denPerDnte.genero_sexo ||   !this.denPerDnte.telefono ) this.validationErrors.email = { value: true };
+      else delete this.validationErrors.email;
 
-      if (!this.denPerDnte.municipio || !this.denPerDnte.user_login || !this.denPerDnte.password_hash) this.validationErrors.municipio = { value: true };
-      else delete this.validationErrors.municipio;
+      if (  !this.denPerDnte.departamento  ||  !this.denPerDnte.municipio ) this.validationErrors.departamento = { value: true };
+      else delete this.validationErrors.departamento;
 
-      if (!this.denPerDnte.rol || !this.denPerDnte.estado) this.validationErrors.rol = { value: true };
-      else delete this.validationErrors.rol;
+      
+      
+      if (!this.denunciado.nombres || !this.denunciado.apellido_pat || !this.denunciado.apellido_mat) this.validationErrors.nombres = { value: true };
+      else delete this.validationErrors.nombres;
+      
+      if (!this.denunciado.grado ||  !this.denunciado.puesto_cargo_funcion ||   !this.denunciado.unidad_policial_desc ) this.validationErrors.grado = { value: true };
+      else delete this.validationErrors.grado;
 
+      if (!this.denPerDnte.lugar_hecho ||  !this.denPerDnte.departamento ||   !this.denPerDnte.municipio ) this.validationErrors.lugar_hecho = { value: true };
+      else delete this.validationErrors.lugar_hecho;
 
+      if (!this.denPerDnte.fec_registro_hecho ||  !this.denPerDnte.hora_registro_hecho ||   !this.denPerDnte.detalle_hecho ) this.validationErrors.fec_registro_hecho = { value: true };
+      else delete this.validationErrors.fec_registro_hecho;
+/*
+      if ((this.denPerDnte.reserva_identidad_si &&  this.denPerDnte.reserva_identidad_no) || ( this.denPerDnte.reserva_identidad_si==false && this.denPerDnte.reserva_identidad_no==false) ) this.validationErrors.reserva_identidad_si = { value: true };
+      else delete this.validationErrors.reserva_identidad_si;
+
+      if (!this.reserva_datos )  this.validationErrors.reserva_datos = { value: true };
+      else delete this.validationErrors.reserva_datos;
+
+      if ( !this.articulo_166_cp)  this.validationErrors.articulo_166_cp = { value: true };
+      else delete this.validationErrors.articulo_166_cp;
+*/
       return !Object.keys(this.validationErrors).length;
     },
 
@@ -1052,51 +1296,8 @@ export default {
 
     },
 
-
-
-    /*  onRolChange() {
-        // Encuentra el rol seleccionado por su descrip
-        const rol = this.rolOptions.find(c => c.roles_sigla === this.denPerDnte.rol);
-        // Actualiza las municip según el depart seleccionado
-        console.log("rolOptions  : ", this.rolOptions);
-        this.denPerDnte.roles_sigla = rol.roles_sigla;
-     
-      },*/
-
-
-
-    addNewPerson() {
-      this.editedIndex = -1
-      this.denPerDnte = Object.assign({}, this.defaultItem)
-      this.dialog = true
-
-
-    },
-
-    editItem(item) {
-      this.editedIndex = this.people.indexOf(item)
-      this.denPerDnte = Object.assign({}, item)
-      this.dialog = true
-      this.lockField = false
-    },
-
-    viewItem(item) {
-      //this.editedIndex = this.people.indexOf(item)
-      this.denPerDnte = Object.assign({}, item)
-      this.dialog = true
-      this.lockField = true
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.people.indexOf(item)
-      this.denPerDnte = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-
-    deleteItemConfirm() {
-      this.people.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
+ 
+  
 
     closeDelete() {
       this.dialogDelete = false
@@ -1114,14 +1315,9 @@ export default {
       })
     },
 
-    closeView() {
-      this.viewDialog = false
-      this.viewedItem = {}
-    },
+   
 
-    cancelEdit() {
-      this.resetForm();
-    },
+   
 
     resetForm() {
       this.denPerDnte = Object.assign({}, this.defaultItem)
@@ -1175,39 +1371,29 @@ export default {
       console.log("inputValue2:", inputValue);
     },
 
-    /* formattedDate() {
-        // this.showDatePicker = false
  
- 
-   
-           this.denPerDnte.fecha= this.denPerDnte.fecha ? new Date(this.denPerDnte.fecha):new Date();
-           const day = this.selectedDate.getDate();
-           const month = this.selectedDate.getMonth() + 1;
-           const year = this.selectedDate.getFullYear();
-           this.denPerDnte.fecha =`${day}/${month}/${year}`;
-     },*/
     // Formato de la fecha
     // return this.selectedDate ? this.selectedDate.toISOString() : ''
 
-    handleInput(event) {
+    handleInputDate(event) {  //  @input="handleInputDate"
       // Limitar la entrada a números y el separador de fecha
-      this.value = event.target.value;//.replace(/^[0-9-]*$/, '').slice(0, 10);
-      console.log("event:", this.value);  ///[^0-9]/g
+      this.denPerDnte.fec_registro_hecho = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
+      console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro_hecho);  ///[^0-9]/g
     },
-
-    format(inputValue) {
-      // Función para formatear la fecha
+    // Función para formatear la fecha// Aplica la máscara de fecha  dd/mm/yyyy
+    formatDate(inputValue) {
+        inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
       // Ejemplo: formato DD/MM/AAAA
       console.log("inputValue:", inputValue);
-      // Aplica la máscara de fecha
+      
       if (inputValue.length == 2) {
-        inputValue = `${inputValue.slice(0, 2)}-`;
+        inputValue = `${inputValue.slice(0, 2)}/`;
       }
       if (inputValue.length > 3 && inputValue.length < 5) {
         inputValue = `${inputValue.slice(0, 2)}${inputValue.slice(2, 4)}`;
       }
       if (inputValue.length == 5) {
-        inputValue = `${inputValue.slice(0, 5)}-`;
+        inputValue = `${inputValue.slice(0, 5)}/`;
       }
       if (inputValue.length > 5) {
         inputValue = `${inputValue.slice(0, 10)}`;
@@ -1217,10 +1403,57 @@ export default {
       // this.rawDate = inputValue;
       console.log("inputValue2:", inputValue);
 
-      // console.log("replace:", value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3'));
       return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
     },
 
+      handleInputHour(event) {  //  @input="handleInputDate"
+      // Limitar la entrada a números y el separador de fecha
+      this.denPerDnte.hora_registro_hecho = this.formatHour(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
+      console.log("handleInputHour hora del hecho:", this.denPerDnte.hora_registro_hecho);  ///[^0-9]/g
+    },
+
+     // Función para formatear la fecha.       // Ejemplo: formato hh:mm
+     formatHour(inputValue) {
+     inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
+     
+      console.log("inputValue:", inputValue);
+      // Aplica la máscara de fecha
+      if (inputValue.length == 2) {
+        inputValue = `${inputValue.slice(0, 2)}:`;
+      }
+      if (inputValue.length > 3 && inputValue.length < 5) {
+        inputValue = `${inputValue.slice(0, 2)}${inputValue.slice(2, 4)}`;
+      }
+   
+      if (inputValue.length >= 5) {
+        inputValue = `${inputValue.slice(0, 5)}`;
+      }
+
+      // Actualiza rawDate con la fecha formateada
+      // this.rawDate = inputValue;
+      console.log("inputValue2:", inputValue);
+
+      return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+    },
+
+       eliminarUltimoCaracterNoNumerico(str) {
+      // Verificamos si el string no está vacío
+      if (str.length === 0) {
+        return str; // Devuelve el string sin cambios si está vacío
+      }
+
+      // Obtenemos el último carácter
+      const ultimoCaracter = str.charAt(str.length - 1);
+
+      // Comprobamos si es un carácter numérico
+      if (!/\d/.test(ultimoCaracter)) {
+        // Si no es numérico, eliminamos el último carácter
+        return str.slice(0, -1);
+      }
+
+      // Si es un carácter numérico, devolvemos el string sin cambios
+      return str;
+    },
     generateCaptcha() {
       const randomNumber = Math.floor(Math.random() * 10000);
       this.captcha = randomNumber.toString();
@@ -1286,7 +1519,7 @@ export default {
 
     value(newValue) {
       // Lógica para aplicar la máscara de fecha
-      this.formattedDate = this.format(newValue);
+      this.formattedDate = this.formatDate(newValue);
     },
 
 

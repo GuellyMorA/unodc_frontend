@@ -4,51 +4,51 @@ import http from 'axios';
 
 class DenunciaService {
 
-  denunciaGetByCod(data) {
-    return http.get(`/denunciaGetByCod/${data}`,).catch((error) => {
+  denunciaPersonasGetByCod(data) {
+    return http.get(`/denunciaPersonasGetByCod/${data}`,).catch((error) => {
       return error;
     });
   }
 
-  denunciaList() {
-    return http.get(`/denunciaList`,).catch((error) => {
+  denunciaPersonasList() {
+    return http.get(`/denunciaPersonasList`,).catch((error) => {
       return error;
     });
 
   }
-
+/*
   denunciaListByFk(data) {
-    return http.get(`/denunciaListByFk/${data}`,).catch((error) => {
+    return http.get(`/denunciaPersonasListByFk/${data}`,).catch((error) => {
       return error;
     });
 
   }
-  
+  */
   denunciaCreate(data) {
-    return http.post(`/denuncia`, data).catch((error) => {
+    return http.post(`/denunciaPersonas`, data).catch((error) => {
       return error;
     });
   }
 
   denunciaUpdate(id) {
-    return http.put(`/denuncia/${id}`).catch((error) => {
+    return http.put(`/denunciaPersonas/${id}`).catch((error) => {
       return error;
     });
   }
 
-
+/*
   denunciaDelLogico(id) {
-    return http.put(`/denunciaDel/${id}`).catch((error) => {
+    return http.put(`/denunciaPersonasDel/${id}`).catch((error) => {
       return error;
     });
   }
 
   denunciaDelete(id) {
-    return http.delete(`/denuncia/${id}`).catch((error) => {
+    return http.delete(`/denunciaPersonas/${id}`).catch((error) => {
       return error;
     });
   }
-
+*/
 
 
 

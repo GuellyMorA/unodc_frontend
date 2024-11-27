@@ -6,40 +6,40 @@ class DenuncianteService {
 
 
   denuncianteList() {
-    return http.get(`/denuncianteList`,).catch((error) => {
+    return http.get(`/personaList`,).catch((error) => {
       return error;
     });
 
   }
 
   denuncianteListByFk(data) {
-    return http.get(`/denuncianteListByFk/${data}`,).catch((error) => {
+    return http.get(`/personaListByFk/${data}`,).catch((error) => {
       return error;
     });
 
   }
   
   denuncianteCreate(data) {
-    return http.post(`/denunciante`, data).catch((error) => {
+    return http.post(`/persona`, data).catch((error) => {
       return error;
     });
   }
 
   denuncianteUpdate(id) {
-    return http.put(`/denunciante/${id}`).catch((error) => {
+    return http.put(`/persona/${id}`).catch((error) => {
       return error;
     });
   }
 
 
   denuncianteDelLogico(id) {
-    return http.put(`/denuncianteDel/${id}`).catch((error) => {
+    return http.put(`/personaDel/${id}`).catch((error) => {
       return error;
     });
   }
 
   denuncianteDelete(id) {
-    return http.delete(`/denunciante/${id}`).catch((error) => {
+    return http.delete(`/persona/${id}`).catch((error) => {
       return error;
     });
   }

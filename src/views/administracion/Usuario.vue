@@ -1,210 +1,185 @@
 <template>
-<v-container>
+  <v-container>
 
-<v-alert
-        v-if="loading"
-        type="info"
-        dismissible
-      >
-        Cargando datos...
-      </v-alert>
+    <v-alert v-if="loading" type="info" dismissible>
+      Cargando datos...
+    </v-alert>
 
 
-  <!-- Search Field -->
-  <v-text-field v-model="search" class="pa-2" label="Buscar Usuario" append-icon="mdi-magnify" single-line
-    hide-details></v-text-field>
+    <!-- Search Field -->
+    <v-text-field v-model="search" class="pa-2" label="Buscar Usuario" append-icon="mdi-magnify" single-line
+      hide-details></v-text-field>
 
-  <!-- Data Table -->  <!-- v-model:page="page" -->
-  <v-data-table :headers="headers" :items="filteredItems"
-    :sort-by="[{ key: 'id', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1" :search="search"
-  
-    :items-per-page="itemsPerPage"
+    <!-- Data Table --> <!-- v-model:page="page" -->
+    <v-data-table :headers="headers" :items="filteredItems"
+      :sort-by="[{ key: 'id', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1"
+      :search="search" :items-per-page="itemsPerPage" rows-per-page-text="Filas por página"
+      no-data-text="No existen registros." no-results-text="Sin resultados" page-text="de"
+      items-per-page-text="Registros por pagina ">
 
-            rows-per-page-text="Filas por página"
-            no-data-text="No existen registros."
-            no-results-text="Sin resultados"
-            page-text="de"
-            items-per-page-text="Registros por pagina "
-    >
-
-    <template v-slot:headers="{ props }">
-      <tr v-bind="props">
-        <th v-for="header in headers" :key="header.value" class="text-center">
-          {{ header.title }}
-        </th>
-      </tr>
-    </template>
-    <template v-slot:top>
-      <v-toolbar flat>
-        <v-toolbar-title>Usuarios del sistema</v-toolbar-title>
-        <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
+      <template v-slot:headers="{ props }">
+        <tr v-bind="props">
+          <th v-for="header in headers" :key="header.value" class="text-center">
+            {{ header.title }}
+          </th>
+        </tr>
+      </template>
+      <template v-slot:top>
+        <v-toolbar flat>
+          <v-toolbar-title>Usuarios del sistema</v-toolbar-title>
+          <v-divider class="mx-4" inset vertical></v-divider>
+          <v-spacer></v-spacer>
 
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-      </v-toolbar>
-    </template>
-    <!-- Action Buttons Column -->
-    <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
-      <v-icon small @click="viewItem(item)"> mdi-eye</v-icon>
-      <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
-    </template>
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                <v-spacer></v-spacer>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-toolbar>
+      </template>
+      <!-- Action Buttons Column -->
+      <template v-slot:item.actions="{ item }">
+        <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+        <v-icon small @click="viewItem(item)"> mdi-eye</v-icon>
+        <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
+      </template>
 
- <!--   <template v-slot:bottom>
+      <!--   <template v-slot:bottom>
       <div class="text-center pt-2">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
       </div>    
 
     </template>-->
-  </v-data-table>
+    </v-data-table>
 
-  <!-- Add New Person Button -->
-  <v-btn class="custom-green-btn mt-4" @click="addNewPerson">
-    Adicionar Usuario
-  </v-btn>
-
-
-
-  <template>
-    <!-- Edit Dialog -->
-    <v-dialog v-model="dialog" max-width="1000px">
-
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">{{ formTitle }}</span>
-        </v-card-title>
-
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="nombres"
-                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
-                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
-                  :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.ci_y_complemento" :readonly="lockField" label="ci_y_complemento"
-                  :rules="[v => !!v || 'CI es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField"
-                  label="ci_expedido" :rules="[v => !!v || 'Nombres es requerido']"></v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" 
-                          item-title="grado" item-value="grados_sigla" :readonly="lockField" label="grados"  @update:modelValue="onGradoChange" 
-                          :rules="[v => !!v || 'grado es requerido']"></v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.telefono" :readonly="lockField" label="telefono"
-                  :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.email" :readonly="lockField" label="email"
-                  :rules="[v => !!v || 'email es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItemUsuario.departamento"  :items="deptoOptions"
-                         item-title="depto" item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange" 
-                        :rules="[v => !!v || 'departamento es requerido']"></v-select>
-                  
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItemUsuario.municipio" :items="munOptions" 
-                  item-title="mun" item-value="mun_id" :readonly="lockField" label="Ciudad" return-object
-                  :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="usuario"
-                   :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="password"
-                :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-            :rules="[rules.required, rules.min]"
-            :type="show1 ? 'text' : 'password'"
-            hint="Min. 8 caracteres"
-          
-            name="input-10-1"
-            counter
-            @click:append="show1 = !show1"
-                  
-                  
-                  ></v-text-field>
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-            
-                <v-select v-model="editedItemUsuario.rol" :items="rolOptions" 
-                item-title="rol" item-value="roles_sigla" :readonly="lockField" label="rol del usuario" @update:modelValue="onRolChange" 
-                :rules="[v => !!v || 'estado es requerido']"></v-select>
-             
+    <!-- Add New Person Button -->
+    <v-btn class="custom-green-btn mt-4" @click="addNewPerson">
+      Adicionar Usuario
+    </v-btn>
 
 
 
+    <template>
+      <!-- Edit Dialog -->
+      <v-dialog v-model="dialog" max-width="1000px">
+
+        <v-card>
+          <v-card-title>
+            <span class="text-h5">{{ formTitle }}</span>
+          </v-card-title>
+
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="nombres"
+                    :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
+                    :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
+                    :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.ci_y_complemento" :readonly="lockField"
+                    label="ci_y_complemento" :rules="[v => !!v || 'CI es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField"
+                    label="ci_expedido" :rules="[v => !!v || 'Nombres es requerido']"></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" item-title="grado"
+                    item-value="grados_sigla" :readonly="lockField" label="grados" @update:modelValue="onGradoChange"
+                    :rules="[v => !!v || 'grado es requerido']"></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.telefono" :readonly="lockField" label="telefono"
+                    :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.email" :readonly="lockField" label="email"
+                    :rules="[v => !!v || 'email es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select v-model="editedItemUsuario.departamento" :items="deptoOptions" item-title="depto"
+                    item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange"
+                    :rules="[v => !!v || 'departamento es requerido']"></v-select>
+
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select v-model="editedItemUsuario.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
+                    :readonly="lockField" label="Ciudad" return-object
+                    :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="usuario"
+                    :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="password"
+                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]"
+                    :type="show1 ? 'text' : 'password'" hint="Min. 8 caracteres" name="input-10-1" counter
+                    @click:append="show1 = !show1"></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+
+                  <v-select v-model="editedItemUsuario.rol" :items="rolOptions" item-title="rol" item-value="roles_sigla"
+                    :readonly="lockField" label="rol del usuario" @update:modelValue="onRolChange"
+                    :rules="[v => !!v || 'estado es requerido']"></v-select>
+
+                </v-col>
+                <v-col cols="12" sm="6" md="4">
+                  <v-select v-model="editedItemUsuario.estado" :items="estadoOptions" item-title="est"
+                    item-value="transac" :readonly="lockField" label="Estado del usuario"
+                    @update:modelValue="onEstadoChange" :rules="[v => !!v || 'estado es requerido']"></v-select>
+                </v-col>
 
 
-              </v-col>
-              <v-col cols="12" sm="6" md="4">
-                <v-select v-model="editedItemUsuario.estado" :items="estadoOptions" 
-                item-title="est" item-value="transac" :readonly="lockField" label="Estado del usuario" @update:modelValue="onEstadoChange" 
-                :rules="[v => !!v || 'estado es requerido']"></v-select>
-              </v-col>
+              </v-row>
+            </v-container>
+          </v-card-text>
+
+          <v-card-actions v-if="lockField === false">
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
+            <v-btn class="custom-green-btn" text @click="usuariosSave"> Guardar </v-btn>
+          </v-card-actions>
+          <v-card-actions v-else-if="lockField === true">
+            <v-spacer></v-spacer>
+            <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
+          </v-card-actions>
 
 
-            </v-row>
-          </v-container>
-        </v-card-text>
+        </v-card>
+      </v-dialog>
 
-        <v-card-actions v-if="lockField === false">
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
-          <v-btn class="custom-green-btn" text @click="saveUsuarios"> Guardar </v-btn>
-        </v-card-actions>
-        <v-card-actions v-else-if="lockField === true">
-          <v-spacer></v-spacer>
-          <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
-        </v-card-actions>
+    </template>
 
+    <template>
 
-      </v-card>
-    </v-dialog>
+      <v-snackbar v-model="snackbar.visible" :timeout="5000" :color="snackbar.color" :top="'top'"
+        :vertical="snackbar.mode === 'vertical'" :right="'right'" :multi-line="snackbar.mode === 'multi-line'">
+        {{ snackbar.message }}
+        <template v-slot:action="{ attrs }">
+          <v-btn color="blue" text v-bind="attrs" @click="snackbar.visible = false">
+            Cerrar
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </template>
 
-  </template>
-
-  <template>
-
-    <v-snackbar v-model="snackbar.visible" :timeout="2000" :color="snackbar.color"
-       :top="'top'"    :vertical="snackbar.mode === 'vertical'"
-      :right="'right'"  :multi-line="snackbar.mode === 'multi-line'"
-    >
-      {{ snackbar.message }}
-      <template v-slot:action="{ attrs }">
-        <v-btn color="blue" text v-bind="attrs" @click="snackbar.visible = false">
-          Cerrar
-        </v-btn>
-      </template>
-    </v-snackbar>
-  </template>
-
-</v-container>
+  </v-container>
 </template>
 
 
@@ -234,15 +209,15 @@ export default {
     username: localStorage.getItem('username'),
 
     lockField: false,
-  
+
     show1: false,
-        show2: true,
-        password: 'Password',
-        rules: {
-          required: value => !!value || 'Requirido.',
-          min: v => v.length >= 8 || 'Min. 8 caracteres',
-          emailMatch: () => `The email and password you entered don't match`,
-        },
+    show2: true,
+    password: 'Password',
+    rules: {
+      required: value => !!value || 'Requirido.',
+      min: v => v.length >= 8 || 'Min. 8 caracteres',
+      emailMatch: () => `The email and password you entered don't match`,
+    },
 
 
 
@@ -268,7 +243,7 @@ export default {
     people: [],
     editedIndex: -1,
     editedItemRolUsu: {
-      id:null,
+      id: null,
       usuarios_id: null,
       roles_sigla: '',
       descripcion: null,
@@ -297,23 +272,24 @@ export default {
       municipio: '',
       mun_id: '',
       user_login: '',
-        password_hash: '',
-        u_rol_id:'',
-        roles_sigla: '',         
+      password_hash: '',
+      u_rol_id: '',
+      roles_sigla: '',
       rol: '',
+      reset_key: '',
+      reset_date: '',
+
       estado: '',
       transaccion: '',
-    
       usu_cre: null,
       fec_cre: null,
       usu_mod: null,
-      fec_mod: null,
-      reset_key: '', 
-      reset_date: ''
+      fec_mod: null
+
 
     },
 
-    defaultItem: {
+    defaultItemUsu: {
       id: null,
       nombres: '',
       apellido_pat: '',
@@ -329,19 +305,19 @@ export default {
       municipio: '',
       mun_id: '',
       user_login: '',
-        password_hash: '',
-        u_rol_id:'',
-        roles_sigla: '',         
+      password_hash: '',
+      u_rol_id: '',
+      roles_sigla: '',
       rol: '',
+      reset_key: '',
+      reset_date: '',
+
       estado: '',
       transaccion: '',
-    
       usu_cre: null,
       fec_cre: null,
       usu_mod: null,
-      fec_mod: null,
-      reset_key: '', 
-      reset_date: ''
+      fec_mod: null
     },
     viewedItem: {},
 
@@ -366,7 +342,7 @@ export default {
     munOptions: [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
 
     estadoOptions: [{ est: 'ACTIVO', transac: 'ACTIVAR' }, { est: 'INACTIVO', transac: 'INACTIVAR' }],
-    depas: [{
+    /*depas: [{
       id: 1, departs: 'Chuquisaca',
       cities: [{ id: 1, name: 'Sucre' }, { id: 2, name: 'Montes' }, { id: 3, name: 'Chaco' }]
     },
@@ -377,7 +353,7 @@ export default {
     {
       id: 3, departs: 'Santa Cruz',
       cities: [{ id: 1, name: 'Santa Cruz' }]
-    }],
+    }],*/
     // departOptions: [{id:1,depto:'Chuquisaca'},{id:2 , depto:'La Paz'}, {id:3 , depto:'Santa Cruz'},{id:4 , depto: 'Cochabamba'}],
 
 
@@ -408,7 +384,6 @@ export default {
     async gradoList() {
       Grado.gradoList()
         .then((response) => {
-          //console.log("DEPAS  : ", this.depas);
           // console.log("response.data[0]  : ", response.data[0], response.status);
           if (response.status === 200) {
 
@@ -425,7 +400,6 @@ export default {
     async rolList() {
       Rol.rolList()
         .then((response) => {
-          //console.log("DEPAS  : ", this.depas);
           // console.log("response.data[0]  : ", response.data[0], response.status);
           if (response.status === 200) {
 
@@ -442,7 +416,6 @@ export default {
     async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
-          //console.log("DEPAS  : ", this.depas);
           // console.log("response.data[0]  : ", response.data[0], response.status);
           if (response.status === 200) {
             this.departamentos = Object.values(response.data[0]);
@@ -500,7 +473,7 @@ export default {
       // Actualiza las municip según el depart seleccionado
       console.log("rolOptions  : ", this.rolOptions);
       this.editedItemUsuario.roles_sigla = rol.roles_sigla;
-     // this.editedItemUsuario.u_rol_id = rol.rol_id;
+      // this.editedItemUsuario.u_rol_id = rol.rol_id;
       //this.editedItemUsuario.grado= grado.grado;
     },
 
@@ -539,85 +512,85 @@ export default {
       return !Object.keys(this.validationErrors).length;
     },
 
-    usuariosRolUpdate(){
-          this.editedItemRolUsu.id = this.editedItemUsuario.u_rol_id==='' ? this.editedItemRolUsu.id  : this.editedItemUsuario.u_rol_id;
-          this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
-          this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.roles_sigla;
-          this.editedItemRolUsu.descripcion = 'Cambio de rol';
-          this.editedItemRolUsu.estado = 'ACTIVO';
-          this.editedItemRolUsu.transaccion = 'MODIFICAR';
-          this.editedItemRolUsu.usu_mod = this.username;
-          this.editedItemRolUsu.fec_mod = new Date();
+    usuariosRolUpdate() {
+      this.editedItemRolUsu.id = this.editedItemUsuario.u_rol_id === '' ? this.editedItemRolUsu.id : this.editedItemUsuario.u_rol_id;
+      this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
+      this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.roles_sigla;
+      this.editedItemRolUsu.descripcion = 'Cambio de rol';
+      this.editedItemRolUsu.estado = 'ACTIVO';
+      this.editedItemRolUsu.transaccion = 'MODIFICAR';
+      this.editedItemRolUsu.usu_mod = this.username;
+      this.editedItemRolUsu.fec_mod = new Date();
 
-        
-          UsuariosRol.UsuariosRolUpdate(this.editedItemRolUsu.id , JSON.stringify(this.editedItemRolUsu))
-            .then((response) => {
-              if (response.status === 200) {            
-                console.log("usuarioUpdate  : ", response.status, response);
 
-                //  this.showSnackbar('Usuario rol modificado correctamente !', 'green')
-                toast.success('Usuario rol modificado correctamente ! ', {
-                  autoClose: 3000,
-                  position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // Add your custom class name here
+      UsuariosRol.UsuariosRolUpdate(this.editedItemRolUsu.id, JSON.stringify(this.editedItemRolUsu))
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("usuarioUpdate  : ", response.status, response);
 
-                });
-                //this.close()
-              } else {
-                console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Usuario rol: ' + response.response.request.response, 'red');
+            //  this.showSnackbar('Usuario rol modificado correctamente !', 'green')
+            toast.success('Usuario rol modificado correctamente ! ', {
+              autoClose: 3000,
+              position: toast.POSITION.TOP_RIGHT,
+              // toastClassName: 'custom-toast', // Add your custom class name here
 
-                toast.info('Error modificando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-
-                });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error modificando Usuario rol ' + error, 'red');
-              console.log('Log Error modificando Usuario rol: ', error);
             });
+            //this.close()
+          } else {
+            console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error modificando Usuario rol: ' + response.response.request.response, 'red');
 
-     },
+            toast.info('Error modificando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
+
+            });
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Log Error modificando Usuario rol ' + error, 'red');
+          console.log('Log Error modificando Usuario rol: ', error);
+        });
+
+    },
 
 
-     usuariosRolCreate() {
-          this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
-          this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.rol;
-          this.editedItemRolUsu.descripcion = 'Asignaion de rol';
-          this.editedItemRolUsu.estado = 'ACTIVO';
-          this.editedItemRolUsu.transaccion = 'ACTIVAR';
-          this.editedItemRolUsu.usu_cre = this.username;
+    usuariosRolCreate() {
+      this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
+      this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.rol;
+      this.editedItemRolUsu.descripcion = 'Asignaion de rol';
+      this.editedItemRolUsu.estado = 'ACTIVO';
+      this.editedItemRolUsu.transaccion = 'ACTIVAR';
+      this.editedItemRolUsu.usu_cre = this.username;
 
-        UsuariosRol.UsuariosRolCreate(JSON.stringify(this.editedItemRolUsu))
-            .then((response) => {
+      UsuariosRol.UsuariosRolCreate(JSON.stringify(this.editedItemRolUsu))
+        .then((response) => {
 
-              if (response.status === 201) {
-              
-                this.editedItemUsuario.u_rol_id= response.data.id;
-                this.editedItemRolUsu.id= response.data.id;
-                console.log("UsuariosRolCreate  : ", response.status, response);
-                this.showSnackbar('Usuario rol creado correctamente!', 'green')
-               // this.close()
-              } else {
+          if (response.status === 201) {
 
-                console.log("UsuariosRolCreate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error creando usuario Rol: ' + response.response.request.response, 'red');
-                toast.info('Error creando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
+            this.editedItemUsuario.u_rol_id = response.data.id;
+            this.editedItemRolUsu.id = response.data.id;
+            console.log("UsuariosRolCreate  : ", response.status, response);
+            this.showSnackbar('Usuario rol creado correctamente!', 'green')
+            // this.close()
+          } else {
 
-                });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error creando Usuario rol: ' + error, 'red');
-              console.log('Log Error creando Usuario rol: ', error);
-            })
-       } ,
+            console.log("UsuariosRolCreate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error creando usuario Rol: ' + response.response.request.response, 'red');
+            toast.info('Error creando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
 
-    saveUsuarios() {
+            });
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Log Error creando Usuario rol: ' + error, 'red');
+          console.log('Log Error creando Usuario rol: ', error);
+        })
+    },
+
+    usuariosSave() {
       try {
 
         if (!this.validateForm()) {
@@ -639,8 +612,8 @@ export default {
 
         if (this.editedIndex > -1) {   // Update person
 
-   
-         // this.editedItemUsuario.estado = 'ACTIVO';
+
+          // this.editedItemUsuario.estado = 'ACTIVO';
           this.editedItemUsuario.transaccion = 'MODIFICAR';
           this.editedItemUsuario.usu_mod = this.username;
           this.editedItemUsuario.fec_mod = new Date();
@@ -658,7 +631,7 @@ export default {
 
                 //  this.showSnackbar('Usuario modificado correctamente !', 'green')
                 toast.success('Usuario modificado correctamente ! ', {
-                  autoClose: 3000,
+                  autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
                   // toastClassName: 'custom-toast', // Add your custom class name here
 
@@ -680,7 +653,7 @@ export default {
               console.log('Log Error modificando Usuario: ', error);
             });
 
-            
+
 
 
         } else {  // Add new person
@@ -700,11 +673,17 @@ export default {
                 //  this.people = response.data;
                 this.people.push(this.editedItemUsuario);
 
-                this.editedItemUsuario.id= response.data.id;
+                this.editedItemUsuario.id = response.data.id;
                 this.usuariosRolCreate();
 
                 console.log("usuarioCreate  : ", response.status, response);
-                this.showSnackbar('Usuario creado correctamente!', 'green')
+              //  this.showSnackbar('Usuario creado correctamente!', 'green')
+                toast.success('Usuario creado correctamente ! ', {
+                  autoClose: 5000,
+                  position: toast.POSITION.TOP_RIGHT,
+                  // toastClassName: 'custom-toast', // Add your custom class name here
+
+                });
                 this.close()
               } else {
 
@@ -725,9 +704,9 @@ export default {
           // this.showSnackbar('Usuario creado correctamente!', 'green')
           // this.close()
 
-   
 
-         
+
+
 
 
 
@@ -758,7 +737,7 @@ export default {
 
     addNewPerson() {
       this.editedIndex = -1
-      this.editedItemUsuario = Object.assign({}, this.defaultItem)
+      this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
       this.dialog = true
 
 
@@ -792,7 +771,7 @@ export default {
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
-        this.editedItemUsuario = Object.assign({}, this.defaultItem)
+        this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
         this.editedIndex = -1
       })
     },
@@ -800,7 +779,7 @@ export default {
     close() {
       this.dialog = false
       this.$nextTick(() => {
-        this.editedItemUsuario = Object.assign({}, this.defaultItem)
+        this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
         this.editedIndex = -1
       })
     },
@@ -815,7 +794,7 @@ export default {
     },
 
     resetForm() {
-      this.editedItemUsuario = Object.assign({}, this.defaultItem)
+      this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
       this.editedIndex = -1
       this.dialog = false
       //this.editingUserId = null;
@@ -887,7 +866,8 @@ export default {
 
 <style scoped>
 .custom-green-btn {
-  background-color: #849C58;   /* #073d09    cambio a color verde oscuro  */
+  background-color: #849C58;
+  /* #073d09    cambio a color verde oscuro  */
   /* Verde */
   color: white;
   /* Texto en blanco */
@@ -898,7 +878,8 @@ export default {
 .v-data-table .v-table__wrapper>table>thead>tr th,
 .v-data-table .v-table__wrapper>table tbody>tr>td,
 .v-data-table .v-table__wrapper>table tbody>tr th {
-  background: #849C58 !important;   /* #073d09    cambio a color verde oscuro  */
+  background: #849C58 !important;
+  /* #073d09    cambio a color verde oscuro  */
   color: white;
   /* Texto en blanco */
 

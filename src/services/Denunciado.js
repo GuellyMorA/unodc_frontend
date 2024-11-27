@@ -6,40 +6,40 @@ class DenunciadoService {
 
 
   denunciadoList() {
-    return http.get(`/denunciadoList`,).catch((error) => {
+    return http.get(`/personaList`,).catch((error) => {
       return error;
     });
 
   }
 
   denunciadoListByCod(data) {
-    return http.get(`/denunciadoListByCod/${data}`,).catch((error) => {
+    return http.get(`/personaListByCod/${data}`,).catch((error) => {
       return error;
     });
 
   }
   
   denunciadoCreate(data) {
-    return http.post(`/denunciado`, data).catch((error) => {
+    return http.post(`/persona`, data).catch((error) => {
       return error;
     });
   }
 
   denunciadoUpdate(id) {
-    return http.put(`/denunciado/${id}`).catch((error) => {
+    return http.put(`/persona/${id}`).catch((error) => {
       return error;
     });
   }
 
 
   denunciadoDelLogico(id) {
-    return http.put(`/denunciadoDel/${id}`).catch((error) => {
+    return http.put(`/personaDel/${id}`).catch((error) => {
       return error;
     });
   }
 
   denunciadoDelete(id) {
-    return http.delete(`/denunciado/${id}`).catch((error) => {
+    return http.delete(`/persona/${id}`).catch((error) => {
       return error;
     });
   }
