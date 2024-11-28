@@ -67,12 +67,20 @@
     </v-card>
 
     <v-card class="mx-auto  mt-4" max-width="700">
-      <v-card-title>
-        <span class="text-h5"> Datos del Denunciado </span>
+      <v-card-title class="mb-4" >
+        <v-row class="mx-auto  mt-1">   
+          <v-col cols="4" class="p-0 py-0 px-0">
+          <span class="text-h5"> Datos del Denunciado </span>
+        </v-col>
+          <v-col cols="4" class="p-0 py-0 px-0">
+            <v-icon small class="mr-2" @click="agregarPersona"> mdi-plus-circle-outline</v-icon>
+        
+      </v-col>
+      </v-row>
       </v-card-title>
-      <v-card-text>
+      <v-card-text class="mt-4" >
         <v-container>
-
+      
           <v-row>
 
             <v-col cols="3" class="p-0 py-0 px-0">
@@ -90,7 +98,7 @@
             </v-col>
             <v-col cols="3" class="p-0 py-0 px-0">
               <v-select v-model="denunciado.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
-                :readonly="lockField" label="Género" @update:modelValue="onSexoChange"
+                :readonly="lockField" label="Género" @update:modelValue="onSexoChangeDenunciado"
                 :rules="[v => !!v || 'sexo es requerido']"></v-select>
             </v-col>
           </v-row>
@@ -131,10 +139,37 @@
                 :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
             </v-col>
           </v-row>
+    <div>   
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>apellido_pat</th>
+          <th>apellido_mat</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(denunciado, index) in denunciadosArray" :key="index">
+          <td>{{ denunciado.nombres }}</td>
+          <td>{{ denunciado.apellido_pat }}</td>
+          <td>{{ denunciado.apellido_mat }}</td>
+          <td>
+           
+            <v-icon small class="mr-2" @click="quitarPersona(index)">mdi-delete-forever</v-icon>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+   
+  </div>
+
         </v-container>
       </v-card-text>
+
     </v-card>
 
+  
 
     <v-card class="mx-auto  mt-4" max-width="700">
       <v-card-title>
@@ -169,70 +204,29 @@
           </v-row>  
 
           <v-row>
-            <v-col   cols="12" md="6" v-for="(fileType, index) in fileTypes" :key="index">
+            <v-col  class="p-0 py-0 px-0"  cols="12" md="6" v-for="(fileType, index) in fileTypes" :key="index">
           <v-file-input
             v-model="files[index]"
             :label="fileType.label"
             :accept="fileType.accept"
             :show-size="true"
             :rules="[rules.required]"
-            multiple    @change="checkJSON"
+            multiple    @change="onMultipleFilesChange"
           ></v-file-input>
-        </v-col>
-        <v-col cols="12" md="6" v-for="(preview, index) in previews" :key="index" >
-          <div v-if="preview">
-            <h2>Vista Previa: {{ fileTypes[index].label }}</h2>
-            <img :src="preview" alt="Vista Previa" width="200" />
-          </div>
-        </v-col>
-          </v-row>    
-          <v-row>
-              <v-col cols="4" class="p-0 py-4 px-4">
-              
-                <div class="container">
-    <h1>File Upload with Vue 3</h1>
-
-    <div class="single-upload">
-      <h3>Upload a Single File</h3>
-      <input type="file" @change="onSingleFileChange" />
-      <button @click="uploadSingleFile">Upload</button>
-      <p v-if="singleUploadResponse">{{ singleUploadResponse }}</p>
-    </div>
-
-    <div class="multiple-upload">
-      <h3>Upload Multiple Files</h3>
-      <input type="file" multiple @change="onMultipleFilesChange" />
-      <button @click="uploadMultipleFiles">Upload</button>
-      <p v-if="multipleUploadResponse">{{ multipleUploadResponse }}</p>
-    </div>
-  </div>
-  </v-col>
-          </v-row> 
-        <v-row>
-            <v-col class="p-0 py-0 px-0">    
-              <v-btn @click="downloadFile" :disabled="isLoading" color="primary">
-                <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
-                Descargar Archivo
-              </v-btn>
-
-              <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color">{{ snackbar.message }}</v-snackbar>
-
-
-          <div v-for="file in files1" :key="file.id">
-            <button @click="downloadFile1(file)">Descargar {{ file.name }}</button>
-          </div>
             </v-col>      
-          </v-row>
+          </v-row>    
+   
+      
           
           <v-row>
-              <v-col cols="4" class="p-0 py-4 px-4">
+              <v-col class="p-0 py-4 px-4"  cols="4" >
                 <!-- Primera columna -->          
                 <label for="file3">Reserva de identidad ? : </label>
               </v-col>
-              <v-col cols="3" class="p-0 py-0 px-0">
+              <v-col class="p-0 py-0 px-0" cols="3" >
                 <v-checkbox  value="true"   v-model="denPerDnte.reserva_identidad_si" label="Si" ></v-checkbox>           
               </v-col>
-              <v-col cols="3" class="p-0 py-0 px-0">
+              <v-col class="p-0 py-0 px-0" cols="3" >
                 <v-checkbox  value="false"  v-model="denPerDnte.reserva_identidad_no" label="No" ></v-checkbox>           
                 </v-col>
           </v-row>
@@ -263,22 +257,43 @@
     <v-card class="mx-auto  mt-4" max-width="700">
       <v-card-text class="d-flex flex-column align-center justify-center">
         <div class="captcha-container" style="width: 300px;">
+          <v-row>
+            
           <svg width="200" height="40" xmlns="http://www.w3.org/2000/svg">
             <text x="100" y="30" font-family="Verdana" font-size="30" fill="black">{{ captcha }}</text>
           </svg>
+         </v-row>
 
+          <v-row>
           <v-text-field v-model="userInput" label="Introduce el número de arriba" required></v-text-field>
-
+        </v-row>
         </div>
 
-
+<!--
         <v-btn class="custom-green-btn mt-4" color="primary" @click="validateCaptcha">Validar</v-btn>
-
+-->
         <!-- Add New Person Button -->
         <v-btn class="custom-green-btn mt-4" @click="denunciaSave">
           Enviar Denuncia
         </v-btn>
       </v-card-text>
+     <!--
+      <v-row>
+            <v-col class="p-0 py-0 px-0">    
+              <v-btn @click="downloadFile" :disabled="isLoading" color="primary">
+                <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
+                Descargar Archivo
+              </v-btn>
+
+              <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color">{{ snackbar.message }}</v-snackbar>
+
+
+          <div v-for="file in files1" :key="file.id">
+            <button @click="downloadFile1(file)">Descargar {{ file.name }}</button>
+          </div>
+            </v-col>      
+     </v-row>
+    -->
     </v-card>
 
     <template>
@@ -291,6 +306,9 @@
           </v-btn>
         </template>
       </v-snackbar>
+
+
+
     </template>
 
   </v-container>
@@ -319,10 +337,14 @@ export default {
 
  
   data: () => ({
-    singleFile: null,
+      singleFile: null,
       multipleFiles: [],
       singleUploadResponse: "",
       multipleUploadResponse: "",
+
+      nameFile:'',
+
+
 
 
 
@@ -330,14 +352,14 @@ export default {
     { id: 1, name: 'archivo1.pdf' },
     { id: 2, name: 'imagen.jpg' }
   ],
-    files: Array(1).fill(null), // Array para almacenar 5 archivos
+    files:[], // Array(5).fill(null), // Array para almacenar 5 archivos
     previews: Array(5).fill(null), // Array para almacenar vistas previas de los archivos
  
     fileTypes: [
-        { label: 'Cargar Imagen (JPEG/PNG)', accept: 'image/jpeg,image/png,image/bmp' },
+        { label: 'Cargar Fotos (JPEG/PNG)', accept: 'image/jpeg,image/png,image/bmp' },
         { label: 'Cargar PDF', accept: 'application/pdf' },
        // { label: 'Cargar Texto (TXT)', accept: 'text/plain' },
-        { label: 'Cargar Archivo de Word', accept: '.doc,.docx' },
+      //  { label: 'Cargar Archivo de Word', accept: '.doc,.docx' },
         //{ label: 'Cargar Archivo de Excel', accept: '.xls,.xlsx' },
         { label: 'Cargar Archivo de Video', accept: 'video/*' },
         { label: 'Cargar Archivo de Audio', accept:  'audio/*' },
@@ -460,6 +482,46 @@ export default {
       fec_mod: null,
    
     },
+    defaultItem: {
+      fila: '',
+      id: null,
+      cod_denuncia: '',
+      tipo_personas: '',
+      sigla: '',
+      lugar_hecho: '',
+      depto_id: '',
+      departamento: '',
+      mun_id: '',
+      municipio: '',
+      grados_sigla: '',
+      grado: '',
+      fec_registro_hecho: '',
+      hora_registro_hecho: '',
+      detalle_hecho: '',
+      reserva_identidad:'',
+      reserva_identidad_si: '',
+      reserva_identidad_no: '',
+      id_dnte: null,
+      apellido_pat: '',
+      apellido_mat: '',
+      nombres: '',
+      genero_sexo_sigla: '',
+      genero_sexo: '',
+      email: '',
+      telefono: '',
+      ubic_donde: '',
+      direccion: '',
+      
+      orden:0,
+
+         estado: '',
+      transaccion: '',
+      usu_cre: null,
+      fec_cre: null,
+      usu_mod: null,
+      fec_mod: null,
+    },
+    denunciadosArray: [],
 
     denunciado: {
       fila: '',
@@ -476,7 +538,7 @@ export default {
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
-
+      lugar_hecho: '',
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
@@ -497,6 +559,42 @@ export default {
       usu_mod: null,
       fec_mod: null 
 
+    },
+    defaultItemDenunciado: {
+      fila: '',
+      id: null,   //  id de la tabla padre denuncia
+      id_dndo: null,
+      cod_denuncia: '',
+      tipo_personas: '',
+      depto_id: '',
+      departamento: '',
+      mun_id: '',
+      municipio: '',
+      grados_sigla: '',
+      grado: '',
+      fec_registro_hecho: '',
+      hora_registro_hecho: '',
+      detalle_hecho: '',
+      lugar_hecho: '',
+      apellido_pat: '',
+      apellido_mat: '',
+      nombres: '',
+      genero_sexo_sigla: '',
+      genero_sexo: '',
+      email: '',
+      telefono: '',
+      ubic_donde: '',
+      direccion: '',
+      puesto_cargo_funcion: '',
+      unidad_policial_desc: '',
+      orden:0,
+      
+      estado: '',
+      transaccion: '',
+      usu_cre: null,
+      fec_cre: null,
+      usu_mod: null,
+      fec_mod: null 
     },
     documentosPath: {
       id: null,
@@ -520,36 +618,7 @@ export default {
     },
    docsPath:[],
   
-    defaultItem: {
-      id: null,
-      nombres: '',
-      apellido_pat: '',
-      apellido_mat: '',
-      ci_y_complemento: '',
-      ci_expedido: '',
-      grado: '',
-      grados_sigla: '',
-      telefono: '',
-      email: '',
-      departamento: '',
-      depto_id: '',
-      municipio: '',
-      mun_id: '',
-      user_login: '',
-      password_hash: '',
-      u_rol_id: '',
-      roles_sigla: '',
-      rol: '',
-      estado: '',
-      transaccion: '',
-
-      usu_cre: null,
-      fec_cre: null,
-      usu_mod: null,
-      fec_mod: null,
-      reset_key: '',
-      reset_date: ''
-    },
+   
     viewedItem: {},
 
     viewDialog: false,
@@ -579,6 +648,7 @@ export default {
 
   mounted() {
     const fileInputs = document.querySelectorAll('.file-input');
+/*
     fileInputs.forEach(input => {
       input.addEventListener('change', function () {
         const label = this.previousElementSibling;
@@ -591,7 +661,7 @@ export default {
         }
       });
     });
-
+*/
     this.deptoList();
     this.onDepartChange();
     this.gradoList();
@@ -608,22 +678,31 @@ export default {
 
 
   methods: {
-    checkJSON: function(e) {
-    console.log("JSON checking")
-    console.log(JSON.stringify(e))
-    console.log(e.target.files)
-    this.multipleFiles = Array.from(e.target.files);
 
-    return
-  },
+    agregarPersona() {
+      this.denunciadosArray.push({ ...this.denunciado });
+
+      console.log('this.denunciadosArray :', this.denunciadosArray);
+      this.denunciado = Object.assign({}, this.defaultItemDenunciado);
+     /* this.denunciado = {
+        nombres: '',
+        apellido_pat: '',
+        apellido_mat: '',
+      };*/
+    },
+    quitarPersona(index) {
+      this.denunciadosArray.splice(index, 1);
+      console.log('this.denunciadosArray :', this.denunciadosArray);
+    },
 
     onSingleFileChange(event) {
       this.singleFile = event.target.files[0];
     },
     onMultipleFilesChange(event) {
-      this.multipleFiles = Array.from(event.target.files);
+     this.multipleFiles = Array.from(event.target.files);
+      console.log('this.multipleFiles :', this.multipleFiles);
     },
-    async uploadSingleFile() {
+    async uploadSingleFileXXX  () {
       if (!this.singleFile) {
         alert("Please select a file first.");
         return;
@@ -643,7 +722,7 @@ export default {
         console.error("Error uploading single file:", error.response?.data || error.message);
       }
     },
-    async uploadMultipleFiles() {
+    async uploadMultipleFilesXXX() {
       if (this.multipleFiles.length === 0) {
         alert("Please select files first.");
         return;
@@ -715,18 +794,18 @@ export default {
     */ 
     
        // Esta función puede manejar cualquier lógica al cambiar el archivo
-   
-    handleFileChange(index) {   //    @change="handleFileChange(index)"
+   /*
+    handleFileChange(index) {   //  
         const newFiles = this.files[index]
         if (newFiles && newFiles.length > 0) {
           const file = newFiles.target.files[0] // Solo tomamos el primer archivo
           const reader = new FileReader()
           console.log(`Archivo seleccionado en el índice ${index}:`, this.files[index]);
-         /* reader.onload = e => {
+          reader.onload = e => {
             this.previews[index] = e.target.result // Guarda la vista previa del archivo
           }
           reader.readAsDataURL(file) // Lee el archivo como URL de datos
-          */
+          
         axios.post('/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -743,98 +822,86 @@ export default {
           this.previews[index] = null // Restablece la vista previa si no hay archivo
         }
       },
+*/
+   /*   mergeArrays(arrayA, arrayB) {
+            // Verificar si todos los elementos de arrayB están en arrayA
+            const allExist = arrayB.every(item => arrayA.includes(item));
 
-
+            if (!allExist) {
+                // Si no están todos, agregar los elementos de arrayB a arrayA
+                arrayB.forEach(item => {
+                    if (!arrayA.includes(item)) {
+                        arrayA.push(item);
+                    }
+                });
+                this.multipleFiles=arrayA;
+            } else {
+                console.log("El contenido de B ya está en A");
+            }
+        },
+*/
     async enviarArchivos() {
       try {
         //this.uploadSingleFile();
         //this.uploadMultipleFiles();
-       // return;
+        // return;
+        const arrayPlano = Array.from(this.files).flat();
+
+
+             // console.log('multipleFiles :',  this.multipleFiles);
+              console.log('this.files:  ', this.files);
+              //  console.log('this.files:  ', Array.from(this.files));
+                console.log(' arrayPlano:  ', arrayPlano);
+                //console.log(typeof this.multipleFiles);
+              //  console.log(typeof arrayPlano);
+        const formData = new FormData();
+        
+        arrayPlano.forEach((file, index) => {
+          // Renombrar el archivo
+          if (file !== undefined){
+            const typeFile = file.name.split('.').pop()  ;
        
-            const formData = new FormData();
-      this.multipleFiles.forEach((file, index) => {
-        formData.append("files", file);
-      });
-          //  formData.append('my_field', 'my value');
-           // formData.append('files', (this.files[0]));
-            //formData.append('my_file', new Blob(this.files[0]));
-           // formData.append('fileBinary', fileBinary);
-           /* const response = await fetch('https://tu-backend.com/api/upload', {
-              method: 'POST',
-              body: formData,
-            });
-
-            if (!response.ok) {
-              throw new Error(`Error al enviar el archivo en el índice ${i}: ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            console.log(`Archivo en el índice ${i} enviado correctamente:`, data);
-          } else {
-            console.log(`No hay archivo seleccionado en el índice ${i}`);
-          }*/
-
-        //for (let i = 0; i < this.files.length; i++) {
-        this.files.forEach((file, index) => {
-          const fileBinary = file; //s[i];
-          if (fileBinary) { // Asegúrate de que el archivo no esté vacío
-            
-                this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
-               // this.documentosPath.cod_denuncia = this.denPerDnte.cod_denuncia;
-                this.documentosPath.denunciante_id = this.denPerDnte.id_dnte;
-                this.documentosPath.orden = parseInt(this.documentosPath.orden)==1 ? parseInt(this.documentosPath.orden) : parseInt(this.denunciado.orden)  + 1;
-                this.documentosPath.origen = 'DENUNCIANTE';
-                this.documentosPath.documento_path =   'uploads/evidencia_denuncias' ;
-               // this.documentosPath.file_binary =  this.files[i];
-
-                this.documentosPath.fec_registro= this.denPerDnte.fec_registro_hecho; //new Date();    
-                this.documentosPath.descripcion=  'SE ADJUNTA ARCHIVOS DE EVIDENCIA POR EL DENUNCIANTE DESDE UNA PAGINA WEB PUBLICA';
-                this.documentosPath.justificacion_legal = 'TRANSPARENCIA INSTITUCIONAL';
-                this.documentosPath.estado = 'ACTIVO';
-                this.documentosPath.transaccion = 'ACTIVAR';
-                this.documentosPath.usu_cre = this.username;
-
-              //  formData.append("file", file);// formData.append(`files[${index}].name`, file);
-               // formData.append(`files[${index}]`, file);// formData.append(`file_${index}`, file);//formData.append('file', file);
-               
+           this.nameFile =  file.name  +'-'+'SD-' +  Date.now()+'.'+ typeFile ; // ${Date.now()}-SD-s
+           const newFile = new File([file], this.nameFile, { type: file.type });
+           this.nameFile  =newFile;
+          formData.append("files", newFile);
+          }
+       // });
     
-              }
-        }); 
-               // formData.append(`file_binary_${i}`, this.files[i]); // Suponiendo que files[index] es un array de archivos
-                //formData.append('documentosPath', this.documentosPath); // Suponiendo que files[index] es un array de archivos
-                //console.log(Array.from(formData.entries()));  
-                  console.log('this.files[0]:  ', this.files[0]);
-                  console.log('this.files[0]:  ', Array.from(this.files[0]));
+       
+       // arrayPlano.forEach((file, index) => { //for (let i = 0; i < this.files.length; i++) {
+      
+          console.log('this.nameFile.name :', this.nameFile.name);
+          console.log(typeof this.nameFile);
+          if (file !== undefined) { // Asegúrate de que el archivo no esté vacío
 
-                for (let [key, value] of formData.entries()) {
-                      console.log(key, value);
-                    }
-                const apiUrl = import.meta.env;
-                axios.post('/documentosPath2', formData, {
-                        headers: {
-                          "Content-Type": "multipart/form-data",
-                          'Authorization': apiUrl.VITE_API_URL_TOKEN
-                        },
-                        
-                      })
-                      .then(response => {
-                        console.log('Archivos subidos:', response.data);
-                        // Actualizar el estado de la aplicación, mostrar mensajes de éxito, etc.
-                      })
-                      .catch(error => {
-                        console.error('Error al subir los archivos:', error);
-                        // Mostrar mensajes de error al usuario
-                      });
+            this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
+            // this.documentosPath.cod_denuncia = this.denPerDnte.cod_denuncia;
+            this.documentosPath.denunciante_id = this.denPerDnte.id_dnte;
+            this.documentosPath.orden = index + 1; // parseInt(this.documentosPath.orden) == 1 ? parseInt(this.documentosPath.orden) : parseInt(this.denunciado.orden) + 1;
+            this.documentosPath.origen ='DENUNCIANTE'; // this.nameFile ;// +'.'+ file[index].type; //  Date.now() +'-'+ 'SD' + file[index].name; // ${Date.now()}-SD-s
+            //file[index].name= this.documentosPath.origen;
+            this.documentosPath.documento_path = 'uploads/evidencia_denuncias/' + this.nameFile.name ;
 
-                 /*
-                await DocumentosPath.documentosPathCreate(this.documentosPath)
-                  .then((response) => {
-                    if (response.status === 200) {
+            this.documentosPath.fec_registro = this.denPerDnte.fec_registro_hecho; //new Date();    
+            this.documentosPath.descripcion = 'SE ADJUNTA ARCHIVOS DE EVIDENCIA POR EL DENUNCIANTE DESDE UNA PAGINA WEB PUBLICA';
+            this.documentosPath.justificacion_legal = 'TRANSPARENCIA INSTITUCIONAL';
+            this.documentosPath.estado = 'ACTIVO';
+            this.documentosPath.transaccion = 'ACTIVAR';
+            this.documentosPath.usu_cre = this.username;
+
+            //  formData.append("file", file);// formData.append(`files[${index}].name`, file);
+            // formData.append(`files[${index}]`, file);// formData.append(`file_${index}`, file);//formData.append('file', file);
+            // formData.append(`file_binary_${i}`, this.files[i]); // Suponiendo que files[index] es un array de archivos
+          
+           DocumentosPath.documentosPathCreate(this.documentosPath)
+                .then((response) => {
+                    if (response.status === 201) {
 
                       //this.documentosPath.u_rol_id = response.data.id;
                       //this.denunciado.id = response.data.id;
-                      console.log("denuncianteCreate  : ", response.status, response);
-                      this.showSnackbar('Denunciante creado correctamente!', 'green')
+                      console.log("documentosPathCreate  archivos: ", response.status, response);
+                      this.showSnackbar('archivo subido correctamente!', 'green')
                       // this.close()
                     } else {
 
@@ -848,12 +915,46 @@ export default {
                     }
                   })
                   .catch(error => {
-                    this.showSnackbar('Log Error creando Denunciante: ' + error, 'red');
-                    console.log('Log Error creando Denunciante: ', error);
-                  })*/
-       
+                    this.showSnackbar('Log Error subiendo archivos: ' + error, 'red');
+                    console.log('Log Error subiendo archivos: ', error);
+                  })
+          
+          
+          }
+        });
+
+
+        //console.log(Array.from(formData.entries()));       
+        //for (let [key, value] of formData.entries()) {      console.log(key, value);    }
+            if ( this.files.length>0){
+         
+                const apiUrl = import.meta.env;
+                  axios.post('/documentosPath2', formData, {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                    'Authorization': apiUrl.VITE_API_URL_TOKEN
+                  },
+                })
+                  .then(response => {
+                    console.log('Archivos subidos correctamente:', response.data);
+                    // Actualizar el estado de la aplicación, mostrar mensajes de éxito, etc.
+                    toast.success('archivos subidos correctamente ! ', {
+                      autoClose: 5000,
+                      position: toast.POSITION.TOP_RIGHT,
+
+                    });
+                  })
+                  .catch(error => {
+                    console.error('Error subiendo archivos:', error);
+                    // Mostrar mensajes de error al usuario
+                    this.showSnackbar('Error subiendo archivos: ' + error, 'red');
+                  });
+              }
+
+
       } catch (error) {
         console.error('Error en la carga de archivos:', error);
+        this.showSnackbar('Error en la carga de archivos:' + error, 'red');
       }
     },
 
@@ -954,8 +1055,7 @@ export default {
 
         });
     },
-
-  
+ 
 
     async denunciaPersonasGetByCod() {
           Denuncia.denunciaPersonasGetByCod('C-002-10-24') //  this.denPerDnte.id
@@ -971,7 +1071,6 @@ export default {
            this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + error, 'red'); 
         });
     },
-
     async denunciadoListByCod() {
       Denunciado.denunciadoListByCod('C-002-10-24')
         .then((response) => {
@@ -986,6 +1085,22 @@ export default {
         .catch(error => {
           this.showSnackbar('Error recuperando denunciadoListByCod ' + error, 'red'); 
         });
+    },  
+    async documentosPathListByCod() {
+         await DocumentosPath.documentosPathListByCod('C-002-10-24') //  this.denPerDnte.id
+        .then((response) => {
+          console.log("documentosPathListByCod  : ", response.data, response.status);
+          if (response.status === 200) {
+            this.docsPath = response.data;
+            
+          } else {
+            this.showSnackbar('Error recuperando documentosPathListByCod ' + response, 'red');
+          }
+        })
+        .catch(error => {
+             this.showSnackbar('Error recuperando documentosPathListByCod ' + error, 'red'); 
+
+        });
     },
 
     async denuncianteCreate() {
@@ -995,7 +1110,7 @@ export default {
       this.denPerDnte.orden = parseInt(this.denPerDnte.orden)==1 ? parseInt(this.denPerDnte.orden) : parseInt(this.denunciado.orden)  + 1;
       this.denPerDnte.grados_sigla = 'CIVIL';
       this.denPerDnte.genero_sexo_sigla=  this.denPerDnte.genero_sexo_sigla ? this.denPerDnte.genero_sexo_sigla:  this.denPerDnte.genero_sexo;
-
+      this.denPerDnte.sigla = 'INTERNET';
       this.denunciado.direccion =    this.denunciado.ubic_donde ;
       this.denPerDnte.estado = 'ACTIVO';
       this.denPerDnte.transaccion = 'ACTIVAR';
@@ -1027,24 +1142,6 @@ export default {
           console.log('Log Error creando Denunciante: ', error);
         })
     },
-
-    async documentosPathListByCod() {
-         await DocumentosPath.documentosPathListByCod('C-002-10-24') //  this.denPerDnte.id
-        .then((response) => {
-          console.log("documentosPathListByCod  : ", response.data, response.status);
-          if (response.status === 200) {
-            this.docsPath = response.data;
-            
-          } else {
-            this.showSnackbar('Error recuperando documentosPathListByCod ' + response, 'red');
-          }
-        })
-        .catch(error => {
-             this.showSnackbar('Error recuperando documentosPathListByCod ' + error, 'red'); 
-
-        });
-    },
-
     async documentosPathCreate() {
       this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
       this.documentosPath.denunciante_id = this.denPerDnte.id;
@@ -1068,7 +1165,7 @@ export default {
            
           } else {
 
-            console.log("documentosPathCreate  : ", response.status, "error:   : ", response.response.request.response);
+            console.log("documentosPathCreate error : ", response.status, "error:   : ", response.response.request.response);
             this.showSnackbar('Error creando documentosPathCreate: ' + response.response.request.response, 'red');
             toast.info('Error creando documentosPath: ' + 'Revise logs con el Administrador del sistema', {
               autoClose: 5000,
@@ -1096,31 +1193,54 @@ export default {
       this.denunciado.estado = 'ACTIVO';
       this.denunciado.transaccion = 'ACTIVAR';
       this.denunciado.usu_cre = this.username;
+      this.denunciadosArray =   this.denunciadosArray.length==0 ?     [{ ...this.denunciado }]: this.denunciadosArray;
+     
+      await this.denunciadosArray.forEach((dndo, index) => {
+          // Renombrar el archivo
+          if (dndo !== undefined){
+            dndo.id = this.denPerDnte.id;
+            dndo.cod_denuncia = this.denPerDnte.cod_denuncia;
+            dndo.tipo_personas = 'DENUNCIADO';
+            dndo.orden = index + 1 ; //parseInt(dndo.orden)==1 ? parseInt(dndo.orden) : parseInt(this.dndo.orden)  + 1;
+            dndo.direccion = 'N/A';
+            
+            
+            //dndo.tipo_personas = 'DENUNCIANTE';
+            //dndo.orden = parseInt(dndo.orden)==1 ? parseInt(dndo.orden) : parseInt(this.denunciado.orden)  + 1;
+            //dndo.grados_sigla = 'CIVIL';
+            //dndo.genero_sexo_sigla=  dndo.genero_sexo_sigla ? dndo.genero_sexo_sigla:  dndo.genero_sexo;
+
+           // dndo.direccion =    this.denPerDnte.ubic_donde ;
+            dndo.estado = 'ACTIVO';
+            dndo.transaccion = 'ACTIVAR';
+            dndo.usu_cre = this.username;
   
-      await Denunciado.denunciadoCreate(this.denunciado)
-        .then((response) => {
-          if (response.status === 201) {
+            
+            
+              Denunciado.denunciadoCreate(dndo)
+                  .then((response) => {
+                    if (response.status === 201) {
+                 
+                      console.log("DenunciadoCreate  : ", response.status, response);
+                      this.showSnackbar('Denunciado creado correctamente!', 'green')
+                      // this.close()
+                    } else {
 
-            //this.denPerDnte.u_rol_id = response.data.id;
-            //this.denunciado.id = response.data.id;
-            console.log("DenunciadoCreate  : ", response.status, response);
-          this.showSnackbar('Denunciado creado correctamente!', 'green')
-            // this.close()
-          } else {
+                      console.log("DenunciadoCreate  error: ", response.status, "error:   : ", response.response.request.response);
+                      this.showSnackbar('Error creando DenunciadoCreate: ' + response.response.request.response, 'red');
+                      toast.info('Error creando Denunciado: ' + 'Revise logs con el Administrador del sistema', {
+                        autoClose: 5000,
+                        position: toast.POSITION.TOP_RIGHT,
 
-            console.log("DenunciadoCreate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error creando DenunciadoCreate: ' + response.response.request.response, 'red');
-            toast.info('Error creando Denunciado: ' + 'Revise logs con el Administrador del sistema', {
-              autoClose: 5000,
-              position: toast.POSITION.TOP_RIGHT,
-
-            });
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    this.showSnackbar('Log Error creando Denunciado: ' + error, 'red');
+                    console.log('Log Error creando Denunciado: ', error);
+                  })
           }
-        })
-        .catch(error => {
-          this.showSnackbar('Log Error creando Denunciado: ' + error, 'red');
-          console.log('Log Error creando Denunciado: ', error);
-        })
+      })
     },
 
     async denunciaSave() {
@@ -1135,6 +1255,8 @@ export default {
           return false;
         }
 
+        this.validateCaptcha();
+
         this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
         console.log('denPerDnte 2 : ',this.denPerDnte);
 
@@ -1148,7 +1270,7 @@ export default {
        
 
         } else {  // Add new person
-          var dateParts = this.denPerDnte.fec_registro_hecho.split("/"); //"2024-05-17";// 
+          var dateParts = "2024-05-17".split("/");  //  this.denPerDnte.fec_registro_hecho.split("/"); //// 
           this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
 
           this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? this.denPerDnte.reserva_identidad_si:  this.denPerDnte.reserva_identidad_no
@@ -1174,16 +1296,15 @@ export default {
                 this.denunciadoCreate();
                 this.enviarArchivos() ;
 
-                console.log("denunciaCreate  : ", response.status, response);
-                this.showSnackbar('denuncia creada correctamente!', 'green')
-
+                console.log("denunciaCreate  correctamente: ", response.status, response);
+                
+                this.showSnackbar('Denuncia creada correctamente!', 'green');
                 toast.success('denuncia creada correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // Add your custom class name here
 
                 });
-               // this.close()
+
               } else {
 
                 console.log("denuncia  : ", response.status, "error:   : ", response.response.request.response);
@@ -1196,8 +1317,8 @@ export default {
               }
             })
             .catch(error => {
-              this.showSnackbar('Log Error creando Usuario: ' + error, 'red');
-              console.log('Log Error creando Usuario: ', error);
+              this.showSnackbar('Log Error creando denuncia: ' + error, 'red');
+              console.log('Log Error creando denuncia: ', error);
             });
 
           // this.showSnackbar('denunciadoCreate creado correctamente!', 'green')
@@ -1207,12 +1328,12 @@ export default {
         }
 
       } catch (error) {
-        this.showSnackbar('Error creating Usuario: ' + error, 'red');
+        this.showSnackbar('Error creando denuncia: ' + error, 'red');
+        console.log('Log Error creando denuncia 2: ', error);
       }
 
 
     },
-
 
 
     validateForm() {
@@ -1231,12 +1352,13 @@ export default {
       else delete this.validationErrors.departamento;
 
       
-      
+     if ( this.denunciadosArray.length==0 ){
       if (!this.denunciado.nombres || !this.denunciado.apellido_pat || !this.denunciado.apellido_mat) this.validationErrors.nombres = { value: true };
       else delete this.validationErrors.nombres;
       
       if (!this.denunciado.grado ||  !this.denunciado.puesto_cargo_funcion ||   !this.denunciado.unidad_policial_desc ) this.validationErrors.grado = { value: true };
       else delete this.validationErrors.grado;
+     }
 
       if (!this.denPerDnte.lugar_hecho ||  !this.denPerDnte.departamento ||   !this.denPerDnte.municipio ) this.validationErrors.lugar_hecho = { value: true };
       else delete this.validationErrors.lugar_hecho;
@@ -1294,10 +1416,15 @@ export default {
       console.log("sexoOptions  : ", this.sexoOptions);
       this.denPerDnte.genero_sexo_sigla = sexo.sexo_sigla;
 
-    },
+    }, 
+    onSexoChangeDenunciado() {
+      // Encuentra el sexo seleccionado por su descrip
+      const sexo = this.sexoOptions.find(c => c.sexo_sigla === this.denunciado.genero_sexo);
+      // Actualiza sexo según el  seleccionado
+      console.log("sexoOptions  : ", this.sexoOptions);
+      this.denunciado.genero_sexo_sigla = sexo.sexo_sigla;
 
- 
-  
+    }, 
 
     closeDelete() {
       this.dialogDelete = false
@@ -1315,17 +1442,12 @@ export default {
       })
     },
 
-   
-
-   
-
     resetForm() {
       this.denPerDnte = Object.assign({}, this.defaultItem)
       this.editedIndex = -1
       this.dialog = false
       //this.editingUserId = null;
     },
-
 
 
     showSnackbar(message, color) {
@@ -1370,7 +1492,6 @@ export default {
       this.rawDate = inputValue;
       console.log("inputValue2:", inputValue);
     },
-
  
     // Formato de la fecha
     // return this.selectedDate ? this.selectedDate.toISOString() : ''
@@ -1384,7 +1505,7 @@ export default {
     formatDate(inputValue) {
         inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
       // Ejemplo: formato DD/MM/AAAA
-      console.log("inputValue:", inputValue);
+     // console.log("formatDate:", inputValue);
       
       if (inputValue.length == 2) {
         inputValue = `${inputValue.slice(0, 2)}/`;
@@ -1401,17 +1522,16 @@ export default {
 
       // Actualiza rawDate con la fecha formateada
       // this.rawDate = inputValue;
-      console.log("inputValue2:", inputValue);
+     // console.log("formatDate:", inputValue);
 
       return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
     },
 
-      handleInputHour(event) {  //  @input="handleInputDate"
+    handleInputHour(event) {  //  @input="handleInputDate"
       // Limitar la entrada a números y el separador de fecha
       this.denPerDnte.hora_registro_hecho = this.formatHour(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
       console.log("handleInputHour hora del hecho:", this.denPerDnte.hora_registro_hecho);  ///[^0-9]/g
     },
-
      // Función para formatear la fecha.       // Ejemplo: formato hh:mm
      formatHour(inputValue) {
      inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
@@ -1435,8 +1555,7 @@ export default {
 
       return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
     },
-
-       eliminarUltimoCaracterNoNumerico(str) {
+    eliminarUltimoCaracterNoNumerico(str) {
       // Verificamos si el string no está vacío
       if (str.length === 0) {
         return str; // Devuelve el string sin cambios si está vacío
@@ -1467,7 +1586,6 @@ export default {
         this.userInput = ''; // Limpiar entrada
       }
     },
-
     async onSubmit() {
       if (this.$refs.form.validate() && this.isCaptchaVerified) {
         // Aquí puedes manejar el registro, como enviar los datos a una API
@@ -1484,9 +1602,6 @@ export default {
         alert('Por favor completa todos los campos y verifica el CAPTCHA');
       }
     },
-
-
-
 
   },
 
@@ -1533,28 +1648,45 @@ export default {
   },
 
 
-
-  /*  Guardando en un archivo:
-  Utilizando Node.js y el módulo fs:
-  JavaScript
-  const fs = require('fs');
-  
-  fs.writeFile('formulario.json', JSON.stringify(formulario, null, 2), (err) => {
-    if (err) throw err;
-    console.log('El objeto se ha guardado en formulario.json');
-  }); */
-
 }
 </script>
 
 
 <style scoped>
+
+
+table {/* ojo no borrar estilos para la tabla html */
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
+
+button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: red; /* fin  ojo no borrar estilos para la tabla html */
+}
+
+
+
+
 .custom-file-upload {
   border: 1px solid #ccc;
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
   width: 100%;
+
 }
 
 .hiddenFileInput>input {
@@ -1563,20 +1695,6 @@ export default {
 
   cursor: pointer;
 }
-
-.hiddenFileInput {
-  border: 1px solid #ccc;
-  width: 100px;
-  height: 100px;
-  display: inline-block;
-  overflow: hidden;
-
-  /*for the background, optional*/
-  background: center center no-repeat;
-  background-size: 75% 75%;
-  background-image: url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBoZWlnaHQ9IjUxMnB4IiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9Ii01MyAxIDUxMSA1MTEuOTk5MDYiIHdpZHRoPSI1MTJweCI+CjxnIGlkPSJzdXJmYWNlMSI+CjxwYXRoIGQ9Ik0gMjc2LjQxMDE1NiAzLjk1NzAzMSBDIDI3NC4wNjI1IDEuNDg0Mzc1IDI3MC44NDM3NSAwIDI2Ny41MDc4MTIgMCBMIDY3Ljc3NzM0NCAwIEMgMzAuOTIxODc1IDAgMC41IDMwLjMwMDc4MSAwLjUgNjcuMTUyMzQ0IEwgMC41IDQ0NC44NDM3NSBDIDAuNSA0ODEuNjk5MjE5IDMwLjkyMTg3NSA1MTIgNjcuNzc3MzQ0IDUxMiBMIDMzOC44NjMyODEgNTEyIEMgMzc1LjcxODc1IDUxMiA0MDYuMTQwNjI1IDQ4MS42OTkyMTkgNDA2LjE0MDYyNSA0NDQuODQzNzUgTCA0MDYuMTQwNjI1IDE0NC45NDE0MDYgQyA0MDYuMTQwNjI1IDE0MS43MjY1NjIgNDA0LjY1NjI1IDEzOC42MzY3MTkgNDAyLjU1NDY4OCAxMzYuMjg1MTU2IFogTSAyNzkuOTk2MDk0IDQzLjY1NjI1IEwgMzY0LjQ2NDg0NCAxMzIuMzI4MTI1IEwgMzA5LjU1NDY4OCAxMzIuMzI4MTI1IEMgMjkzLjIzMDQ2OSAxMzIuMzI4MTI1IDI3OS45OTYwOTQgMTE5LjIxODc1IDI3OS45OTYwOTQgMTAyLjg5NDUzMSBaIE0gMzM4Ljg2MzI4MSA0ODcuMjY1NjI1IEwgNjcuNzc3MzQ0IDQ4Ny4yNjU2MjUgQyA0NC42NTIzNDQgNDg3LjI2NTYyNSAyNS4yMzQzNzUgNDY4LjA5NzY1NiAyNS4yMzQzNzUgNDQ0Ljg0Mzc1IEwgMjUuMjM0Mzc1IDY3LjE1MjM0NCBDIDI1LjIzNDM3NSA0NC4wMjczNDQgNDQuNTI3MzQ0IDI0LjczNDM3NSA2Ny43NzczNDQgMjQuNzM0Mzc1IEwgMjU1LjI2MTcxOSAyNC43MzQzNzUgTCAyNTUuMjYxNzE5IDEwMi44OTQ1MzEgQyAyNTUuMjYxNzE5IDEzMi45NDUzMTIgMjc5LjUwMzkwNiAxNTcuMDYyNSAzMDkuNTU0Njg4IDE1Ny4wNjI1IEwgMzgxLjQwNjI1IDE1Ny4wNjI1IEwgMzgxLjQwNjI1IDQ0NC44NDM3NSBDIDM4MS40MDYyNSA0NjguMDk3NjU2IDM2Mi4xMTMyODEgNDg3LjI2NTYyNSAzMzguODYzMjgxIDQ4Ny4yNjU2MjUgWiBNIDMzOC44NjMyODEgNDg3LjI2NTYyNSAiIHN0eWxlPSIgZmlsbC1ydWxlOm5vbnplcm87ZmlsbC1vcGFjaXR5OjE7IiBzdHJva2U9IiMwMDAwMDAiIGZpbGw9IiMwMDAwMDAiLz4KPHBhdGggZD0iTSAzMDUuMTAxNTYyIDQwMS45MzM1OTQgTCAxMDEuNTM5MDYyIDQwMS45MzM1OTQgQyA5NC43MzgyODEgNDAxLjkzMzU5NCA4OS4xNzE4NzUgNDA3LjQ5NjA5NCA4OS4xNzE4NzUgNDE0LjMwMDc4MSBDIDg5LjE3MTg3NSA0MjEuMTAxNTYyIDk0LjczODI4MSA0MjYuNjY3OTY5IDEwMS41MzkwNjIgNDI2LjY2Nzk2OSBMIDMwNS4yMjY1NjIgNDI2LjY2Nzk2OSBDIDMxMi4wMjczNDQgNDI2LjY2Nzk2OSAzMTcuNTkzNzUgNDIxLjEwMTU2MiAzMTcuNTkzNzUgNDE0LjMwMDc4MSBDIDMxNy41OTM3NSA0MDcuNDk2MDk0IDMxMi4wMjczNDQgNDAxLjkzMzU5NCAzMDUuMTAxNTYyIDQwMS45MzM1OTQgWiBNIDMwNS4xMDE1NjIgNDAxLjkzMzU5NCAiIHN0eWxlPSIgZmlsbC1ydWxlOm5vbnplcm87ZmlsbC1vcGFjaXR5OjE7IiBzdHJva2U9IiMwMDAwMDAiIGZpbGw9IiMwMDAwMDAiLz4KPHBhdGggZD0iTSAxNDAgMjY4Ljg2MzI4MSBMIDE5MC45NTMxMjUgMjE0LjA3NDIxOSBMIDE5MC45NTMxMjUgMzQ5LjEyNSBDIDE5MC45NTMxMjUgMzU1LjkyNTc4MSAxOTYuNTE5NTMxIDM2MS40OTIxODggMjAzLjMyMDMxMiAzNjEuNDkyMTg4IEMgMjEwLjEyNSAzNjEuNDkyMTg4IDIxNS42ODc1IDM1NS45MjU3ODEgMjE1LjY4NzUgMzQ5LjEyNSBMIDIxNS42ODc1IDIxNC4wNzQyMTkgTCAyNjYuNjQwNjI1IDI2OC44NjMyODEgQyAyNjkuMTEzMjgxIDI3MS40NTcwMzEgMjcyLjMzMjAzMSAyNzIuODIwMzEyIDI3NS42Njc5NjkgMjcyLjgyMDMxMiBDIDI3OC42MzY3MTkgMjcyLjgyMDMxMiAyODEuNzMwNDY5IDI3MS43MDcwMzEgMjg0LjA3ODEyNSAyNjkuNDgwNDY5IEMgMjg5LjAyNzM0NCAyNjQuNzgxMjUgMjg5LjM5ODQzOCAyNTYuOTg4MjgxIDI4NC42OTkyMTkgMjUyLjA0Mjk2OSBMIDIxMi4yMjY1NjIgMTc0LjI1MzkwNiBDIDIwOS44NzUgMTcxLjc4MTI1IDIwNi42NjAxNTYgMTcwLjI5Njg3NSAyMDMuMTk5MjE5IDE3MC4yOTY4NzUgQyAxOTkuNzM0Mzc1IDE3MC4yOTY4NzUgMTk2LjUxOTUzMSAxNzEuNzgxMjUgMTk0LjE3MTg3NSAxNzQuMjUzOTA2IEwgMTIxLjY5OTIxOSAyNTIuMDQyOTY5IEMgMTE3IDI1Ni45ODgyODEgMTE3LjM3MTA5NCAyNjQuOTAyMzQ0IDEyMi4zMTY0MDYgMjY5LjQ4MDQ2OSBDIDEyNy41MTE3MTkgMjc0LjE3OTY4OCAxMzUuMzAwNzgxIDI3My44MDg1OTQgMTQwIDI2OC44NjMyODEgWiBNIDE0MCAyNjguODYzMjgxICIgc3R5bGU9IiBmaWxsLXJ1bGU6bm9uemVybztmaWxsLW9wYWNpdHk6MTsiIHN0cm9rZT0iIzAwMDAwMCIgZmlsbD0iIzAwMDAwMCIvPgo8L2c+Cjwvc3ZnPgo=)
-}
-
 
 .input-row {
   margin-bottom: 10px;
