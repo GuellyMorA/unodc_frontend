@@ -1365,7 +1365,7 @@ export default {
 
       if (!this.denPerDnte.fec_registro_hecho ||  !this.denPerDnte.hora_registro_hecho ||   !this.denPerDnte.detalle_hecho ) this.validationErrors.fec_registro_hecho = { value: true };
       else delete this.validationErrors.fec_registro_hecho;
-/*
+
       if ((this.denPerDnte.reserva_identidad_si &&  this.denPerDnte.reserva_identidad_no) || ( this.denPerDnte.reserva_identidad_si==false && this.denPerDnte.reserva_identidad_no==false) ) this.validationErrors.reserva_identidad_si = { value: true };
       else delete this.validationErrors.reserva_identidad_si;
 
@@ -1374,7 +1374,7 @@ export default {
 
       if ( !this.articulo_166_cp)  this.validationErrors.articulo_166_cp = { value: true };
       else delete this.validationErrors.articulo_166_cp;
-*/
+
       return !Object.keys(this.validationErrors).length;
     },
 

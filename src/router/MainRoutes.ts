@@ -16,15 +16,26 @@ const MainRoutes = {
             name: 'AdministracionAdmUsuario',
             path: '/administracion/admUsuario',
             requiresAuth: true,
+            component: () => import('@/views/administracion/Index.vue')
+        },
+        {
+            name: 'AdministracionAdmUsuario2',
+            path: '/administracion/admUsuario2',
+            requiresAuth: true,
             component: () => import('@/views/administracion/Usuario.vue')
         },
         {
             name: 'DenunciaFormDenuncia',
-            path: '/denuncia/FormDenuncia',
-            requiresAuth: true,
+            path: '/denuncia/formDenuncia',
+            //requiresAuth: true,
             component: () => import('@/views/denuncia/FormDenuncia.vue')
         },
-
+        {
+            name: 'seguimiento',
+            path: '/denuncia/seguimiento',
+            requiresAuth: true,
+            component: () => import('@/views/denuncia/Index.vue'),
+        },
   
         {
             name: 'ViolenciaJerarquica-Dashboard',

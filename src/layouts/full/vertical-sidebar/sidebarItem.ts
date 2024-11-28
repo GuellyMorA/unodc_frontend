@@ -43,7 +43,7 @@ const sidebarItem: menu[] = [
     title: "Form. Denuncias",
     icon: CircleDotIcon,
     BgColor: 'primary',
-    to: "/denuncia/FormDenuncia",
+    to: "/denuncia/formDenuncia",
   },
   {
     title: "Seguimiento",
@@ -55,7 +55,7 @@ const sidebarItem: menu[] = [
     title: "Reporte",
     icon: BoxMultiple1Icon,
     BgColor: 'primary',
-    to: "/reportes/reporte",
+    to: "/administracion/admUsuario2",
   },
 /*
   {
