@@ -35,27 +35,30 @@ const sidebarItem: menu[] = [
   //
   {
     title: "Administracion",
-    icon: CircleDotIcon,
+    icon: UserPlusIcon,
     BgColor: 'primary',
-    to: "/administracion/admUsuario",
+    to: "/administracion/index",
   },
-  {
-    title: "Form. Denuncias",
-    icon: CircleDotIcon,
-    BgColor: 'primary',
-    to: "/denuncia/formDenuncia",
-  },
+
   {
     title: "Seguimiento",
     icon: AlertCircleIcon,
     BgColor: 'primary',
     to: "/denuncia/seguimiento",    
   },
+
+
+  {
+    title: "Form. Denuncias",
+    icon: BoxMultiple1Icon,
+    BgColor: 'primary',
+    to: "/denuncia/formDenuncia",
+  },  
   {
     title: "Reporte",
     icon: BoxMultiple1Icon,
     BgColor: 'primary',
-    to: "/administracion/admUsuario2",
+    to: "/reportes/reportesDash",
   },
 /*
   {

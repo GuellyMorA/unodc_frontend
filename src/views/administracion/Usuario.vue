@@ -12,7 +12,7 @@
 
     <!-- Data Table --> <!-- v-model:page="page" -->
     <v-data-table :headers="headers" :items="filteredItems"
-      :sort-by="[{ key: 'id', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1"
+      :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1"
       :search="search" :items-per-page="itemsPerPage" rows-per-page-text="Filas por página"
       no-data-text="No existen registros." no-results-text="Sin resultados" page-text="de"
       items-per-page-text="Registros por pagina ">
@@ -136,7 +136,7 @@
 
                   <v-select v-model="editedItemUsuario.rol" :items="rolOptions" item-title="rol" item-value="roles_sigla"
                     :readonly="lockField" label="rol del usuario" @update:modelValue="onRolChange"
-                    :rules="[v => !!v || 'estado es requerido']"></v-select>
+                    :rules="[v => !!v || 'Rol es requerido']"></v-select>
 
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -227,7 +227,7 @@ export default {
         title: 'Num',
         align: 'start',
         sortable: false,
-        key: 'id',
+        key: 'fila',
         class: 'background'
       },
       { title: 'CI', key: 'ci_y_complemento', class: 'success--text title' },
@@ -257,6 +257,7 @@ export default {
     },
     // ... propiedades del formulario 
     editedItemUsuario: {
+      fila: '',
       id: null,
       nombres: '',
       apellido_pat: '',
@@ -290,6 +291,7 @@ export default {
     },
 
     defaultItemUsu: {
+      fila: '',
       id: null,
       nombres: '',
       apellido_pat: '',

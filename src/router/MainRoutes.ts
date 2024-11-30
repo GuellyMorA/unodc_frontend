@@ -13,30 +13,52 @@ const MainRoutes = {
             component: () => import('@/views/dashboard/index.vue')
         },
         {
-            name: 'AdministracionAdmUsuario',
-            path: '/administracion/admUsuario',
+            name: 'AdmUsuario',
+            path: '/administracion/index',
             requiresAuth: true,
             component: () => import('@/views/administracion/Index.vue')
         },
         {
-            name: 'AdministracionAdmUsuario2',
-            path: '/administracion/admUsuario2',
+            name: 'AdmUsuarioForm',
+            path: '/administracion/admUsuarioForm',
             requiresAuth: true,
             component: () => import('@/views/administracion/Usuario.vue')
         },
         {
-            name: 'DenunciaFormDenuncia',
+            name: 'FormDenuncia',
             path: '/denuncia/formDenuncia',
             //requiresAuth: true,
             component: () => import('@/views/denuncia/FormDenuncia.vue')
         },
         {
-            name: 'seguimiento',
+            name: 'Seguimiento',
             path: '/denuncia/seguimiento',
             requiresAuth: true,
             component: () => import('@/views/denuncia/Index.vue'),
         },
   
+        {
+            name: 'AdmDenunciaForm',
+            path: '/denuncia/admDenunciaForm',
+            requiresAuth: true,
+            component: () => import('@/views/denuncia/Denuncia.vue')
+        },
+        {
+            name: 'Reportes',
+            path: '/reportes/reportesDash',
+            requiresAuth: true,
+            component: () => import('@/views/reportes/Index.vue')
+        },
+        {
+            name: 'ReportesEst',
+            path: '/reportes/estadisticas',
+            requiresAuth: true,
+            component: () => import('@/views/reportes/Estadisticas.vue')
+        },
+
+
+
+
         {
             name: 'ViolenciaJerarquica-Dashboard',
             path: '/violencia/jerarquica/dashboard',

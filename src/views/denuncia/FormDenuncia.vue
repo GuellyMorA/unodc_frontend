@@ -231,7 +231,7 @@
                 </v-col>
           </v-row>
 
-          <v-row>
+      <!--    <v-row>
             <v-col class="p-0 py-0 px-0">         
 
               <v-checkbox  value="false"  v-model="reserva_datos" 
@@ -244,7 +244,7 @@
 
               </v-col>      
           </v-row>
-       
+        -->
 
         </v-container>
       </v-card-text>
@@ -461,7 +461,7 @@ export default {
       reserva_identidad:'',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
-      id_dnte: null,
+      dnte_id: null,
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
@@ -501,7 +501,7 @@ export default {
       reserva_identidad:'',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
-      id_dnte: null,
+      dnte_id: null,
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
@@ -877,7 +877,7 @@ export default {
 
             this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
             // this.documentosPath.cod_denuncia = this.denPerDnte.cod_denuncia;
-            this.documentosPath.denunciante_id = this.denPerDnte.id_dnte;
+            this.documentosPath.denunciante_id = this.denPerDnte.dnte_id;
             this.documentosPath.orden = index + 1; // parseInt(this.documentosPath.orden) == 1 ? parseInt(this.documentosPath.orden) : parseInt(this.denunciado.orden) + 1;
             this.documentosPath.origen ='DENUNCIANTE'; // this.nameFile ;// +'.'+ file[index].type; //  Date.now() +'-'+ 'SD' + file[index].name; // ${Date.now()}-SD-s
             //file[index].name= this.documentosPath.origen;
@@ -907,7 +907,7 @@ export default {
 
                       console.log("denuncianteCreate  : ", response.status, "error:   : ", response.response.request.response);
                       this.showSnackbar('Error creando denuncianteCreate: ' + response.response.request.response, 'red');
-                      toast.info('Error creando Denunciante: ' + 'Revise logs con el Administrador del sistema', {
+                      toast.info('Error creando archivos: ' + 'Revise logs con el Administrador del sistema', {
                         autoClose: 5000,
                         position: toast.POSITION.TOP_RIGHT,
 

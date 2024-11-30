@@ -4,11 +4,18 @@ import http from 'axios';
 
 class DenunciaService {
 
+  denunciaPersonasGetByNivelGeo(data) {
+    return http.get(`/denunciaPersonasGetByNivelGeo/${data}`,).catch((error) => {
+      return error;
+    });
+  }
+
   denunciaPersonasGetByCod(data) {
     return http.get(`/denunciaPersonasGetByCod/${data}`,).catch((error) => {
       return error;
     });
   }
+
 
   denunciaPersonasList() {
     return http.get(`/denunciaPersonasList`,).catch((error) => {

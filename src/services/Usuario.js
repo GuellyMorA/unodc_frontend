@@ -3,7 +3,24 @@ import http2 from 'axios';
 const apiUrl = import.meta.env;
 
 class UsuarioService {
+  
+  
+  usuarioListActivos() {
+    return http2({
+     method:'get',
+     url: `/auth/usuarioListActivos`,
+     baseURL: apiUrl.VITE_API_URL_AUTH,
+     headers: {
+       "Content-Type": "application/json",
+       'Authorization': apiUrl.VITE_API_URL_TOKEN
+     },
+   })
+   .catch((error) => {
+       return error;
+   });
 
+ }
+  
   usuarioList() {
      return http2({
       method:'get',

@@ -16,7 +16,7 @@ const router = useRouter();
                     <v-row>
                         <v-col cols="12" sm="12">
                             <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Administracion  del Sistema</div>                            
-                            <v-btn rounded="pill" to="/administracion/admUsuario2" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
+                            <v-btn rounded="pill" to="/administracion/admUsuarioForm" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
                         </v-col>
                     </v-row>
                 </v-card-item>

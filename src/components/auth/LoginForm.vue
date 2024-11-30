@@ -20,18 +20,20 @@ const submit = async (event: any) => {
     // return true;
     const respuesta = await Auth.login(form.value).then((res) => {
         if (res.status === 200) {
-            console.log('Auth.login: ', res.data);
+           
             if (res.data.codigo_sie) {
                 //localStorage.setItem('user', JSON.stringify(res.data));
                 localStorage.setItem('username', form.value.user_login);
-
+                console.log('**1 Auth.login: ', res.data);     
                 router.push('/');
                 return res;
             } else {
               //  localStorage.setItem('username', JSON.stringify({codigo_sie: 80730460, token: res.data.token}));
               localStorage.setItem('username',form.value.user_login ); 
-              localStorage.setItem('userJson',JSON.stringify(res.data ));
-
+              //localStorage.setItem('userJson',JSON.stringify(res.data ));
+              localStorage.setItem('rol_desc',res.data.rol_desc); 
+              localStorage.setItem('depto_id',res.data.depto_id); 
+              console.log('**2 Auth.login: ', res.data.depto_id);
                 router.push('/');
                 return res;                
            
