@@ -52,7 +52,7 @@ const sidebarItem: menu[] = [
     title: "Form. Denuncias",
     icon: BoxMultiple1Icon,
     BgColor: 'primary',
-    to: "/denuncia/formDenuncia",
+    to: "/denuncia/denunciaForm",
   },  
   {
     title: "Reporte",

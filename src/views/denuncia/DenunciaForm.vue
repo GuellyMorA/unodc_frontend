@@ -1466,7 +1466,7 @@ export default {
       }));
       /*this.breadcrumbs=   [
     { text: 'Inicio', disabled: false, href: '/main' },
-    { text: 'Formulario de Denuncia', disabled: false, href: '/denuncia/FormDenuncia' }
+    { text: 'Formulario de Denuncia', disabled: false, href: '/denuncia/DenunciaForm' }
   ];*/
 
       //this.breadcrumbs = this.breadcrumbs[1];
