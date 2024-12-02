@@ -459,7 +459,7 @@ export default {
       orden: '',
 
       tipo_denuncia: '',
-      deriv_id: '',
+      seg_id: '',
       observacion: '',
       fec_registro: '',
       apellido_pat_gestor: '',
@@ -609,7 +609,6 @@ export default {
       descripcion: '',
       justificacion_legal: '',
       fec_registro: '',
-      file_binary: '',
       estado: '',
       transaccion: '',
       usu_cre: null,

@@ -607,7 +607,6 @@ export default {
       descripcion: '',
       justificacion_legal: '',
       fec_registro: '',
-      file_binary: '',
       estado: '',
       transaccion: '',
       usu_cre: null,
@@ -702,6 +701,7 @@ export default {
      this.multipleFiles = Array.from(event.target.files);
       console.log('this.multipleFiles :', this.multipleFiles);
     },
+    /*
     async uploadSingleFileXXX  () {
       if (!this.singleFile) {
         alert("Please select a file first.");
@@ -744,6 +744,7 @@ export default {
         console.error("Error uploading multiple files:", error.response?.data || error.message);
       }
     },
+    */
    // {{ id: number; name: string; }} file1
 
     downloadFile1(file1) {
@@ -884,7 +885,7 @@ export default {
             this.documentosPath.documento_path = 'uploads/evidencia_denuncias/' + this.nameFile.name ;
 
             this.documentosPath.fec_registro = this.denPerDnte.fec_registro_hecho; //new Date();    
-            this.documentosPath.descripcion = 'SE ADJUNTA ARCHIVOS DE EVIDENCIA POR EL DENUNCIANTE DESDE UNA PAGINA WEB PUBLICA';
+            this.documentosPath.descripcion = this.nameFile.name; //'SE ADJUNTA ARCHIVOS DE EVIDENCIA POR EL DENUNCIANTE DESDE UNA PAGINA WEB PUBLICA';
             this.documentosPath.justificacion_legal = 'TRANSPARENCIA INSTITUCIONAL';
             this.documentosPath.estado = 'ACTIVO';
             this.documentosPath.transaccion = 'ACTIVAR';
@@ -892,7 +893,6 @@ export default {
 
             //  formData.append("file", file);// formData.append(`files[${index}].name`, file);
             // formData.append(`files[${index}]`, file);// formData.append(`file_${index}`, file);//formData.append('file', file);
-            // formData.append(`file_binary_${i}`, this.files[i]); // Suponiendo que files[index] es un array de archivos
           
            DocumentosPath.documentosPathCreate(this.documentosPath)
                 .then((response) => {
@@ -1270,7 +1270,7 @@ export default {
        
 
         } else {  // Add new person
-          var dateParts = "2024-05-17".split("/");  //  this.denPerDnte.fec_registro_hecho.split("/"); //// 
+          var dateParts =   this.denPerDnte.fec_registro_hecho.split("/"); //// "2024-05-17".split("/");  //
           this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
 
           this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? this.denPerDnte.reserva_identidad_si:  this.denPerDnte.reserva_identidad_no
@@ -1369,12 +1369,12 @@ export default {
       if ((this.denPerDnte.reserva_identidad_si &&  this.denPerDnte.reserva_identidad_no) || ( this.denPerDnte.reserva_identidad_si==false && this.denPerDnte.reserva_identidad_no==false) ) this.validationErrors.reserva_identidad_si = { value: true };
       else delete this.validationErrors.reserva_identidad_si;
 
-      if (!this.reserva_datos )  this.validationErrors.reserva_datos = { value: true };
+    /*  if (!this.reserva_datos )  this.validationErrors.reserva_datos = { value: true };
       else delete this.validationErrors.reserva_datos;
 
       if ( !this.articulo_166_cp)  this.validationErrors.articulo_166_cp = { value: true };
       else delete this.validationErrors.articulo_166_cp;
-
+*/
       return !Object.keys(this.validationErrors).length;
     },
 
