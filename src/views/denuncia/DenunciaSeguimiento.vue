@@ -32,7 +32,7 @@
     <template v-slot:top>
       <v-toolbar flat>
 
-        <v-toolbar-title class="text-center">Denuncias registradas en sistema</v-toolbar-title>
+        <v-toolbar-title class="text-center">Seguimiento de denuncias registradas en sistema</v-toolbar-title>
 
 
 
@@ -55,7 +55,7 @@
 
       <v-icon small @click="viewItem(item)"> mdi-eye</v-icon>
       <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
-      <v-icon small @click="editItem2(item)"> mdi-account-multiple-plus </v-icon>
+      <v-icon small @click="addNewSeguimiento(item)"> mdi-account-multiple-plus </v-icon>
 
     </template>
 
@@ -67,13 +67,9 @@
     </template>-->
   </v-data-table>
 
-  <!-- Add New Person Button -->
-  <v-btn class="custom-green-btn mt-4" @click="addNewPerson">
-    Adicionar Denuncia
-  </v-btn>
 
   <template>
-    <!-- view Dialog denuncia-->
+    <!--BORRAR ESTO view Dialog denuncia-->
     <v-dialog v-model="dialog" max-width="1000px">
       <v-card class="mx-auto  mt-4" max-width="700">
 
@@ -321,7 +317,7 @@
         <v-card-actions v-if="lockField2 === false">
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
-          <v-btn class="custom-green-btn" text @click=""> Guardar </v-btn>
+          <v-btn class="custom-green-btn" text @click=""> Guardar. </v-btn>
         </v-card-actions>
         <v-card-actions v-else-if="lockField === true">
           <v-spacer></v-spacer>
@@ -332,14 +328,14 @@
       </v-card>
     </v-dialog>
 
-    <!-- derivar Dialog -->
+    <!-- seguimiento Dialog -->
     <v-dialog v-model="dialog2" max-width="1000px">
       <v-card class="mx-auto  mt-4" max-width="700">
 
-        <v-card-title class="mt-4">
+        <v-card-title >
           <v-container>
 
-            <span class="text-h5"> Derivacion denuncia </span>
+            <span class="text-h5"> Actividades de seguimiento a denuncias </span>
           </v-container>
         </v-card-title>
 
@@ -351,26 +347,43 @@
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-1">
               <!--      <div class="d-flex align-center">    style="width: 400px;" -->
-              <v-text-field v-model="denPerDnte.fec_registro" :readonly="lockField2" label="Fecha seguimiento"  @input="handleInputDate"
+              <v-text-field v-model="seguimiento.fec_registro" :readonly="lockField2" label="Fecha seguimiento"  @input="handleInputDate"
                 placeholder="DD/MM/AAAA" required  :rules="[v => !!v || 'Fecha es requerida']"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="8" class="p-0 py-0 px-1">
-              <v-select v-model="denPerDnte.gestor_id" :items="gestorOptions" item-title="nombre_completo" item-value="id"
-                :readonly="lockField2" label="Gestor Seguimiento" placeholder="Personal Asignado"
-                @update:modelValue="onGestorChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
+              <v-select v-model="seguimiento.actividades_id" :items="actividadOptions" item-title="actividad" item-value="id"
+                :readonly="lockField2" label="Atividades" placeholder="Atividades realizadas"
+                @update:modelValue="onActividadChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
             </v-col>
           </v-row>
 
           <v-row class="p-0 py-4 px-0  ">
             <v-col class="p-0 py-0 px-1">
-              <v-textarea v-model="denPerDnte.observacion" :readonly="lockField2" label="Observacion a la denuncia"
+              <v-textarea v-model="seguimiento.observacion" :readonly="lockField2" label="Observacion a la denuncia"
                 :rules="[v => !!v || 'Observacion es requerida']" placeholder="Observaciones/recomendaciones"></v-textarea>
             </v-col>
           </v-row>
+          <v-row>
+            <v-col  class="p-0 py-0 px-0">     
+                <h4>Adjuntar documentación: </h4> 
+            </v-col>       
+          </v-row>  
 
+          <v-row>
+            <v-col  class="p-0 py-0 px-0"  cols="12" md="6" v-for="(fileType, index) in fileTypes" :key="index">
+          <v-file-input
+            v-model="files[index]"
+            :label="fileType.label"
+            :accept="fileType.accept"
+            :show-size="true"
+            :rules="[rules.required]"
+            multiple    @change="onMultipleFilesChange"
+          ></v-file-input>
+            </v-col>      
+          </v-row>    
         </v-card-text>
 
 
@@ -419,11 +432,12 @@ import Grado from '@/services/Grado';
 import Rol from '@/services/Rol';
 import DenunciasRol from '@/services/NivelGeografico';
 import Denunciado from '@/services/Denunciado';
-
 import { downloadFile } from '../../utils/fileDownloader';
 import DocumentosPath from '@/services/DocumentosPath';
 import Usuario from '@/services/Usuario';
 import Seguimiento from '@/services/Seguimiento';
+import Actividad from '@/services/Actividad';
+import axios from 'axios';
 
 export default {
 
@@ -432,6 +446,19 @@ export default {
     loading: true,
     isLoading: false,
     files1: [{ id: 1, name: 'archivo1.pdf' }, { id: 2, name: 'imagen.jpg' }],
+
+    files:[], 
+    fileTypes: [
+        { label: 'Cargar Fotos (JPEG/PNG)', accept: 'image/jpeg,image/png,image/bmp' },
+        { label: 'Cargar PDF', accept: 'application/pdf' },
+       // { label: 'Cargar Texto (TXT)', accept: 'text/plain' },
+      //  { label: 'Cargar Archivo de Word', accept: '.doc,.docx' },
+        //{ label: 'Cargar Archivo de Excel', accept: '.xls,.xlsx' },
+        { label: 'Cargar Archivo de Video', accept: 'video/*' },
+        { label: 'Cargar Archivo de Audio', accept:  'audio/*' },
+    ],
+    multipleFiles: [],
+   
 
 
 
@@ -443,6 +470,7 @@ export default {
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: localStorage.getItem('username'),
+    userId: localStorage.getItem('usuario_id'),
     rolDesc: localStorage.getItem('rol_desc'),
     deptoId: localStorage.getItem('depto_id'),
 
@@ -468,13 +496,13 @@ export default {
       },
       { title: 'Cod. Denuncia', key: 'cod_denuncia', class: 'success--text title' },
 
-      { title: 'Ap. Paterno', key: 'apellido_pat' },
-      { title: 'Ap. Materno', key: 'apellido_mat' },
-      { title: 'Nombres', key: 'nombres' },
+      { title: 'Ap. Paterno', key: 'apellido_pat_gestor' },
+      { title: 'Ap. Materno', key: 'apellido_mat_gestor' },
+      { title: 'Nombres', key: 'nombres_gestor' },
 
-      { title: 'Fecha', key: 'fec_registro_hecho' },
-      { title: 'Gestor Seguimiento', key: 'gestor_seguimiento' },
-      { title: 'Tipo Denuncia', key: 'tipo_denuncia' },
+      { title: 'Fecha Derivacion', key: 'fec_registro' },
+      { title: 'Actividad', key: 'actividad' },
+      { title: 'Tiempo de respuesta', key: 'tiempo_respuesta' },
       { title: 'Estado', key: 'estado' },
       { title: 'Aciones', value: 'actions', sortable: false },
     ],
@@ -486,6 +514,7 @@ export default {
     denPerDnte: {
       fila: '',
       id: null,
+      denuncia_personas_id:0,
       cod_denuncia: '',
       tipo_personas: '',
       sigla: '',
@@ -519,7 +548,7 @@ export default {
       tipo_denuncia: '',
       seg_id: '', //  seguimiento id
       gestor_id: null,  //  usuarios_id
-     
+    
       apellido_pat_gestor: '',
       apellido_mat_gestor: '',
       nombres_gestor: '',
@@ -586,8 +615,8 @@ export default {
     seguimiento: {
       fila: '',
       denuncia_personas_id: 0,
-      gestor_id: null,  //  usuarios_id
-  
+      usuarios_id: null,  
+      gestor_id:null,
       cod_denuncia: '',
       tipo_personas: '',
       sigla: '',
@@ -614,6 +643,13 @@ export default {
       nombres_gestor: '',
       gestor_seguimiento: '',
     
+      
+      actividades_id: '',
+      actividad: '',
+      actividad_sigla: '',
+      descripcion: '',
+      actividad_tipo: '',
+      tiempo_respuesta: '',
 
       estado: '',
       transaccion: '',
@@ -623,7 +659,7 @@ export default {
       fec_mod: null,
     },
     seguimientosArray: [],
-
+   
 
   
 
@@ -728,19 +764,7 @@ export default {
 
     //******************************************** */
 
-    editedItemRolUsu: {
-      id: null,
-      denuncias_id: null,
-      roles_sigla: '',
-      descripcion: null,
-      estado: '',
-      transaccion: '',
-      usu_cre: null,
-      usu_mod: null,
-      fec_mod: null,
-
-
-    },
+   
 
 
     defaultItemUsu: {
@@ -792,7 +816,7 @@ export default {
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
     gradoOptions: [], // ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
     rolOptions: [],
-    validationErrors: { nombres: { value: false } },
+    validationErrors: {},
 
     selectedDeptoId: null,    // Código del país seleccionado
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
@@ -804,14 +828,17 @@ export default {
     estadoOptions: [{ est: 'SOLICITADO', transac: 'CREAR' }, { est: 'ASIGNADO', transac: 'DERIVAR' }
       , { est: 'ACEPTADO', transac: 'ACEPTAR' }, { est: 'RECHAZADO', transac: 'RECHAZAR' }
       , { est: 'ABSUELTO', transac: 'ABSOLVER' }, { est: 'SANCIONADO', transac: 'SANCIONAR' }],
+    
     gestorOptions: [],
+    actividadOptions: [],
 
   }),
 
   mounted() {
     this.loading = true;
-    //this.username= localStorage.getItem('username');
-    this.denunciaList();
+
+    //this.userId= localStorage.getItem('userId'); 
+    this.seguimientoList( this.userId , this.deptoId  );
     this.deptoList();
     this.gradoList();
 
@@ -821,6 +848,7 @@ export default {
 
     this.rolList();
     this.gestorList();
+    this.actividadList();
     this.loading = false;
   },
 
@@ -928,7 +956,24 @@ export default {
           console.log(e);
         });
     },
+    async actividadList() {
+      Actividad.actividadList()
+        .then((response) => {
+          // console.log("response.data[0]  : ", response.data[0], response.status);
+          if (response.status === 200) {
 
+            this.actividadOptions = Object.values(response.data);
+            console.log("actividadOptions  : ", this.actividadOptions);
+          } else {
+            this.showSnackbar('Error recuperando actividad ' + response, 'red');
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Error recuperando actividad :' + error, 'red');
+
+          console.log('Error recuperando actividad :' , error);
+        });
+    },
 
 
     async deptoList() {
@@ -952,20 +997,25 @@ export default {
           console.log(e);
         });
     },
-    async denunciaList() {
-      Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId)
+    async seguimientoList(userId,depto_id)  {
+     
+      await Seguimiento.seguimientoListByCod(userId,depto_id) 
+      //Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId)
         .then((response) => {
-          console.log("denunciaPersonasGetByNivelGeo  : ", response.data, response.status);
+          console.log("seguimientoListByCod : ", response.data, response.status);
           if (response.status === 200) {
             this.people = response.data;
+         
           } else {
-            this.showSnackbar('Error recuperando Denuncia ' + response, 'red');
+            this.showSnackbar('Error recuperando seguimientoByCod ' + response, 'red');
           }
         })
-        .catch(e => {
-          console.log(e);
+        .catch(error => {
+          this.showSnackbar('Error recuperando seguimientoByCod ' + error, 'red');
+
         });
     },
+
     async denunciadoListByCod(cod_denuncia) {
       Denunciado.denunciadoListByCod(cod_denuncia)
         .then((response) => {
@@ -999,21 +1049,9 @@ export default {
         });
     },
 
-    async seguimientoGetByCod(cod_denuncia, depto_id) {
-      await Seguimiento.seguimientoGetByCod(cod_denuncia,depto_id) 
-        .then((response) => {
-          console.log("seguimientoByCod  : ", response.data, response.status);
-          if (response.status === 200) {
-            this.seguimientosArray = response.data;
-
-          } else {
-            this.showSnackbar('Error recuperando seguimientoByCod ' + response, 'red');
-          }
-        })
-        .catch(error => {
-          this.showSnackbar('Error recuperando seguimientoByCod ' + error, 'red');
-
-        });
+    onMultipleFilesChange(event) {
+     this.multipleFiles = Array.from(event.target.files);
+      console.log('this.multipleFiles :', this.multipleFiles);
     },
 
     onDepartChange() {
@@ -1043,6 +1081,14 @@ export default {
       // Actualiza las gestor_id según el depart seleccionado
       console.log("gestorOptions  : ", this.gestorOptions);
       this.denPerDnte.gestor_seguimiento = rol.nombre_completo; // rol.nombres  +'' +  rol.apellido_pat +'' + rol.apellido_mat  ;
+
+    },
+    onActividadChange() {
+      // Encuentra el depart seleccionado por su id
+      const actividad = this.actividadOptions.find(c => c.id === this.denPerDnte.actividades_id);
+      // Actualiza las actividades_id según el actividad seleccionado
+      console.log("actividadOptions  : ", this.actividadOptions);
+      this.denPerDnte.actividad = actividad.actividad; // rol.nombres  +'' +  rol.apellido_pat +'' + rol.apellido_mat  ;
 
     },
     onGradoChange() {
@@ -1084,97 +1130,23 @@ export default {
 
     validateForm() {
 
-      if (!this.denPerDnte.estado) this.validationErrors.estado = { value: true };
-      else delete this.validationErrors.estado;
+      if (!this.seguimiento.fec_registro) this.validationErrors.fec_registro = { value: true };
+      else delete this.validationErrors.fec_registro;
 
-      if (!this.denPerDnte.gestor_id) this.validationErrors.gestor_id = { value: true };
-      else delete this.validationErrors.gestor_id;
+      if (!this.seguimiento.actividades_id) this.validationErrors.actividades_id = { value: true };
+      else delete this.validationErrors.actividades_id;
 
+      if (!this.seguimiento.observacion) this.validationErrors.observacion = { value: true };
+      else delete this.validationErrors.observacion;
 
       return !Object.keys(this.validationErrors).length;
     },
 
-    denunciasRolUpdate() {
-      this.editedItemRolUsu.id = this.denPerDnte.u_rol_id === '' ? this.editedItemRolUsu.id : this.denPerDnte.u_rol_id;
-      this.editedItemRolUsu.denuncias_id = this.denPerDnte.id;
-      this.editedItemRolUsu.roles_sigla = this.denPerDnte.roles_sigla;
-      this.editedItemRolUsu.descripcion = 'Cambio de rol';
-      this.editedItemRolUsu.estado = 'ACTIVO';
-      this.editedItemRolUsu.transaccion = 'MODIFICAR';
-      this.editedItemRolUsu.usu_mod = this.username;
-      this.editedItemRolUsu.fec_mod = new Date();
 
-
-      DenunciasRol.DenunciasRolUpdate(this.editedItemRolUsu.id, JSON.stringify(this.editedItemRolUsu))
-        .then((response) => {
-          if (response.status === 200) {
-            console.log("denunciaUpdate  : ", response.status, response);
-
-            //  this.showSnackbar('Denuncia rol modificado correctamente !', 'green')
-            toast.success('Denuncia rol modificado correctamente ! ', {
-              autoClose: 3000,
-              position: toast.POSITION.TOP_RIGHT,
-              // toastClassName: 'custom-toast', // Add your custom class name here
-
-            });
-            //this.close()
-          } else {
-            console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error modificando Denuncia rol: ' + response.response.request.response, 'red');
-
-            toast.info('Error modificando Denuncia rol: ' + 'Revise logs con el Administrador del sistema', {
-              autoClose: 5000,
-              position: toast.POSITION.TOP_RIGHT,
-
-            });
-          }
-        })
-        .catch(error => {
-          this.showSnackbar('Log Error modificando Denuncia rol ' + error, 'red');
-          console.log('Log Error modificando Denuncia rol: ', error);
-        });
-
-    },
-
-
-    denunciasRolCreate() {
-      this.editedItemRolUsu.denuncias_id = this.denPerDnte.id;
-      this.editedItemRolUsu.roles_sigla = this.denPerDnte.rol;
-      this.editedItemRolUsu.descripcion = 'Asignaion de rol';
-      this.editedItemRolUsu.estado = 'ACTIVO';
-      this.editedItemRolUsu.transaccion = 'ACTIVAR';
-      this.editedItemRolUsu.usu_cre = this.username;
-
-      DenunciasRol.DenunciasRolCreate(JSON.stringify(this.editedItemRolUsu))
-        .then((response) => {
-
-          if (response.status === 201) {
-
-            this.denPerDnte.u_rol_id = response.data.id;
-            this.editedItemRolUsu.id = response.data.id;
-            console.log("DenunciasRolCreate  : ", response.status, response);
-            this.showSnackbar('Denuncia rol creado correctamente!', 'green')
-            // this.close()
-          } else {
-
-            console.log("DenunciasRolCreate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error creando denuncia Rol: ' + response.response.request.response, 'red');
-            toast.info('Error creando Denuncia rol: ' + 'Revise logs con el Administrador del sistema', {
-              autoClose: 5000,
-              position: toast.POSITION.TOP_RIGHT,
-
-            });
-          }
-        })
-        .catch(error => {
-          this.showSnackbar('Log Error creando Denuncia rol: ' + error, 'red');
-          console.log('Log Error creando Denuncia rol: ', error);
-        })
-    },
     handleInputDate(event) {  //  @input="handleInputDate"
       // Limitar la entrada a números y el separador de fecha
-      this.denPerDnte.fec_registro_hecho = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
-      console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro_hecho);  ///[^0-9]/g
+      this.seguimiento.fec_registro = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
+      //console.log("handleInputDate fecha del hecho:", this.seguimiento.fec_registro);  ///[^0-9]/g
     },
     // Función para formatear la fecha// Aplica la máscara de fecha  dd/mm/yyyy
     formatDate(inputValue) {
@@ -1219,7 +1191,7 @@ export default {
       // Si es un carácter numérico, devolvemos el string sin cambios
       return str;
     },
-    seguimientoSave() {
+    async seguimientoSave() {
       try {
 
         if (!this.validateForm()) {
@@ -1231,18 +1203,18 @@ export default {
           return false;
         }
 
-        this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
+       // this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
 
         console.log('denPerDnte 2 : ', JSON.stringify(this.denPerDnte));
 
-        if (this.editedIndex > -1) {   // Update person
+        if (this.editedIndex > -1) {   // Update seguimiento  no hacer
 
 
           // this.denPerDnte.estado = 'ACTIVO';
           this.denPerDnte.transaccion = 'MODIFICAR';
           this.denPerDnte.usu_mod = this.username;
           this.denPerDnte.fec_mod = new Date();
-
+         /*
           Denuncia.denunciaUpdate(this.denPerDnte.id, JSON.stringify(this.denPerDnte))
             .then((response) => {
               if (response.status === 200) {
@@ -1258,7 +1230,7 @@ export default {
                 toast.success('Denuncia modificado correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // Add your custom class name here
+                  // toastClassName: 'custom-toast', // 
 
                 });
                 this.close()
@@ -1277,25 +1249,29 @@ export default {
               this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
               console.log('Log Error modificando Denuncia: ', error);
             });
-
-        } else {  // Add new person
+         */
+        } else {  // Add new seguimiento
    
-        this.seguimiento.denuncia_personas_id = this.denPerDnte.id;
-        this.seguimiento.gestor_id = this.denPerDnte.usuarios_id;
-
-        const dateParts =   this.denPerDnte.fec_registro.split("/"); //// "2024-05-17".split("/");  //
+        this.seguimiento.denuncia_personas_id = this.denPerDnte.denuncia_personas_id;
+        this.seguimiento.usuarios_id = this.denPerDnte.gestor_id;
+       // this.seguimiento.actividades_id = this.denPerDnte.actividades_id;
+        const dateParts =   this.seguimiento.fec_registro.split("/"); //// "2024-05-17".split("/");  //
         this.seguimiento.fec_registro = new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
-
-          this.seguimiento.estado = 'ACTIVO';
-          this.seguimiento.transaccion = 'ACTIVAR';
+       // this.seguimiento.observacion = this.denPerDnte.observacion;
+          this.seguimiento.estado = 'SEGUIMIENTO';
+          this.seguimiento.transaccion = 'DEN_CONTROLAR_SEGUIMIENTO';
           this.seguimiento.usu_cre = this.username;
 
-
-          Seguimiento.seguimientoCreate(JSON.stringify(this.seguimiento))
+//  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
+         await Seguimiento.seguimientoCreate(this.seguimiento)
             .then((response) => {
 
               if (response.status === 201) {
-                this.people.push(this.denPerDnte);      
+               // this.people.push(this.denPerDnte);  
+               this.seguimiento.seg_id= response.data.id;
+               
+               this.enviarArchivos() ;
+
 
                 console.log("seguimientoCreate  : ", response.status, response);
                 toast.success('seguimiento creado correctamente ! ', {
@@ -1325,11 +1301,6 @@ export default {
           // this.close()
 
 
-
-
-
-
-
         }
 
       } catch (error) {
@@ -1339,7 +1310,118 @@ export default {
 
     },
 
+    async enviarArchivos() {
+      try {
+     
+        const arrayPlano = Array.from(this.files).flat();
 
+          console.log('this.files:  ', this.files);
+          console.log(' arrayPlano:  ', arrayPlano);
+                //console.log(typeof this.multipleFiles);
+              //  console.log(typeof arrayPlano);
+        const formData = new FormData();
+        
+        arrayPlano.forEach((file, index) => {
+          // Renombrar el archivo
+          if (file !== undefined){
+            const typeFile = file.name.split('.').pop()  ;
+       
+           this.nameFile =  file.name  +'-'+'SD-' +  Date.now()+'.'+ typeFile ; // ${Date.now()}-SD-s
+           const newFile = new File([file], this.nameFile, { type: file.type });
+           this.nameFile  =newFile;
+          formData.append("files", newFile);
+          }
+  
+          console.log('this.nameFile.name :', this.nameFile.name);
+          console.log(typeof this.nameFile);
+
+          if (file !== undefined) { // Asegúrate de que el archivo no esté vacío
+
+            this.documentosPath.denuncia_personas_id = this.denPerDnte.denuncia_personas_id;
+            // this.documentosPath.cod_denuncia = this.denPerDnte.cod_denuncia;
+            this.documentosPath.denunciante_id = this.denPerDnte.dnte_id;
+            this.documentosPath.orden = index + 1; // parseInt(this.documentosPath.orden) == 1 ? parseInt(this.documentosPath.orden) : parseInt(this.denunciado.orden) + 1;
+            this.documentosPath.origen ='INVESTIGADOR'; // this.nameFile ;// +'.'+ file[index].type; //  Date.now() +'-'+ 'SD' + file[index].name; // ${Date.now()}-SD-s
+            //file[index].name= this.documentosPath.origen;
+            this.documentosPath.documento_path = 'uploads/evidencia_denuncias/' + this.nameFile.name ;
+
+            this.documentosPath.usuarios_id = this.denPerDnte.gestor_id; //new Date();    
+            this.documentosPath.seguimiento_id = this.seguimiento.seg_id; //new Date();    
+
+
+            this.documentosPath.fec_registro = this.seguimiento.fec_registro; //new Date();    
+            this.documentosPath.descripcion = this.nameFile.name; //'SE ADJUNTA ARCHIVOS DE EVIDENCIA POR EL DENUNCIANTE DESDE UNA PAGINA WEB PUBLICA';
+            this.documentosPath.justificacion_legal = 'TRANSPARENCIA INSTITUCIONAL';
+            this.documentosPath.estado = 'ACTIVO';
+            this.documentosPath.transaccion = 'ACTIVAR';
+            this.documentosPath.usu_cre = this.username;
+
+            //  formData.append("file", file);// formData.append(`files[${index}].name`, file);
+            // formData.append(`files[${index}]`, file);// formData.append(`file_${index}`, file);//formData.append('file', file);
+          
+           DocumentosPath.documentosPathCreate(this.documentosPath)
+                .then((response) => {
+                    if (response.status === 201) {
+
+                      //this.documentosPath.u_rol_id = response.data.id;
+                      //this.denunciado.id = response.data.id;
+                      console.log("documentosPathCreate  archivos: ", response.status, response);
+                      this.showSnackbar('archivo subido correctamente!', 'green')
+                      // this.close()
+                    } else {
+
+                      console.log("denuncianteCreate  : ", response.status, "error:   : ", response.response.request.response);
+                      this.showSnackbar('Error creando denuncianteCreate: ' + response.response.request.response, 'red');
+                      toast.info('Error creando archivos: ' + 'Revise logs con el Administrador del sistema', {
+                        autoClose: 5000,
+                        position: toast.POSITION.TOP_RIGHT,
+
+                      });
+                    }
+                  })
+                  .catch(error => {
+                    this.showSnackbar('Log Error subiendo archivos: ' + error, 'red');
+                    console.log('Log Error subiendo archivos: ', error);
+                  })
+          
+          
+          }
+        });
+
+
+        //console.log(Array.from(formData.entries()));       
+        //for (let [key, value] of formData.entries()) {      console.log(key, value);    }
+            if ( this.files.length>0){
+         
+                const apiUrl = import.meta.env;
+                  axios.post('/documentosPath2', formData, {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                    'Authorization': apiUrl.VITE_API_URL_TOKEN
+                  },
+                })
+                  .then(response => {
+                    console.log('Archivos subidos correctamente:', response.data);
+                    // Actualizar el estado de la aplicación, mostrar mensajes de éxito, etc.
+                    toast.success('archivos subidos correctamente ! ', {
+                      autoClose: 5000,
+                      position: toast.POSITION.TOP_RIGHT,
+
+                    });
+                  })
+                  .catch(error => {
+                    console.error('Error subiendo archivos:', error);
+                    // Mostrar mensajes de error al usuario
+                    this.showSnackbar('Error subiendo archivos: ' + error, 'red');
+                  });
+              }
+
+
+      } catch (error) {
+        console.error('Error en la carga de archivos:', error);
+        this.showSnackbar('Error en la carga de archivos:' + error, 'red');
+      }
+    },
 
     addNewPerson() {
       this.editedIndex = -1
@@ -1360,7 +1442,6 @@ export default {
 
     },
     editItem2(item) {
-
       this.editedIndex = this.people.indexOf(item);
       this.denPerDnte = Object.assign({}, item);
       this.dialog2 = true;
@@ -1369,6 +1450,16 @@ export default {
 
 
     },
+    addNewSeguimiento(item) {
+      this.editedIndex = -1
+      this.seguimiento = Object.assign({}, null)   //  this.defaultItemSeguimiento
+      this.denPerDnte = Object.assign({}, item);
+      this.dialog2 = true;
+      this.lockField = true;
+      this.lockField2 = false;
+
+
+},
     viewItem(item) {
       //this.editedIndex = this.people.indexOf(item)
       this.denPerDnte = Object.assign({}, item);

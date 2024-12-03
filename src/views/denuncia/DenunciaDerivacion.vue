@@ -32,7 +32,7 @@
     <template v-slot:top>
       <v-toolbar flat>
 
-        <v-toolbar-title class="text-center">Denuncias registradas en sistema</v-toolbar-title>
+        <v-toolbar-title class="text-center">Derivacion de denuncias registradas en sistema</v-toolbar-title>
 
 
 
@@ -51,9 +51,12 @@
     </template>
     <!-- Action Buttons Column -->
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="editItem(item)"> mdi-pencil </v-icon>
+      <v-icon small class="mr-2" @click=""> mdi-printer </v-icon>
+
       <v-icon small @click="viewItem(item)"> mdi-eye</v-icon>
       <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
+      <v-icon small @click="addNewSeguimiento(item)"> mdi-account-multiple-plus </v-icon>
+
     </template>
 
     <!--   <template v-slot:bottom>
@@ -64,37 +67,35 @@
     </template>-->
   </v-data-table>
 
-  <!-- Add New Person Button -->
-  <v-btn class="custom-green-btn mt-4" @click="addNewPerson">
-    Adicionar Denuncia
-  </v-btn>
 
   <template>
-    <!-- Edit Dialog -->
+    <!-- view Dialog denuncia-->
     <v-dialog v-model="dialog" max-width="1000px">
       <v-card class="mx-auto  mt-4" max-width="700">
-      
+
         <v-card-title class="mt-4">
           <v-container>
-           <v-row  >
-            <v-col cols="4" class="p-0 py-0 px-1">
-              <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
-                :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
-            </v-col>
-             
-     
-              <v-col class="p-0 py-4 px-4"  cols="4" >
-                <!-- Primera columna -->          
+            <v-row>
+              <v-col cols="4" class="p-0 py-0 px-1">
+                <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
+                  :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+              </v-col>
+
+
+              <v-col class="p-0 py-4 px-4" cols="4">
+                <!-- Primera columna -->
                 <label for="file3">Reserva de identidad ? : </label>
               </v-col>
-              <v-col class="p-0 py-0 px-0" cols="1" >
-                <v-checkbox  value="true"   v-model="denPerDnte.reserva_identidad_si"  :readonly="lockField"  label="Si" ></v-checkbox>           
+              <v-col class="p-0 py-0 px-0" cols="1">
+                <v-checkbox value="true" v-model="denPerDnte.reserva_identidad_si" :readonly="lockField"
+                  label="Si"></v-checkbox>
               </v-col>
-              <v-col class="p-0 py-0 px-0" cols="2" >
-                <v-checkbox  value="false"  v-model="denPerDnte.reserva_identidad_no"  :readonly="lockField"  label="No" ></v-checkbox>           
-                </v-col>
-        
-          </v-row>
+              <v-col class="p-0 py-0 px-0" cols="2">
+                <v-checkbox value="false" v-model="denPerDnte.reserva_identidad_no" :readonly="lockField"
+                  label="No"></v-checkbox>
+              </v-col>
+
+            </v-row>
             <span class="text-h5"> Datos del Denunciante </span>
           </v-container>
         </v-card-title>
@@ -189,7 +190,7 @@
 
           </v-row>
 
-        
+
 
           <div>
             <table>
@@ -210,7 +211,7 @@
                   <td>{{ denunciado.apellido_mat }}</td>
                   <td>
 
-                    <v-icon small class="mr-2" @click="cargarPersona(denunciado.fila )"> mdi-eye</v-icon>
+                    <v-icon small class="mr-2" @click="cargarPersona(denunciado.fila)"> mdi-eye</v-icon>
                   </td>
                 </tr>
               </tbody>
@@ -228,21 +229,21 @@
         <v-card-text class="p-0 py-0 px-7  mb-4">
           <v-row>
 
-              <v-col cols="4" class="p-0 py-0 px-1">
-                <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho (Calle,Edif...)"
-                  :rules="[v => !!v || 'lugar del hecho es requerido']"></v-text-field>
-              </v-col>
-              <v-col cols="4" class="p-0 py-0 px-1">
-                <v-select v-model="denPerDnte.departamento" :items="deptoOptions" item-title="depto" item-value="depto_id"
-                  :readonly="lockField" label="Departamento" @update:modelValue="onDepartChange"
-                  :rules="[v => !!v || 'departamento es requerido']"></v-select>
-              </v-col>
-              <v-col cols="4" class="p-0 py-0 px-1">
-                <v-select v-model="denPerDnte.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
-                  :readonly="lockField" label="Ciudad" return-object
-                  :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
-              </v-col>
-           </v-row>
+            <v-col cols="4" class="p-0 py-0 px-1">
+              <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho (Calle,Edif...)"
+                :rules="[v => !!v || 'lugar del hecho es requerido']"></v-text-field>
+            </v-col>
+            <v-col cols="4" class="p-0 py-0 px-1">
+              <v-select v-model="denPerDnte.departamento" :items="deptoOptions" item-title="depto" item-value="depto_id"
+                :readonly="lockField" label="Departamento" @update:modelValue="onDepartChange"
+                :rules="[v => !!v || 'departamento es requerido']"></v-select>
+            </v-col>
+            <v-col cols="4" class="p-0 py-0 px-1">
+              <v-select v-model="denPerDnte.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
+                :readonly="lockField" label="Ciudad" return-object
+                :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col cols="4" class="p-0 py-0 px-1">
               <!--      <div class="d-flex align-center">    style="width: 400px;" -->
@@ -276,19 +277,11 @@
               </v-btn>-->
 
 
-              <div v-for="file in files1" :key="file.id">
-                <a :href="downloadURL(file.id)">
-                  Descargar {{ file.name }}
+              <div v-for="file in docsPath" :key="file.descripcion">
+                <a @click="downloadArch(file.descripcion)" href="#" class="download-link">{{ file.descripcion }}
                 </a>
                 <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
-              </div>
 
-              <div> <!-- Enlace que actúa como un botón -->
-                <a href="#" @click.prevent="downloadFile" :class="{ 'btn-loading': isLoading }" :disabled="isLoading">
-
-                  <span v-if="isLoading" class="mdi mdi-loader mdi-spin"></span>
-                  Descargar Archivo
-                </a>
               </div>
 
 
@@ -296,17 +289,17 @@
           </v-row>
 
           <v-row class="p-0 py-4 px-0  ">
-        
+
             <v-col cols="4" class="p-0 py-0 px-1">
-                  <v-select v-model="denPerDnte.estado" :items="estadoOptions" item-title="est"
-                    item-value="transac" :readonly="lockField2" label="Estado Seguimiento"
-                    @update:modelValue="onEstadoChange" :rules="[v => !!v || 'Estado es requerido']"></v-select>
+              <v-select v-model="denPerDnte.estado" :items="estadoOptions" item-title="est" item-value="transac"
+                :readonly="lockField2" label="Estado Seguimiento" @update:modelValue="onEstadoChange"
+                :rules="[v => !!v || 'Estado es requerido']"></v-select>
             </v-col>
-     
+
             <v-col cols="8" class="p-0 py-0 px-1">
-                  <v-select v-model="denPerDnte.gestor_id" :items="gestorOptions" item-title="nombre_completo"
-                    item-value="id" :readonly="lockField2" label="Gestor Seguimiento" placeholder="Personal Asignado" 
-                    @update:modelValue="onGestorChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
+              <v-select v-model="denPerDnte.gestor_id" :items="gestorOptions" item-title="nombre_completo" item-value="id"
+                :readonly="lockField2" label="Gestor Seguimiento" placeholder="Personal Asignado"
+                @update:modelValue="onGestorChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
             </v-col>
 
           </v-row>
@@ -324,7 +317,7 @@
         <v-card-actions v-if="lockField2 === false">
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
-          <v-btn class="custom-green-btn" text @click="denunciasSave"> Guardar </v-btn>
+          <v-btn class="custom-green-btn" text @click=""> Guardar </v-btn>
         </v-card-actions>
         <v-card-actions v-else-if="lockField === true">
           <v-spacer></v-spacer>
@@ -334,6 +327,66 @@
 
       </v-card>
     </v-dialog>
+
+    <!-- derivar Dialog -->
+    <v-dialog v-model="dialog2" max-width="1000px">
+      <v-card class="mx-auto  mt-4" max-width="700">
+
+        <v-card-title class="mt-4">
+          <v-container>
+
+            <span class="text-h5"> Derivacion denuncia </span>
+          </v-container>
+        </v-card-title>
+
+        <v-card-text class="p-0 py-0 px-7  mb-2">
+          <v-row>
+            <v-col cols="4" class="p-0 py-0 px-1">
+              <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
+                :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+            </v-col>
+            <v-col cols="4" class="p-0 py-0 px-1">
+              <!--      <div class="d-flex align-center">    style="width: 400px;" -->
+              <v-text-field v-model="denPerDnte.fec_registro" :readonly="lockField2" label="Fecha seguimiento"  @input="handleInputDate"
+                placeholder="DD/MM/AAAA" required  :rules="[v => !!v || 'Fecha es requerida']"></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-row>
+            <v-col cols="8" class="p-0 py-0 px-1">
+              <v-select v-model="denPerDnte.gestor_id" :items="gestorOptions" item-title="nombre_completo" item-value="id"
+                :readonly="lockField2" label="Gestor Seguimiento" placeholder="Personal Asignado"
+                @update:modelValue="onGestorChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
+            </v-col>
+          </v-row>
+
+          <v-row class="p-0 py-4 px-0  ">
+            <v-col class="p-0 py-0 px-1">
+              <v-textarea v-model="denPerDnte.observacion" :readonly="lockField2" label="Observacion a la denuncia"
+                :rules="[v => !!v || 'Observacion es requerida']" placeholder="Observaciones/recomendaciones"></v-textarea>
+            </v-col>
+          </v-row>
+
+        </v-card-text>
+
+
+
+        <v-card-actions v-if="lockField2 === false">
+          <v-spacer></v-spacer>
+          <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
+          <v-btn class="custom-green-btn" text @click="seguimientoSave"> Guardar </v-btn>
+        </v-card-actions>
+        <v-card-actions v-else-if="lockField === true">
+          <v-spacer></v-spacer>
+          <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
+        </v-card-actions>
+
+
+      </v-card>
+    </v-dialog>
+
+
+
 
   </template>
 
@@ -366,7 +419,7 @@ import Denunciado from '@/services/Denunciado';
 import { downloadFile } from '../../utils/fileDownloader';
 import DocumentosPath from '@/services/DocumentosPath';
 import Usuario from '@/services/Usuario';
-
+import Seguimiento from '@/services/Seguimiento';
 
 export default {
 
@@ -379,9 +432,10 @@ export default {
 
 
     page: 1,
-    itemsPerPage: 10,
+    itemsPerPage: 5,
     search: '',
     dialog: false,
+    dialog2: false,
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: localStorage.getItem('username'),
@@ -459,13 +513,15 @@ export default {
       orden: '',
 
       tipo_denuncia: '',
-      seg_id: '',
-      observacion: '',
-      fec_registro: '',
+      seg_id: '', //  seguimiento id
+      gestor_id: null,  //  usuarios_id
+     
       apellido_pat_gestor: '',
       apellido_mat_gestor: '',
       nombres_gestor: '',
       gestor_seguimiento: '',
+   observacion: '',
+      fec_registro: '',
 
       estado: '',
       transaccion: '',
@@ -522,7 +578,50 @@ export default {
       usu_mod: null,
       fec_mod: null,
     },
-    denunciadosArray: [],
+        
+    seguimiento: {
+      fila: '',
+      denuncia_personas_id: 0,
+      usuarios_id: null,  
+      gestor_id:null,
+      cod_denuncia: '',
+      tipo_personas: '',
+      sigla: '',
+      lugar_hecho: '',
+      depto_id: '',
+      departamento: '',
+      mun_id: '',
+      municipio: '',
+ 
+      fec_registro_hecho: '',
+      hora_registro_hecho: '',
+      detalle_hecho: '',
+      reserva_identidad: '',
+      reserva_identidad_si: '',
+      reserva_identidad_no: '',
+      denuncia_anonima: '',
+
+      seg_id: '',
+      observacion: '',
+      fec_registro: '',
+      
+      apellido_pat_gestor: '',
+      apellido_mat_gestor: '',
+      nombres_gestor: '',
+      gestor_seguimiento: '',
+    
+
+      estado: '',
+      transaccion: '',
+      usu_cre: null,
+      fec_cre: null,
+      usu_mod: null,
+      fec_mod: null,
+    },
+    seguimientosArray: [],
+
+
+  
 
     denunciado: {
       fila: '',
@@ -562,6 +661,7 @@ export default {
       fec_mod: null
 
     },
+    denunciadosArray: [],
     defaultItemDenunciado: {
       fila: '',
       id: null,   //  id de la tabla padre denuncia
@@ -598,6 +698,7 @@ export default {
       usu_mod: null,
       fec_mod: null
     },
+
     documentosPath: {
       id: null,
       denuncia_personas_id: 0,
@@ -609,6 +710,7 @@ export default {
       descripcion: '',
       justificacion_legal: '',
       fec_registro: '',
+
       estado: '',
       transaccion: '',
       usu_cre: null,
@@ -622,19 +724,7 @@ export default {
 
     //******************************************** */
 
-    editedItemRolUsu: {
-      id: null,
-      denuncias_id: null,
-      roles_sigla: '',
-      descripcion: null,
-      estado: '',
-      transaccion: '',
-      usu_cre: null,
-      usu_mod: null,
-      fec_mod: null,
-
-
-    },
+   
 
 
     defaultItemUsu: {
@@ -686,18 +776,18 @@ export default {
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
     gradoOptions: [], // ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
     rolOptions: [],
-    validationErrors: { nombres: { value: false } },
+    validationErrors: {},
 
     selectedDeptoId: null,    // Código del país seleccionado
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
     departamentos: [{}],
     deptoOptions: [{}],
     munOptions: [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
-    
-  
+
+
     estadoOptions: [{ est: 'SOLICITADO', transac: 'CREAR' }, { est: 'ASIGNADO', transac: 'DERIVAR' }
-                     , { est: 'ACEPTADO', transac: 'ACEPTAR' }, { est: 'RECHAZADO', transac: 'RECHAZAR' } 
-                    , { est: 'ABSUELTO', transac: 'ABSOLVER' }, { est: 'SANCIONADO', transac: 'SANCIONAR' }],
+      , { est: 'ACEPTADO', transac: 'ACEPTAR' }, { est: 'RECHAZADO', transac: 'RECHAZAR' }
+      , { est: 'ABSUELTO', transac: 'ABSOLVER' }, { est: 'SANCIONADO', transac: 'SANCIONAR' }],
     gestorOptions: [],
 
   }),
@@ -709,13 +799,13 @@ export default {
     this.deptoList();
     this.gradoList();
 
-   // this.denunciadoListByCod();
+    // this.denunciadoListByCod();
     //this.documentosPathListByCod();
-//this.agregarPersona();
-    this.loading = false;
-    this.rolList();
-    this.gestorList() ;
+    //this.agregarPersona();
 
+    this.rolList();
+    this.gestorList();
+    this.loading = false;
   },
 
 
@@ -726,16 +816,42 @@ export default {
     cargarPersona(item) {
       const denunciadoIndex = this.denunciadosArray.find(dndo => dndo.fila === item);
       //this.editedIndex = this.people.indexOf(item);
-      this.denunciado = Object.assign({}, denunciadoIndex);   
-      console.log('this.denPerDnte :', this.denPerDnte);      
+      this.denunciado = Object.assign({}, denunciadoIndex);
+      console.log('this.denPerDnte :', this.denPerDnte);
     },
 
     downloadURL(fileId) {
+      console.log('Archivos descargados correctament3');
       // Replace with the logic to generate the download URL based on fileId
       return `your-api-endpoint/download/${fileId}`;
     },
 
+
+
+    async downloadArch(fileName) {
+      this.isLoading = true;
+      this.snackbar.visible = false;
+
+      try {//  en utils
+        // await downloadFile('/archivo', 'archivo_descargado.ext'); // Cambia el nombre y la ruta específica del archivo
+        await downloadFile(fileName); // Cambia el nombre y la ruta específica del archivo
+
+        this.snackbar.message = 'Archivo descargado exitosamente!';
+        this.snackbar.color = 'success';
+        console.log('Archivos descargados correctamente1');
+        this.isLoading = false;
+      } catch (error) {
+        this.snackbar.message = 'Ocurrió un error al descargar el archivo.';
+        this.snackbar.color = 'error';
+        alert('Error al descargar el archivo: ' + error);
+
+      } finally {
+        this.isLoading = false;
+        this.snackbar.visible = true;
+      }
+    },
     downloadFile1(file1) {
+      console.log('Archivos descargados correctamente2');
       // Aquí puedes implementar la lógica para descargar el archivo
       // Por ejemplo, creando un enlace temporal y haciendo clic en él:
       const link = document.createElement('a');
@@ -746,22 +862,7 @@ export default {
       document.body.removeChild(link);
     },
 
-    async downloadFile() { //  en utils
-      this.isLoading = true;
-      this.snackbar.visible = false;
 
-      try {
-        await downloadFile('/archivo', 'archivo_descargado.ext'); // Cambia el nombre y la ruta específica del archivo
-        this.snackbar.message = 'Archivo descargado exitosamente!';
-        this.snackbar.color = 'success';
-      } catch (error) {
-        this.snackbar.message = 'Ocurrió un error al descargar el archivo.';
-        this.snackbar.color = 'error';
-      } finally {
-        this.isLoading = false;
-        this.snackbar.visible = true;
-      }
-    },
 
     async gradoList() {
       Grado.gradoList()
@@ -779,7 +880,7 @@ export default {
           console.log(e);
         });
     },
-     async rolList() {
+    async rolList() {
       Rol.rolList()
         .then((response) => {
           // console.log("response.data[0]  : ", response.data[0], response.status);
@@ -813,7 +914,7 @@ export default {
     },
 
 
-   
+
     async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
@@ -836,17 +937,19 @@ export default {
         });
     },
     async denunciaList() {
-      Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId)
+      await Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId)
         .then((response) => {
           console.log("denunciaPersonasGetByNivelGeo  : ", response.data, response.status);
           if (response.status === 200) {
             this.people = response.data;
+         
           } else {
-            this.showSnackbar('Error recuperando Denuncia ' + response, 'red');
+            this.showSnackbar('Error recuperando denunciaPersonasGetByNivelGeo ' + response, 'red');
           }
         })
-        .catch(e => {
-          console.log(e);
+        .catch(error => {
+          this.showSnackbar('Error recuperando denunciaPersonasGetByNivelGeo ' + error, 'red');
+
         });
     },
     async denunciadoListByCod(cod_denuncia) {
@@ -862,27 +965,42 @@ export default {
           }
         })
         .catch(error => {
-          this.showSnackbar('Error recuperando denunciadoListByCod ' + error, 'red'); 
+          this.showSnackbar('Error recuperando denunciadoListByCod ' + error, 'red');
         });
-    },  
-    async documentosPathListByCod() {
-         await DocumentosPath.documentosPathListByCod('C-002-10-24') //  this.denPerDnte.id
+    },
+    async documentosPathListByCod(cod_denuncia) {
+      await DocumentosPath.documentosPathListByCod(cod_denuncia) //  this.denPerDnte.id
         .then((response) => {
           console.log("documentosPathListByCod  : ", response.data, response.status);
           if (response.status === 200) {
             this.docsPath = response.data;
-            
+
           } else {
             this.showSnackbar('Error recuperando documentosPathListByCod ' + response, 'red');
           }
         })
         .catch(error => {
-             this.showSnackbar('Error recuperando documentosPathListByCod ' + error, 'red'); 
+          this.showSnackbar('Error recuperando documentosPathListByCod ' + error, 'red');
 
         });
     },
 
+    async seguimientoListByCodXXX(cod_denuncia, depto_id) {
+      await Seguimiento.seguimientoListByCod(cod_denuncia,depto_id) 
+        .then((response) => {
+          console.log("seguimientoByCod  : ", response.data, response.status);
+          if (response.status === 200) {
+            this.seguimientosArray = response.data;
 
+          } else {
+            this.showSnackbar('Error recuperando seguimientoByCod ' + response, 'red');
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Error recuperando seguimientoByCod ' + error, 'red');
+
+        });
+    },
 
     onDepartChange() {
       // Encuentra el depart seleccionado por su id
@@ -952,111 +1070,84 @@ export default {
 
     validateForm() {
 
-      if (!this.denPerDnte.estado  ) this.validationErrors.estado = { value: true };
-      else delete this.validationErrors.estado;
+      if (!this.denPerDnte.fec_registro) this.validationErrors.fec_registro = { value: true };
+      else delete this.validationErrors.fec_registro;
 
-      if (!this.denPerDnte.gestor_id  ) this.validationErrors.gestor_id = { value: true };
-      else delete this.validationErrors.gestor_id;
+      if (!this.denPerDnte.gestor_seguimiento) this.validationErrors.gestor_seguimiento = { value: true };
+      else delete this.validationErrors.gestor_seguimiento;
 
+      if (!this.denPerDnte.observacion) this.validationErrors.observacion = { value: true };
+      else delete this.validationErrors.observacion;
 
       return !Object.keys(this.validationErrors).length;
     },
 
-    denunciasRolUpdate() {
-      this.editedItemRolUsu.id = this.denPerDnte.u_rol_id === '' ? this.editedItemRolUsu.id : this.denPerDnte.u_rol_id;
-      this.editedItemRolUsu.denuncias_id = this.denPerDnte.id;
-      this.editedItemRolUsu.roles_sigla = this.denPerDnte.roles_sigla;
-      this.editedItemRolUsu.descripcion = 'Cambio de rol';
-      this.editedItemRolUsu.estado = 'ACTIVO';
-      this.editedItemRolUsu.transaccion = 'MODIFICAR';
-      this.editedItemRolUsu.usu_mod = this.username;
-      this.editedItemRolUsu.fec_mod = new Date();
 
-
-      DenunciasRol.DenunciasRolUpdate(this.editedItemRolUsu.id, JSON.stringify(this.editedItemRolUsu))
-        .then((response) => {
-          if (response.status === 200) {
-            console.log("denunciaUpdate  : ", response.status, response);
-
-            //  this.showSnackbar('Denuncia rol modificado correctamente !', 'green')
-            toast.success('Denuncia rol modificado correctamente ! ', {
-              autoClose: 3000,
-              position: toast.POSITION.TOP_RIGHT,
-              // toastClassName: 'custom-toast', // Add your custom class name here
-
-            });
-            //this.close()
-          } else {
-            console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error modificando Denuncia rol: ' + response.response.request.response, 'red');
-
-            toast.info('Error modificando Denuncia rol: ' + 'Revise logs con el Administrador del sistema', {
-              autoClose: 5000,
-              position: toast.POSITION.TOP_RIGHT,
-
-            });
-          }
-        })
-        .catch(error => {
-          this.showSnackbar('Log Error modificando Denuncia rol ' + error, 'red');
-          console.log('Log Error modificando Denuncia rol: ', error);
-        });
-
+    handleInputDate(event) {  //  @input="handleInputDate"
+      // Limitar la entrada a números y el separador de fecha
+      this.denPerDnte.fec_registro = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
+      console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro);  ///[^0-9]/g
     },
+    // Función para formatear la fecha// Aplica la máscara de fecha  dd/mm/yyyy
+    formatDate(inputValue) {
+        inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
+      // Ejemplo: formato DD/MM/AAAA
+     // console.log("formatDate:", inputValue);
+      
+      if (inputValue.length == 2) {
+        inputValue = `${inputValue.slice(0, 2)}/`;
+      }
+      if (inputValue.length > 3 && inputValue.length < 5) {
+        inputValue = `${inputValue.slice(0, 2)}${inputValue.slice(2, 4)}`;
+      }
+      if (inputValue.length == 5) {
+        inputValue = `${inputValue.slice(0, 5)}/`;
+      }
+      if (inputValue.length > 5) {
+        inputValue = `${inputValue.slice(0, 10)}`;
+      }
 
+      // Actualiza rawDate con la fecha formateada
+      // this.rawDate = inputValue;
+     // console.log("formatDate:", inputValue);
 
-    denunciasRolCreate() {
-      this.editedItemRolUsu.denuncias_id = this.denPerDnte.id;
-      this.editedItemRolUsu.roles_sigla = this.denPerDnte.rol;
-      this.editedItemRolUsu.descripcion = 'Asignaion de rol';
-      this.editedItemRolUsu.estado = 'ACTIVO';
-      this.editedItemRolUsu.transaccion = 'ACTIVAR';
-      this.editedItemRolUsu.usu_cre = this.username;
-
-      DenunciasRol.DenunciasRolCreate(JSON.stringify(this.editedItemRolUsu))
-        .then((response) => {
-
-          if (response.status === 201) {
-
-            this.denPerDnte.u_rol_id = response.data.id;
-            this.editedItemRolUsu.id = response.data.id;
-            console.log("DenunciasRolCreate  : ", response.status, response);
-            this.showSnackbar('Denuncia rol creado correctamente!', 'green')
-            // this.close()
-          } else {
-
-            console.log("DenunciasRolCreate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error creando denuncia Rol: ' + response.response.request.response, 'red');
-            toast.info('Error creando Denuncia rol: ' + 'Revise logs con el Administrador del sistema', {
-              autoClose: 5000,
-              position: toast.POSITION.TOP_RIGHT,
-
-            });
-          }
-        })
-        .catch(error => {
-          this.showSnackbar('Log Error creando Denuncia rol: ' + error, 'red');
-          console.log('Log Error creando Denuncia rol: ', error);
-        })
+      return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
     },
+    eliminarUltimoCaracterNoNumerico(str) {
+      // Verificamos si el string no está vacío
+      if (str.length === 0) {
+        return str; // Devuelve el string sin cambios si está vacío
+      }
 
-    denunciasSave() {
+      // Obtenemos el último carácter
+      const ultimoCaracter = str.charAt(str.length - 1);
+
+      // Comprobamos si es un carácter numérico
+      if (!/\d/.test(ultimoCaracter)) {
+        // Si no es numérico, eliminamos el último carácter
+        return str.slice(0, -1);
+      }
+
+      // Si es un carácter numérico, devolvemos el string sin cambios
+      return str;
+    },
+    seguimientoSave() {
       try {
 
         if (!this.validateForm()) {
-          toast.info('Debe ingresar los datos requeridos', {
+          toast.info('Debe ingresar los datos requeridos.', {
             autoClose: 3000,
             position: toast.POSITION.TOP_RIGHT,
           });
-          //this.dialog = false;
+        
           return false;
         }
-   
+
         this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
 
         console.log('denPerDnte 2 : ', JSON.stringify(this.denPerDnte));
 
-        if (this.editedIndex > -1) {   // Update person
+        if (this.editedIndex > -1) {   // Update seguimiento  no hacer
 
 
           // this.denPerDnte.estado = 'ACTIVO';
@@ -1099,32 +1190,27 @@ export default {
               console.log('Log Error modificando Denuncia: ', error);
             });
 
+        } else {  // Add new seguimiento
+   
+        this.seguimiento.denuncia_personas_id = this.denPerDnte.id;
+        this.seguimiento.usuarios_id = this.denPerDnte.gestor_id;
 
+        const dateParts =   this.denPerDnte.fec_registro.split("/"); //// "2024-05-17".split("/");  //
+        this.seguimiento.fec_registro = new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
+        this.seguimiento.observacion = this.denPerDnte.observacion;
+          this.seguimiento.estado = 'ASIGNADO';
+          this.seguimiento.transaccion = 'DEN_DERIVAR';
+          this.seguimiento.usu_cre = this.username;
 
-
-        } else {  // Add new person
-
-          this.denPerDnte.reset_key = 'PENDIENTE';
-          this.denPerDnte.reset_date = new Date();
-
-          this.denPerDnte.estado = 'ACTIVO';
-          this.denPerDnte.transaccion = 'ACTIVAR';
-          this.denPerDnte.usu_cre = this.username;
-
-
-          Denuncia.denunciaCreate(JSON.stringify(this.denPerDnte))
+//  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
+          Seguimiento.seguimientoCreate(this.seguimiento)
             .then((response) => {
 
               if (response.status === 201) {
-                //  this.people = response.data;
-                this.people.push(this.denPerDnte);
+               // this.people.push(this.denPerDnte);      
 
-                this.denPerDnte.id = response.data.id;
-                this.denunciasRolCreate();
-
-                console.log("denunciaCreate  : ", response.status, response);
-                //  this.showSnackbar('Denuncia creado correctamente!', 'green')
-                toast.success('Denuncia creado correctamente ! ', {
+                console.log("seguimientoCreate  : ", response.status, response);
+                toast.success('seguimiento creado correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
                   // toastClassName: 'custom-toast', // Add your custom class name here
@@ -1133,9 +1219,9 @@ export default {
                 this.close()
               } else {
 
-                console.log("denunciaCreate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error creando Denuncia: ' + response.response.request.response, 'red');
-                toast.info('Error creando Denuncia: ' + 'Revise el denuncia de logueo', {
+                console.log("seguimientoCreate  : ", response.status, "error:   : ", response.response.request.response);
+                this.showSnackbar('Error creando seguimiento: ' + response.response.request.response, 'red');
+                toast.info('Error creando seguimiento: ' + 'Revise seguimiento de logueo', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
 
@@ -1143,8 +1229,8 @@ export default {
               }
             })
             .catch(error => {
-              this.showSnackbar('Log Error creando Denuncia: ' + error, 'red');
-              console.log('Log Error creando Denuncia: ', error);
+              this.showSnackbar('Log Error creando seguimiento: ' + error, 'red');
+              console.log('Log Error creando seguimiento: ', error);
             });
 
           // this.showSnackbar('Denuncia creado correctamente!', 'green')
@@ -1165,7 +1251,7 @@ export default {
 
     },
 
-    
+
 
     addNewPerson() {
       this.editedIndex = -1
@@ -1174,15 +1260,38 @@ export default {
     },
 
     editItem(item) {
-    
+
       this.editedIndex = this.people.indexOf(item);
       this.denPerDnte = Object.assign({}, item);
       this.dialog = true;
       this.lockField = true;
       this.lockField2 = false;
       this.denunciadoListByCod(this.denPerDnte.cod_denuncia);
-    },
+      this.documentosPathListByCod(this.denPerDnte.cod_denuncia);
 
+
+    },
+    editItem2(item) {
+
+      this.editedIndex = this.people.indexOf(item);
+      this.denPerDnte = Object.assign({}, item);
+      this.dialog2 = true;
+      this.lockField = true;
+      this.lockField2 = false;
+
+
+    },
+    addNewSeguimiento(item) {
+
+      this.editedIndex = -1
+      this.seguimiento = Object.assign({}, null)   //  this.defaultItemSeguimiento
+      this.denPerDnte = Object.assign({}, item);
+      this.dialog2 = true;
+      this.lockField = true;
+      this.lockField2 = false;
+
+
+},
     viewItem(item) {
       //this.editedIndex = this.people.indexOf(item)
       this.denPerDnte = Object.assign({}, item);
@@ -1190,6 +1299,9 @@ export default {
       this.lockField = true;
       this.lockField2 = true;
       this.denunciadoListByCod(this.denPerDnte.cod_denuncia);
+      this.documentosPathListByCod(this.denPerDnte.cod_denuncia);
+
+
     },
 
     deleteItem(item) {
@@ -1213,6 +1325,7 @@ export default {
 
     close() {
       this.dialog = false
+      this.dialog2 = false
       this.$nextTick(() => {
         this.denPerDnte = Object.assign({}, this.defaultItemUsu)
         this.editedIndex = -1
@@ -1232,6 +1345,7 @@ export default {
       this.denPerDnte = Object.assign({}, this.defaultItemUsu)
       this.editedIndex = -1
       this.dialog = false
+      this.dialog2 = false
       //this.editingUserId = null;
     },
 
@@ -1269,6 +1383,10 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete()
     },
+    dialog2(val) {
+      val || this.close()
+    },
+
   },
 
 
@@ -1281,7 +1399,10 @@ export default {
 <style scoped>
 /* Estilos para el enlace que actúa como un botón */
 
-
+.download-link {
+  display: block;
+  margin: 5px 0;
+}
 
 
 .btn-loading {
@@ -1292,10 +1413,6 @@ export default {
   position: absolute;
   left: 10px;
 }
-
-
-
-
 
 
 

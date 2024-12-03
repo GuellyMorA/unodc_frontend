@@ -701,50 +701,7 @@ export default {
      this.multipleFiles = Array.from(event.target.files);
       console.log('this.multipleFiles :', this.multipleFiles);
     },
-    /*
-    async uploadSingleFileXXX  () {
-      if (!this.singleFile) {
-        alert("Please select a file first.");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("file", this.singleFile);
-
-      try {
-        const response = await axios.post("/documentosPath2", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        this.singleUploadResponse = response.data.message;
-      } catch (error) {
-        console.error("Error uploading single file:", error.response?.data || error.message);
-      }
-    },
-    async uploadMultipleFilesXXX() {
-      if (this.multipleFiles.length === 0) {
-        alert("Please select files first.");
-        return;
-      }
-
-      const formData = new FormData();
-      this.multipleFiles.forEach((file, index) => {
-        formData.append("files", file);
-      });
-
-      try {
-        const response = await axios.post("/documentosPath2", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-        this.multipleUploadResponse = response.data.message;
-      } catch (error) {
-        console.error("Error uploading multiple files:", error.response?.data || error.message);
-      }
-    },
-    */
+ 
    // {{ id: number; name: string; }} file1
 
     downloadFile1(file1) {
@@ -774,73 +731,7 @@ export default {
         this.snackbar.visible = true;
       }
     },
-   /*
-    downloadFile() {
-      const fileName = 'your_pdf_file.pdf'; // Reemplaza con el nombre de tu archivo
-      axios({
-        url: `/download/${fileName}`,
-        method: 'GET',
-        responseType: 'blob'
-      })
-        .then(response => {
-          const url = window.URL.createObjectURL(new Blob([response.data]));
-          const link = document.createElement('a');
-          link.href
-            = url;
-          link.setAttribute('download', fileName);
-          document.body.appendChild(link);
-          link.click();
-        });
-    },
-    */ 
-    
-       // Esta función puede manejar cualquier lógica al cambiar el archivo
-   /*
-    handleFileChange(index) {   //  
-        const newFiles = this.files[index]
-        if (newFiles && newFiles.length > 0) {
-          const file = newFiles.target.files[0] // Solo tomamos el primer archivo
-          const reader = new FileReader()
-          console.log(`Archivo seleccionado en el índice ${index}:`, this.files[index]);
-          reader.onload = e => {
-            this.previews[index] = e.target.result // Guarda la vista previa del archivo
-          }
-          reader.readAsDataURL(file) // Lee el archivo como URL de datos
-          
-        axios.post('/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
-          console.log('Archivo subido:', response.data);
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-        } else {
-          this.previews[index] = null // Restablece la vista previa si no hay archivo
-        }
-      },
-*/
-   /*   mergeArrays(arrayA, arrayB) {
-            // Verificar si todos los elementos de arrayB están en arrayA
-            const allExist = arrayB.every(item => arrayA.includes(item));
-
-            if (!allExist) {
-                // Si no están todos, agregar los elementos de arrayB a arrayA
-                arrayB.forEach(item => {
-                    if (!arrayA.includes(item)) {
-                        arrayA.push(item);
-                    }
-                });
-                this.multipleFiles=arrayA;
-            } else {
-                console.log("El contenido de B ya está en A");
-            }
-        },
-*/
+   
     async enviarArchivos() {
       try {
         //this.uploadSingleFile();

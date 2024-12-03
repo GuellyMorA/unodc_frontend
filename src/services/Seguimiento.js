@@ -6,8 +6,8 @@ class SeguimientoService {
 
   //    /documentosPathListByCod/:cod_denuncia/:depto_id'
 
-  seguimientoGetByCod(data_c_denun,data_depto_id ) {
-    return http.get(`/seguimientoGetByCod/${data_c_denun}/${data_depto_id}`,).catch((error) => {
+  seguimientoListByCod(data_user_id,data_depto_id ) {
+    return http.get(`/seguimientoListByCod/${data_user_id}/${data_depto_id}`,).catch((error) => {
       return error;
     });
   }

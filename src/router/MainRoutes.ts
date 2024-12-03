@@ -37,17 +37,18 @@ const MainRoutes = {
             component: () => import('@/views/denuncia/Index.vue'),
         },
         {
-            name: 'SeguimientoForm',
-            path: '/denuncia/seguimientoForm',
-            requiresAuth: true,
-            component: () => import('@/views/denuncia/SeguimientoForm.vue'),
-        },
-        {
             name: 'AdmDenunciaForm',
             path: '/denuncia/admDenunciaForm',
             requiresAuth: true,
-            component: () => import('@/views/denuncia/Denuncia.vue')
+            component: () => import('@/views/denuncia/DenunciaDerivacion.vue')
         },
+        {
+            name: 'DenunciaSeguimiento',
+            path: '/denuncia/denunciaSeguimiento',
+            requiresAuth: true,
+            component: () => import('@/views/denuncia/DenunciaSeguimiento.vue'),
+        },
+    
         {
             name: 'Reportes',
             path: '/reportes/reportesDash',

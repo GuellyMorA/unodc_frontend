@@ -29,12 +29,23 @@ const submit = async (event: any) => {
                 return res;
             } else {
               //  localStorage.setItem('username', JSON.stringify({codigo_sie: 80730460, token: res.data.token}));
-              localStorage.setItem('username',form.value.user_login ); 
               //localStorage.setItem('userJson',JSON.stringify(res.data ));
+
+              localStorage.setItem('username',form.value.user_login ); 
               localStorage.setItem('rol_desc',res.data.rol_desc); 
               localStorage.setItem('depto_id',res.data.depto_id); 
-              console.log('**2 Auth.login: ', res.data.depto_id);
-                router.push('/');
+              localStorage.setItem('cambio_clave',res.data.cambio_clave ); 
+              localStorage.setItem('usuario_id',res.data.usuario_id); 
+              localStorage.setItem('grado_sigla',res.data.grado_sigla); 
+
+              console.log('**2 username: ', form.value.user_login);
+               console.log('**2 rol_desc: ', res.data.rol_desc);
+                console.log('**2 depto_id: ', res.data.depto_id);
+              console.log('**2 cambio_clave: ', res.data.cambio_clave);
+              console.log('**2 usuario_id: ', res.data.usuario_id);             
+              console.log('**2 grado_sigla: ', res.data.grado_sigla); 
+                
+                router.push('/');  
                 return res;                
            
 
