@@ -60,71 +60,7 @@ const sidebarItem: menu[] = [
     BgColor: 'primary',
     to: "/reportes/reportesDash",
   },
-/*
-  {
-    title: "Convivencia pacífica y armónica",
-    icon: CircleDotIcon,
-    BgColor: 'primary',
-    to: "/convivencia/pacifica",
-  },
-  {
-    title: "Embarazo adolescente",
-    icon: AlertCircleIcon,
-    BgColor: 'primary',
-    to: "/embarazo/adolecente",    
-  },
-  {
-    title: "Violencia jerárquica",
-    icon: BoxMultiple1Icon,
-    BgColor: 'primary',
-    to: "/violencia/jerarquica",
-  },
-  */
-  // {
-  //   title: "Violencia entre pares",
-  //   icon: BoxMultiple1Icon,
-  //   BgColor: 'primary',
-  //   to: "/violencia/entre/pares",
-  // },
-  // {
-  //   title: "Violencia en la familia",
-  //   icon: BoxMultiple1Icon,
-  //   BgColor: 'primary',
-  //   to: "/violencia/familiar",
-  // },
-  // {
-  //   title: "Vida libre de violencia",
-  //   icon: BoxMultiple1Icon,
-  //   BgColor: 'primary',
-  //   to: "/libre/violencia",
-  // },
-  // {
-  //   title: "Cumplimiento de derechos",
-  //   icon: BorderAllIcon,
-  //   BgColor: 'primary',
-  //   to: "/cumplimiento",
-  // },
-  // {
-  //     title: 'Despatriarcalizacion',
-  //     icon: UserPlusIcon,
-  //     BgColor: 'primary',
-  //     to: '/despatriarcalizacion'
-  // },
 
-//   { header: 'Auth' },
-//   {
-//     title: 'Login',
-//     icon: LoginIcon,
-//     BgColor: 'primary',
-//     to: '/auth/login'
-// },
-// {
-//     title: 'Register',
-//     icon: UserPlusIcon,
-//     BgColor: 'primary',
-//     to: '/auth/register'
-// },
-// { header: 'Extra' },
 // {
 //     title: 'Icons',
 //     icon: MoodHappyIcon,

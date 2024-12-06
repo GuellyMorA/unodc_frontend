@@ -1,11 +1,50 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+//import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { useRouter } from "vue-router";
 const router = useRouter();
 
+
+
+// Definir variables reactivas usando `ref`
+const isDisabled = ref(true);
+const username = localStorage.getItem('username');
+const userId = localStorage.getItem('usuario_id');
+const rolDesc = localStorage.getItem('rol_desc');
+const deptoId = localStorage.getItem('depto_id');
+
+// Función para habilitar/deshabilitar
+const desabilatar = () => {
+  isDisabled.value = rolDesc === 'ADMIN' || rolDesc === 'DIRECT_NAL' ? false : true;
+};
+
+// Utilizar el ciclo de vida
+onMounted(() => {
+  desabilatar();
+});
+
 </script>
-<template>
+
+<style scoped>
+.container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.disabled {
+  background-color: #9c9393;
+  opacity: 0.5;
+  pointer-events: none; /* Desactiva eventos dentro del contenedor */
+}
+</style>
+
+
+
+<template  >
+     <div :class="['container', { 'disabled': isDisabled }]">
     <v-row>    
         <v-col cols="12" lg="3" sm="6">
             <v-card elevation="10" class="withbg">
@@ -82,4 +121,5 @@ const router = useRouter();
             </UiParentCard>
         </v-col> -->
     </v-row>
+</div>
 </template>

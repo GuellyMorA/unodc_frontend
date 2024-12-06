@@ -422,7 +422,7 @@ export default {
 
 
     page: 1,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     search: '',
     dialog: false,
     dialog2: false,

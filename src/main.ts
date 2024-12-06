@@ -5,7 +5,13 @@ import { router } from './router';
 import vuetify from './plugins/vuetify';
 import '@/scss/style.scss';
 import PerfectScrollbar from 'vue3-perfect-scrollbar';
+
 import VueApexCharts from 'vue3-apexcharts';
+
+import Highcharts from "highcharts";
+import HighchartsMap from "highcharts/modules/map";
+import HighchartsVue from "highcharts-vue";
+
 import VueTablerIcons from 'vue-tabler-icons';
 import Maska from 'maska';
 
@@ -13,11 +19,6 @@ import Vue3Toasity, { type ToastContainerOptions } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
 
 import axios from 'axios';
-
-
-//import moment from 'moment';
-
-
 
 
 const apiUrl = import.meta.env;
@@ -36,6 +37,14 @@ app.use(createPinia());
 app.use(VueTablerIcons);
 app.use(Maska);
 app.use(VueApexCharts);
+//app.use(Highcharts);
+//app.use(HighchartsVue);
+app.use(HighchartsVue, {tagName: 'charts'}, {
+	highcharts: Highcharts
+})
+//app.use(HighchartsMap);
+
+
 app.use( 
     Vue3Toasity,
     {
