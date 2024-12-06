@@ -32,12 +32,13 @@ const submit = async (event: any) => {
               //localStorage.setItem('userJson',JSON.stringify(res.data ));
 
               localStorage.setItem('username',form.value.user_login ); 
+              localStorage.setItem('nombre',res.data.nombre ); 
               localStorage.setItem('rol_desc',res.data.rol_desc); 
               localStorage.setItem('depto_id',res.data.depto_id); 
               localStorage.setItem('cambio_clave',res.data.cambio_clave ); 
               localStorage.setItem('usuario_id',res.data.usuario_id); 
               localStorage.setItem('grado_sigla',res.data.grado_sigla); 
-
+            //  console.log('**2 Auth.login: ', res.data);  
               console.log('**2 username: ', form.value.user_login);
                console.log('**2 rol_desc: ', res.data.rol_desc);
                 console.log('**2 depto_id: ', res.data.depto_id);
@@ -55,7 +56,6 @@ const submit = async (event: any) => {
                 autoClose: 3000,
                 position: toast.POSITION.TOP_RIGHT
             });
-            localStorage.removeItem('username');
             localStorage.removeItem('username');
             return res;
         }

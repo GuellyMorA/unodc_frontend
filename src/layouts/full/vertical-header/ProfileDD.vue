@@ -3,7 +3,10 @@ import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
 import { useRouter } from "vue-router";
 const router = useRouter();
 
+const nombre = localStorage.getItem('nombre');
+const rol_desc=localStorage.getItem('rol_desc');
 const logout = async (event: any) => {
+
     console.log("localStorage.removeItem(username)  : ",   localStorage.getItem('username'));
     localStorage.removeItem("username");    
     router.push('/auth/login');
@@ -30,13 +33,13 @@ const logout = async (event: any) => {
                     <template v-slot:prepend>
                         <UserIcon stroke-width="1.5" size="20"/>
                     </template>
-                    <v-list-item-title class="pl-4 text-body-1">Sbtte. Patricia Lopez</v-list-item-title>
+                    <v-list-item-title class="pl-4 text-body-1">{{nombre}}</v-list-item-title>
                 </v-list-item>
                 <v-list-item value="item2" color="primary">
                     <template v-slot:prepend>
                         <MailIcon stroke-width="1.5" size="20"/>
                     </template>
-                    <v-list-item-title  class="pl-4 text-body-1">Adm. del Sistema</v-list-item-title>
+                    <v-list-item-title  class="pl-4 text-body-1">{{ rol_desc }}</v-list-item-title>
                 </v-list-item>
            
             </v-list> 

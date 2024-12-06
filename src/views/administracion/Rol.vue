@@ -114,11 +114,11 @@
               </thead>
               <tbody>
                 <tr v-for="(operacion, index) in perfilOperacionesArray" :key="index">
-                  <td>{{ index }}</td>
-                  <td>{{ operacion }}</td>
+                  <td>{{ index +1 }}</td>
+                  <td>{{ operacion.operaciones_concat }}</td>
                  
                    <td>
-                    <v-icon small  @click="cargarPersonaSeg(seguimiento.fila)"> mdi-arrow-right-bold</v-icon>
+                    <v-icon small  @click="cargarPerfilOperaciones(operacion.operaciones_concat)"> mdi-arrow-right-bold</v-icon>
                   </td>
                 </tr>
               </tbody>
@@ -138,11 +138,11 @@
               <tbody>
                 <tr v-for="(operacion, index) in perfilOperNewArray" :key="index">
                       <td>
-                    <v-icon small  @click="cargarPersonaSeg(operacion.fila)"> mdi-arrow-left-bold</v-icon>
+                    <v-icon small  @click="quitarPerfilOperaciones(operacion.operaciones_concat)"> mdi-arrow-left-bold</v-icon>
                   </td>
                  
                   <td>{{ operacion.operaciones_concat }}</td>
-               <td>{{ operacion.fila }}</td>
+              
                 </tr>
               </tbody>
             </table>
@@ -257,8 +257,7 @@ export default {
     editedItemRol: {
       fila: '',
       id: null,
-      roles_sigla: '',
-      rol: '',
+
       operaciones_concat: '',
       ci_y_complemento: '',
       ci_expedido: '',
@@ -268,6 +267,8 @@ export default {
       email: '',
       departamento: '',
       depto_id: '',
+    
+
       municipio: '',
       mun_id: '',
       user_login: '',
@@ -275,6 +276,7 @@ export default {
       u_rol_id: '',
       roles_sigla: '',
       rol: '',
+    
       reset_key: '',
       reset_date: '',
 
@@ -291,8 +293,7 @@ export default {
     defaultItemUsu: {
       fila: '',
       id: null,
-      roles_sigla: '',
-      rol: '',
+ 
       operaciones_concat: '',
       ci_y_complemento: '',
       ci_expedido: '',
@@ -302,6 +303,7 @@ export default {
       email: '',
       departamento: '',
       depto_id: '',
+  
       municipio: '',
       mun_id: '',
       user_login: '',
@@ -364,45 +366,79 @@ export default {
     perfilOperacionesList(item) {
      // this.perfilOperacionesArray = this.people.map(oper => oper.operaciones_concat);
     //  this.perfilOperacionesArray =this.perfilOperacionesArray.split("-");
-    this.perfilOperacionesArray =item.operaciones_concat.split("-");
+   // this.perfilOperacionesArray =  item.operaciones_concat.split("-");
 
-    const itemNew = [this.item.map(oper => ({
+        const itemArray = [item ];
+        const itemArray2 = itemArray.map(oper => ({
           fila: oper.fila,
           rol: oper.rol,
           roles_sigla: oper.roles_sigla,
           operaciones_sigla_concat: oper.operaciones_sigla_concat,
-          operaciones_concat:this.perfilOperacionesArray,
+          operaciones_concat:item.operaciones_concat.split("-"), //this.perfilOperacionesArray,
           nivel_geografico_sigla: oper.nivel_geografico_sigla,
+          departamento:oper.departamento,
           estado: oper.estado
-        }))  ];
+        })) ;
 
-      this.perfilOperacionesArray =item.operaciones_concat.split("-");
- // Convertir cada elemento de la propiedad 'numeros' en un objeto separado
- this.perfilOperacionesArray = itemNew.flatMap(objeto => 
-    objeto.operaciones_concat.map(numero => ({
-      fila: oper.fila,
-          rol: oper.rol,
-          roles_sigla: oper.roles_sigla,
-          operaciones_sigla_concat: oper.operaciones_sigla_concat,
-          nivel_geografico_sigla: oper.nivel_geografico_sigla,
-          estado: oper.estado,
-        operaciones_concat: numero  // Cada numero se convierte en un objeto separado
-    }))
-);
-      const seguimientoIndex = this.perfilOperacionesArray.find(seg => seg.fila === item);
+    // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+        this.perfilOperacionesArray = itemArray2.flatMap(oper => 
+            oper.operaciones_concat.map(objeto => ({
+                fila: oper.fila,
+                rol: oper.rol,
+                roles_sigla: oper.roles_sigla,
+                operaciones_sigla_concat: oper.operaciones_sigla_concat,
+                nivel_geografico_sigla: oper.nivel_geografico_sigla,
+                departamento:oper.departamento,
+                estado: oper.estado,
+                operaciones_concat: objeto  // Cada numero se convierte en un objeto separado
+          }))
+    );
+
+      console.log('this.perfilOperacionesArray :', this.perfilOperacionesArray);
+  },
+
+    cargarPerfilOperaciones(operaciones_concat) {
+
+      const operacionObjeto = this.perfilOperacionesArray.find(oper => oper.operaciones_concat === operaciones_concat);
       //this.editedIndex = this.people.indexOf(item);
-      this.perfilOperacionesArray = Object.assign({}, seguimientoIndex);
-      console.log('this.seguimiento :', this.seguimiento);
+      this.perfilOperNewArray.push(operacionObjeto); // Object.assign({}, operacionObjeto);
+      console.log('this.perfilOperNewArray :', this.perfilOperNewArray);
+      
+      const indice = this.perfilOperacionesArray.findIndex(oper => oper.operaciones_concat === operaciones_concat);
+            
+            // Si se encontró, eliminar el elemento
+            if (indice !== -1) {
+              this.perfilOperacionesArray.splice(indice, 1);
+              console.log('this.perfilOperacionesArray :', this.perfilOperacionesArray);
+
+              //this.perfilOperacionesArray.push(operaciones_concat); 
+            } else {
+                console.log(`No se encontró operaciones_concat con nombre: ${operaciones_concat}`);
+            }
+
+
     },
+    quitarPerfilOperaciones(operaciones_concat) {
+        // Encontrar el índice del elemento
+        const indice = this.perfilOperNewArray.findIndex(oper => oper.operaciones_concat === operaciones_concat);
+            
+            // Si se encontró, eliminar el elemento
+            if (indice !== -1) {
+            
+              const operacionObjeto = this.perfilOperNewArray.find(oper => oper.operaciones_concat === operaciones_concat);
+              //this.editedIndex = this.people.indexOf(item);
+              this.perfilOperacionesArray.push(operacionObjeto); // Object.assign({}, operacionObjeto);
+              console.log('this.perfilOperacionesArray :', this.perfilOperacionesArray);
+  this.perfilOperNewArray.splice(indice, 1);
+              console.log('this.perfilOperNewArray :', this.perfilOperNewArray);
 
-    cargarPerfilOperaciones(item) {
+            } else {
+                console.log(`No se encontró operaciones_concat con nombre: ${operaciones_concat}`);
+            }
+       
+         
 
-      const seguimientoIndex = this.perfilOperacionesArray.find(seg => seg.fila === item);
-      //this.editedIndex = this.people.indexOf(item);
-      this.seguimiento = Object.assign({}, seguimientoIndex);
-      console.log('this.seguimiento :', this.seguimiento);
     },
-
     async gradoList() {
       Grado.gradoList()
         .then((response) => {
@@ -433,6 +469,11 @@ export default {
               depto_id: depart.depto_id,
               depto_sigla: depart.depto_sigla,
             }));
+            this.deptoOptions.push({
+              depto: 'Bolivia',
+              depto_id: 0,
+              depto_sigla: 'BOL',
+            });
             console.log("deptoOptions  : ", this.deptoOptions);
           } else {
             this.showSnackbar('Error recuperando Rol ' + response, 'red');

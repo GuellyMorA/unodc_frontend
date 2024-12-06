@@ -24,15 +24,15 @@ export interface menu {
 }
 
 const sidebarItem: menu[] = [
-  { header: 'Inicio' },
+ // { header: 'Inicio' },
   {
-    title: 'Dashboard.',
+    title: 'Inicio.',
     icon: LayoutDashboardIcon,
     BgColor: 'primary',
     to: '/'
   },
-  { header: 'Temática' },
-  //
+  /*{ header: 'Módulos' },
+  */
   {
     title: "Administracion",
     icon: UserPlusIcon,
