@@ -87,10 +87,20 @@ const submit = async (event: any) => {
                 ></v-text-field>
             </v-col>
             <v-col cols="12">
-                <v-btn size="large" rounded="pill" color="primary" class="rounded-pill" block type="submit" flat @click="submit"
+                <v-btn size="large" rounded="pill"  class="custom-green-btn rounded-pill" block type="submit" flat @click="submit"
                     >Ingresar</v-btn
                 >
             </v-col>
         </v-row>
     </div>
 </template>
+
+<style scoped>
+.custom-green-btn {
+  background-color: #849C58;
+  /* #073d09    cambio a color verde oscuro  */
+  /* Verde */
+  color: white;
+  /* Texto en blanco */
+}
+</style>

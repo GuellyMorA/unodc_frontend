@@ -2,6 +2,8 @@
 import Logo from '@/layouts/full/logo/Logo.vue';
 /* Login form */
 import LoginForm from '@/components/auth/LoginForm.vue';
+import logo from '@/assets/images/logos/logo-pol-nal.png';
+
 </script>
 <template>
     <div class="authentication">
@@ -11,10 +13,18 @@ import LoginForm from '@/components/auth/LoginForm.vue';
                     <div class="boxed-auth-wrap">
                         <v-card rounded="xl" elevation="10" class="px-sm-1 px-0  mx-auto index-2" max-width="450">
                             <v-card-item class="pa-sm-8">
-                                <div class="d-flex justify-center mb-5">
+                                <!-- <div class="d-flex justify-center mb-5">
                                     <Logo />
-                                </div>
-                                <div class="text-h6 text-medium-emphasis text-center mb-6">Unidad de Educación en Género y Generacional</div>
+                                </div> -->
+                                <div class="logo text-center">
+                <RouterLink to="/">
+                    <img :src="logo" alt="home" style="width: 20%" />
+                </RouterLink>
+
+            </div>
+                                <div class="text-h6 text-medium-emphasis text-center mb-6">Departamento Nacional de transparencia</div>
+                                <div class="text-h6 text-medium-emphasis text-center mb-6">Sistema de Denuncias</div>
+                                
                                 <LoginForm />
                                 <!-- <h6 class="text-subtitle-1  text-grey100 d-flex justify-center align-center mt-3">
                                     New to Spike?
