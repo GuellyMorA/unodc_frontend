@@ -15,14 +15,14 @@ import { VDatePicker } from 'vuetify/labs/VDatePicker'
 //import moment from 'moment';
 //import { useDate } from 'vuetify/labs/useDate'
 //import AirDatepicker from 'air-datepicker';
-import HighchartsVue from "highcharts-vue";
+//import HighchartsVue from "highcharts-vue";
 
 export default createVuetify({
  components : {
         VDataTable,
         VDatePicker,
         //AirDatepicker
-        HighchartsVue
+      //  HighchartsVue
      /*   date: {
         adapter: DayJsAdapter,
       }, 
