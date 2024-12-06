@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>Mapa de Bolivia - Denuncias de Tránsito</h1>
+      <h1>Mapa de Bolivia - Denuncias</h1>
       <highcharts-vue :options="chartOptions"></highcharts-vue>
       
     </div>
