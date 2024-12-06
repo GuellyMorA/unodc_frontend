@@ -1,5 +1,6 @@
 import http from 'axios';
-///import http2 from 'axios';
+import http2 from 'axios';
+const apiUrl = import.meta.env;
 
 
 class DenunciaService {
@@ -37,13 +38,34 @@ class DenunciaService {
     });
   }
 
+  denunciaUpdate(id, data) {
+    return http2({
+      method:'put',
+      url: `/denunciaPersonas/${id}`,
+     // baseURL: apiUrl.VITE_API_URL_AUTH,
+      headers: {
+        "Content-Type": "application/json",
+        'Authorization': apiUrl.VITE_API_URL_TOKEN
+      },      
+    data:`${data}`
+    })
+    .catch((error) => {
+      console.log("error denunciaUpdate  url  : ", error.config.url);
+
+        return error;
+    });
+
+  }
+
+
+/*
   denunciaUpdate(id) {
     return http.put(`/denunciaPersonas/${id}`).catch((error) => {
       return error;
     });
   }
 
-/*
+
   denunciaDelLogico(id) {
     return http.put(`/denunciaPersonasDel/${id}`).catch((error) => {
       return error;

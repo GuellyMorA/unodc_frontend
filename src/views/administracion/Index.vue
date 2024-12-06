@@ -27,12 +27,12 @@ const router = useRouter();
             <v-card elevation="10" class="withbg">
                 <v-card-item>
                     <div class="d-sm-flex align-center justify-space-between pt-sm-2">
-                        <v-card-title class="text-h5">Perfiles</v-card-title>
+                        <v-card-title class="text-h5">Roles</v-card-title>
                     </div>
                     <v-row>
                         <v-col cols="12" sm="12">
-                            <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Administracion de perfiles</div>
-                            <v-btn rounded="pill" to="/denuncia/seguimiento" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
+                            <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Administracion de roles</div>
+                            <v-btn rounded="pill" to="/administracion/admRolForm" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
                         </v-col>
                     </v-row>
                 </v-card-item>
@@ -43,12 +43,12 @@ const router = useRouter();
             <v-card elevation="10" class="withbg">
                 <v-card-item>
                     <div class="d-sm-flex align-center justify-space-between pt-sm-2">
-                        <v-card-title class="text-h5">Modulos</v-card-title>
+                        <v-card-title class="text-h5">Perfiles</v-card-title>
                     </div>
                     <v-row>
                         <v-col cols="12" sm="12">
-                            <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Administracion de modulos</div>
-                            <v-btn rounded="pill" to="/denuncia/seguimiento" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
+                            <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Administracion de perfiles</div>
+                            <v-btn rounded="pill" to="/administracion/admPerfilForm" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
                         </v-col>
                     </v-row>
                 </v-card-item>

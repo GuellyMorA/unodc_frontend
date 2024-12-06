@@ -3,8 +3,14 @@ import http2 from 'axios';
 
 
 class SeguimientoService {
+  
+  seguimientoListByCodByNivelGeoByUsuId(data_user_id,data_depto_id,data_cod_denuncia ) {
+    return http.get(`/seguimientoListByCodByNivelGeoByUsuId/${data_user_id}/${data_depto_id}/${data_cod_denuncia}`,).catch((error) => {
+      console.log("error seguimientoListByCodByNivelGeoByUsuId  url  : ", error.config.url);
 
-  //    /documentosPathListByCod/:cod_denuncia/:depto_id'
+      return error;
+    });
+  }
 
   seguimientoListByCod(data_user_id,data_depto_id ) {
     return http.get(`/seguimientoListByCod/${data_user_id}/${data_depto_id}`,).catch((error) => {
@@ -33,28 +39,14 @@ class SeguimientoService {
     });
   }
 
-  usuarioUpdate(id, data) {
-    return http2({
-      method:'put',
-      url: `/auth/usuario/${id}`,
-      baseURL: apiUrl.VITE_API_URL_AUTH,
-      headers: {
-        "Content-Type": "application/json",
-        'Authorization': apiUrl.VITE_API_URL_TOKEN
-      },      
-    data:`${data}`
-    })
-    .catch((error) => {
-        return error;
-    });
+ 
 
-  }
-  seguimientoUpdate(id) {
+  /*seguimientoUpdate(id) {
     return http.put(`/seguimiento/${id}`).catch((error) => {
       return error;
     });
   }
-
+*/
 /*
   seguimientoDelLogico(id) {
     return http.put(`/seguimientoDel/${id}`).catch((error) => {

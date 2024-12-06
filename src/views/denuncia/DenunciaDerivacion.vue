@@ -87,11 +87,11 @@
                 <label for="file3">Reserva de identidad ? : </label>
               </v-col>
               <v-col class="p-0 py-0 px-0" cols="1">
-                <v-checkbox value="true" v-model="denPerDnte.reserva_identidad_si" :readonly="lockField"
+                <v-checkbox  v-model="denPerDnte.reserva_identidad_si" :readonly="lockField"
                   label="Si"></v-checkbox>
               </v-col>
               <v-col class="p-0 py-0 px-0" cols="2">
-                <v-checkbox value="false" v-model="denPerDnte.reserva_identidad_no" :readonly="lockField"
+                <v-checkbox v-model="denPerDnte.reserva_identidad_no" :readonly="lockField"
                   label="No"></v-checkbox>
               </v-col>
 
@@ -175,24 +175,23 @@
               <v-select v-model="denunciado.grado" :items="gradoOptions" item-title="grado" item-value="grados_sigla"
                 :readonly="lockField" label="grado" @update:modelValue="onGradoChange"
                 :rules="[v => !!v || 'grado es requerido']"></v-select>
-
             </v-col>
 
             <v-col cols="4" class="p-0 py-0 px-1">
               <v-text-field v-model="denunciado.puesto_cargo_funcion" :readonly="lockField" label="Cargo y funcion"
                 :rules="[v => !!v || 'cargo y funcion es requerido']"></v-text-field>
             </v-col>
+
             <v-col cols="4" class="p-0 py-0 px-1">
               <v-text-field v-model="denunciado.unidad_policial_desc" :readonly="lockField" label="Unidad policial"
                 :rules="[v => !!v || 'unidad policial es requerido']"></v-text-field>
             </v-col>
-
-
           </v-row>
 
-
-
           <div>
+            <v-container>
+            <span class="text-h5"> Lista Denunciados </span>
+          </v-container>
             <table>
               <thead>
                 <tr>
@@ -217,7 +216,6 @@
               </tbody>
             </table>
           </div>
-
         </v-card-text>
 
         <v-card-title>
@@ -301,16 +299,12 @@
                 :readonly="lockField2" label="Gestor Seguimiento" placeholder="Personal Asignado"
                 @update:modelValue="onGestorChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
             </v-col>
-
           </v-row>
           <v-row>
             <v-col class="p-0 py-0 px-1">
-
-
+              
             </v-col>
           </v-row>
-
-
 
         </v-card-text>
 
@@ -332,10 +326,9 @@
     <v-dialog v-model="dialog2" max-width="1000px">
       <v-card class="mx-auto  mt-4" max-width="700">
 
-        <v-card-title class="mt-4">
+        <v-card-title  class="mb-2" >
           <v-container>
-
-            <span class="text-h5"> Derivacion denuncia </span>
+            <span class="text-h5"> Derivar una denuncia </span>
           </v-container>
         </v-card-title>
 
@@ -362,14 +355,11 @@
 
           <v-row class="p-0 py-4 px-0  ">
             <v-col class="p-0 py-0 px-1">
-              <v-textarea v-model="denPerDnte.observacion" :readonly="lockField2" label="Observacion a la denuncia"
+              <v-textarea v-model="denPerDnte.observacion" :readonly="lockField2" label="Registre una comentario para derivar la denuncia"
                 :rules="[v => !!v || 'Observacion es requerida']" placeholder="Observaciones/recomendaciones"></v-textarea>
             </v-col>
           </v-row>
-
         </v-card-text>
-
-
 
         <v-card-actions v-if="lockField2 === false">
           <v-spacer></v-spacer>
@@ -479,6 +469,13 @@ export default {
     codDenuncia: '',
 
     // propiedades del formulario 
+    denPerDnteUpd: {
+      estado: '',
+      transaccion: '',
+
+      usu_mod: null,
+      fec_mod: null
+    },
     denPerDnte: {
       fila: '',
       id: null,
@@ -610,7 +607,7 @@ export default {
       nombres_gestor: '',
       gestor_seguimiento: '',
     
-
+      actividades_id:'',
       estado: '',
       transaccion: '',
       usu_cre: null,
@@ -724,9 +721,6 @@ export default {
 
     //******************************************** */
 
-   
-
-
     defaultItemUsu: {
       id: null,
       nombres: '',
@@ -835,6 +829,7 @@ export default {
       try {//  en utils
         // await downloadFile('/archivo', 'archivo_descargado.ext'); // Cambia el nombre y la ruta específica del archivo
         await downloadFile(fileName); // Cambia el nombre y la ruta específica del archivo
+        this.dialog3 = true; // vuelve a abrir el popup cerrado por la llamda previa a axios
 
         this.snackbar.message = 'Archivo descargado exitosamente!';
         this.snackbar.color = 'success';
@@ -1086,7 +1081,7 @@ export default {
     handleInputDate(event) {  //  @input="handleInputDate"
       // Limitar la entrada a números y el separador de fecha
       this.denPerDnte.fec_registro = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
-      console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro);  ///[^0-9]/g
+     // console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro);  ///[^0-9]/g
     },
     // Función para formatear la fecha// Aplica la máscara de fecha  dd/mm/yyyy
     formatDate(inputValue) {
@@ -1147,50 +1142,12 @@ export default {
 
         console.log('denPerDnte 2 : ', JSON.stringify(this.denPerDnte));
 
-        if (this.editedIndex > -1) {   // Update seguimiento  no hacer
+        if (this.editedIndex > -1) {   // Update seguimiento  no hacer nada
 
-
-          // this.denPerDnte.estado = 'ACTIVO';
-          this.denPerDnte.transaccion = 'MODIFICAR';
-          this.denPerDnte.usu_mod = this.username;
-          this.denPerDnte.fec_mod = new Date();
-
-          Denuncia.denunciaUpdate(this.denPerDnte.id, JSON.stringify(this.denPerDnte))
-            .then((response) => {
-              if (response.status === 200) {
-                // this.people = response.data;
-                Object.assign(this.people[this.editedIndex], this.denPerDnte)
-
-                console.log("denunciaUpdate  : ", response.status, response);
-                // toast('Wow so easy !', { containerId: 'A' });
-                this.denunciasRolUpdate();
-
-
-                //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
-                toast.success('Denuncia modificado correctamente ! ', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // Add your custom class name here
-
-                });
-                this.close()
-              } else {
-                console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
-
-                toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-
-                });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
-              console.log('Log Error modificando Denuncia: ', error);
-            });
-
-        } else {  // Add new seguimiento
+        
+           
+        }
+        else {  // Add new seguimiento
    
         this.seguimiento.denuncia_personas_id = this.denPerDnte.id;
         this.seguimiento.usuarios_id = this.denPerDnte.gestor_id;
@@ -1198,27 +1155,37 @@ export default {
         const dateParts =   this.denPerDnte.fec_registro.split("/"); //// "2024-05-17".split("/");  //
         this.seguimiento.fec_registro = new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
         this.seguimiento.observacion = this.denPerDnte.observacion;
-          this.seguimiento.estado = 'ASIGNADO';
+        this.seguimiento.actividades_id = 7; //this.denPerDnte.actividades_id;
+
+        
+        this.seguimiento.estado = 'ASIGNADO';
           this.seguimiento.transaccion = 'DEN_DERIVAR';
           this.seguimiento.usu_cre = this.username;
 
-//  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
           Seguimiento.seguimientoCreate(this.seguimiento)
             .then((response) => {
 
               if (response.status === 201) {
-               // this.people.push(this.denPerDnte);      
-
+               // this.people.push(this.denPerDnte); 
                 console.log("seguimientoCreate  : ", response.status, response);
                 toast.success('seguimiento creado correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
                   // toastClassName: 'custom-toast', // Add your custom class name here
-
                 });
-                this.close()
-              } else {
+//  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
 
+          this.denPerDnteUpd.estado = 'ASIGNADO';
+          this.denPerDnteUpd.transaccion = 'DEN_DERIVAR';
+          this.denPerDnteUpd.usu_mod = this.username;
+          this.denPerDnteUpd.fec_mod = new Date();
+
+          this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+
+                this.denunciaList();//  new
+                this.close()
+              } 
+              else {
                 console.log("seguimientoCreate  : ", response.status, "error:   : ", response.response.request.response);
                 this.showSnackbar('Error creando seguimiento: ' + response.response.request.response, 'red');
                 toast.info('Error creando seguimiento: ' + 'Revise seguimiento de logueo', {
@@ -1232,26 +1199,49 @@ export default {
               this.showSnackbar('Log Error creando seguimiento: ' + error, 'red');
               console.log('Log Error creando seguimiento: ', error);
             });
-
-          // this.showSnackbar('Denuncia creado correctamente!', 'green')
-          // this.close()
-
-
-
-
-
-
-
+        
         }
 
       } catch (error) {
         this.showSnackbar('Error creating Denuncia: ' + error, 'red');
       }
 
-
     },
 
+    async denunciaUpdate(seguimiento_id,seguimiento_data)  {                  
 
+      await Denuncia.denunciaUpdate(seguimiento_id, seguimiento_data)
+        .then((response) => {
+          if (response.status === 200) {
+        
+            // Object.assign(this.people[this.editedIndex], this.editedItemseguimiento)
+
+            console.log("denunciaUpdate  : ", response.status, response);
+
+              //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
+              toast.success('Denuncia modificado correctamente ! ', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
+              // toastClassName: 'custom-toast', // Add your custom class name here
+
+            });
+            this.close()
+          } else {
+            console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
+
+            toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
+
+            });
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
+          console.log('Log Error modificando Denuncia: ', error);
+        });
+    },
 
     addNewPerson() {
       this.editedIndex = -1
@@ -1281,11 +1271,24 @@ export default {
 
 
     },
+    dateToYMD(date) {
+    var strArray=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
+    var d = date.getDate();
+    var m = strArray[date.getMonth()];
+    var y = date.getFullYear();
+    return '' + (d <= 9 ? '0' + d : d) + '/' + m + '/' + y;
+},
     addNewSeguimiento(item) {
 
       this.editedIndex = -1
       this.seguimiento = Object.assign({}, null)   //  this.defaultItemSeguimiento
+      
       this.denPerDnte = Object.assign({}, item);
+         this.denPerDnte.fec_registro= this.dateToYMD(new Date()), // Nov 5
+console.log("this.denPerDnte.fec_registro: "+  this.denPerDnte.fec_registro)
+      this.denPerDnte.observacion= '' ;
+      this.denPerDnte.gestor_id='';
+
       this.dialog2 = true;
       this.lockField = true;
       this.lockField2 = false;

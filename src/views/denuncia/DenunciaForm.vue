@@ -224,10 +224,10 @@
                 <label for="file3">Reserva de identidad ? : </label>
               </v-col>
               <v-col class="p-0 py-0 px-0" cols="3" >
-                <v-checkbox  value="true"   v-model="denPerDnte.reserva_identidad_si" label="Si" ></v-checkbox>           
+                <v-checkbox v-model="denPerDnte.reserva_identidad_si" label="Si" ></v-checkbox>           
               </v-col>
               <v-col class="p-0 py-0 px-0" cols="3" >
-                <v-checkbox  value="false"  v-model="denPerDnte.reserva_identidad_no" label="No" ></v-checkbox>           
+                <v-checkbox   v-model="denPerDnte.reserva_identidad_no" label="No" ></v-checkbox>           
                 </v-col>
           </v-row>
 
@@ -757,14 +757,15 @@ export default {
            const newFile = new File([file], this.nameFile, { type: file.type });
            this.nameFile  =newFile;
           formData.append("files", newFile);
+          
+          console.log('this.nameFile.name :', this.nameFile.name);
+          console.log(typeof this.nameFile);
           }
        // });
     
        
        // arrayPlano.forEach((file, index) => { //for (let i = 0; i < this.files.length; i++) {
       
-          console.log('this.nameFile.name :', this.nameFile.name);
-          console.log(typeof this.nameFile);
           if (file !== undefined) { // Asegúrate de que el archivo no esté vacío
 
             this.documentosPath.denuncia_personas_id = this.denPerDnte.id;
@@ -820,7 +821,7 @@ export default {
             if ( this.files.length>0){
          
                 const apiUrl = import.meta.env;
-                  axios.post('/documentosPath2', formData, {
+                  axios.post('/documentosPathUpload', formData, {
                   headers: {
                     "Content-Type": "multipart/form-data",
                     'Authorization': apiUrl.VITE_API_URL_TOKEN

@@ -48,7 +48,7 @@ const router = useRouter();
                     <v-row>
                         <v-col cols="12" sm="12">
                             <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Aceptacion o rechazo de denuncia</div>
-                            <v-btn rounded="pill" to="/denuncia/seguimiento" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
+                            <v-btn rounded="pill" to="/denuncia/denunciaConclusion" color="primary" class="v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7">Ingresar</v-btn>
                         </v-col>
                     </v-row>
                 </v-card-item>

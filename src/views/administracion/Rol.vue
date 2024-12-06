@@ -7,12 +7,12 @@
 
 
     <!-- Search Field -->
-    <v-text-field v-model="search" class="pa-2" label="Buscar Usuario" append-icon="mdi-magnify" single-line
+    <v-text-field v-model="search" class="pa-2" label="Buscar Rol" append-icon="mdi-magnify" single-line
       hide-details></v-text-field>
 
     <!-- Data Table --> <!-- v-model:page="page" -->
     <v-data-table :headers="headers" :items="filteredItems"
-      :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1"
+      :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'rol', order: 'desc' }]" class="elevation-1"
       :search="search" :items-per-page="itemsPerPage" rows-per-page-text="Filas por página"
       no-data-text="No existen registros." no-results-text="Sin resultados" page-text="de"
       items-per-page-text="Registros por pagina ">
@@ -26,7 +26,7 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Usuarios del sistema</v-toolbar-title>
+          <v-toolbar-title>Roles de usuario</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
 
@@ -61,7 +61,7 @@
 
     <!-- Add New Person Button -->
     <v-btn class="custom-green-btn mt-4" @click="addNewPerson">
-      Adicionar Usuario
+      Adicionar Rol
     </v-btn>
 
 
@@ -79,81 +79,83 @@
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="nombres"
-                    :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemRol.roles_sigla" :readonly="lockField" label="roles_sigla"
+                    :rules="[v => !!v || 'roles_sigla es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
-                    :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemRol.rol" :readonly="lockField" label="rol"
+                    :rules="[v => !!v || 'rol es requerido']"></v-text-field>
                 </v-col>
+                                        
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
-                    :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.ci_y_complemento" :readonly="lockField"
-                    label="ci_y_complemento" :rules="[v => !!v || 'CI es requerido']"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField"
-                    label="ci_expedido" :rules="[v => !!v || 'ci_expedido es requerido']"></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" item-title="grado"
-                    item-value="grados_sigla" :readonly="lockField" label="grados" @update:modelValue="onGradoChange"
-                    :rules="[v => !!v || 'grado es requerido']"></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.telefono" :readonly="lockField" label="telefono"
-                    :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.email" :readonly="lockField" label="email"
-                    :rules="[v => !!v || 'email es requerido']"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.departamento" :items="deptoOptions" item-title="depto"
-                    item-value="depto_id" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange"
+                  <v-select v-model="editedItemRol.departamento" :items="deptoOptions" item-title="depto"
+                    item-value="depto_sigla" :readonly="lockField" label="departamento" @update:modelValue="onDepartChange"
                     :rules="[v => !!v || 'departamento es requerido']"></v-select>
-
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
-                    :readonly="lockField" label="Ciudad" return-object
-                    :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="usuario"
-                    :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="password"
-                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]"
-                    :type="show1 ? 'text' : 'password'" hint="Min. 8 caracteres" name="input-10-1" counter
-                    @click:append="show1 = !show1"></v-text-field>
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-
-                  <v-select v-model="editedItemUsuario.rol" :items="rolOptions" item-title="rol" item-value="roles_sigla"
-                    :readonly="lockField" label="rol del usuario" @update:modelValue="onRolChange"
-                    :rules="[v => !!v || 'Rol es requerido']"></v-select>
-
-                </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.estado" :items="estadoOptions" item-title="est"
-                    item-value="transac" :readonly="lockField" label="Estado del usuario"
-                    @update:modelValue="onEstadoChange" :rules="[v => !!v || 'estado es requerido']"></v-select>
-                </v-col>
-
-
+                 
               </v-row>
+           <!-- <v-row>             
+              <v-col cols="8" class="p-0 py-0 px-0">
+                  <v-textarea v-model="editedItemRol.operaciones_concat" :readonly="lockField" label="Modulo:Perfil"
+                :rules="[v => !!v || 'Perfil es requerido']" placeholder="Modulo:Perfil (operaciones)"></v-textarea>
+
+                </v-col>
+              </v-row>-->
+           <v-row class="p-0 py-1 px-0  ">
+            <v-col class="p-0 py-0 px-1">
+              <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fila</th>
+                  <th>Modulo:Perfil</th>
+                  <th>Asignar</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(operacion, index) in perfilOperacionesArray" :key="index">
+                  <td>{{ index }}</td>
+                  <td>{{ operacion }}</td>
+                 
+                   <td>
+                    <v-icon small  @click="cargarPersonaSeg(seguimiento.fila)"> mdi-arrow-right-bold</v-icon>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+            </v-col>
+            <v-col class="p-0 py-0 px-1">
+              <div>
+            <table>
+              <thead>
+                <tr>
+                    <th>Devol.</th>
+                  <th>Modulo:Perfil</th>
+                
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(operacion, index) in perfilOperNewArray" :key="index">
+                      <td>
+                    <v-icon small  @click="cargarPersonaSeg(operacion.fila)"> mdi-arrow-left-bold</v-icon>
+                  </td>
+                 
+                  <td>{{ operacion.operaciones_concat }}</td>
+               <td>{{ operacion.fila }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+            </v-col>
+          </v-row>
             </v-container>
           </v-card-text>
 
           <v-card-actions v-if="lockField === false">
             <v-spacer></v-spacer>
             <v-btn color="blue darken-1" text @click="close"> Cancelar </v-btn>
-            <v-btn class="custom-green-btn" text @click="usuariosSave"> Guardar </v-btn>
+            <v-btn class="custom-green-btn" text @click="rolesSave"> Guardar </v-btn>
           </v-card-actions>
           <v-card-actions v-else-if="lockField === true">
             <v-spacer></v-spacer>
@@ -186,13 +188,11 @@
 <script>
 import { toast } from 'vue3-toastify';
 
-import Usuario from '@/services/Usuario';
+import Rol from '@/services/Rol';
 import NivelGeografico from '@/services/NivelGeografico';
 import Grado from '@/services/Grado';
-import Rol from '@/services/Rol';
+
 import UsuariosRol from '@/services/UsuariosRol';
-
-
 
 export default {
 
@@ -201,7 +201,7 @@ export default {
     loading: true,
 
     page: 1,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     search: '',
     dialog: false,
     dialogDelete: false,
@@ -218,9 +218,7 @@ export default {
       min: v => v.length >= 8 || 'Min. 8 caracteres',
       emailMatch: () => `The email and password you entered don't match`,
     },
-
-
-
+  
 
     headers: [
       {
@@ -230,12 +228,9 @@ export default {
         key: 'fila',
         class: 'background'
       },
-      { title: 'CI', key: 'ci_y_complemento', class: 'success--text title' },
-      { title: 'Grado', key: 'grados_sigla' },
-      { title: 'Ap. Paterno', key: 'apellido_pat' },
-      { title: 'Ap. Materno', key: 'apellido_mat' },
-      { title: 'Nombres', key: 'nombres' },
-      { title: 'Rol Asignado', key: 'rol' },
+      { title: 'Codigo Rol', key: 'roles_sigla', class: 'success--text title' },
+      { title: 'Rol', key: 'rol' },
+      { title: 'Modulo/Perfil', key: 'operaciones_concat' },
       { title: 'Estado', key: 'estado' },
 
       { title: 'Aciones', value: 'actions', sortable: false },
@@ -244,7 +239,7 @@ export default {
     editedIndex: -1,
     editedItemRolUsu: {
       id: null,
-      usuarios_id: null,
+      roles_id: null,
       roles_sigla: '',
       descripcion: null,
       estado: '',
@@ -256,12 +251,15 @@ export default {
 
     },
     // ... propiedades del formulario 
-    editedItemUsuario: {
+
+    perfilOperacionesArray:[],
+    perfilOperNewArray:[],
+    editedItemRol: {
       fila: '',
       id: null,
-      nombres: '',
-      apellido_pat: '',
-      apellido_mat: '',
+      roles_sigla: '',
+      rol: '',
+      operaciones_concat: '',
       ci_y_complemento: '',
       ci_expedido: '',
       grado: '',
@@ -293,9 +291,9 @@ export default {
     defaultItemUsu: {
       fila: '',
       id: null,
-      nombres: '',
-      apellido_pat: '',
-      apellido_mat: '',
+      roles_sigla: '',
+      rol: '',
+      operaciones_concat: '',
       ci_y_complemento: '',
       ci_expedido: '',
       grado: '',
@@ -335,7 +333,7 @@ export default {
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
     gradoOptions: [], // ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
     rolOptions: [],
-    validationErrors: { nombres: { value: false } },
+    validationErrors: { roles_sigla: { value: false } },
 
     selectedDeptoId: null,    // Código del país seleccionado
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
@@ -344,19 +342,6 @@ export default {
     munOptions: [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
 
     estadoOptions: [{ est: 'ACTIVO', transac: 'ACTIVAR' }, { est: 'INACTIVO', transac: 'INACTIVAR' }],
-    /*depas: [{
-      id: 1, departs: 'Chuquisaca',
-      cities: [{ id: 1, name: 'Sucre' }, { id: 2, name: 'Montes' }, { id: 3, name: 'Chaco' }]
-    },
-    {
-      id: 2, departs: 'La Paz',
-      cities: [{ id: 1, name: 'La Paz' }, { id: 2, name: 'Santa Cruz' }]
-    },
-    {
-      id: 3, departs: 'Santa Cruz',
-      cities: [{ id: 1, name: 'Santa Cruz' }]
-    }],*/
-    // departOptions: [{id:1,depto:'Chuquisaca'},{id:2 , depto:'La Paz'}, {id:3 , depto:'Santa Cruz'},{id:4 , depto: 'Cochabamba'}],
 
 
   }),
@@ -364,24 +349,59 @@ export default {
   mounted() {
     this.loading = true;
     //this.username= localStorage.getItem('username');
-    this.usuarioList();
+    this.rolList();
     this.deptoList();
     this.gradoList();
     this.loading = false;
-    this.rolList();
 
 
   },
 
-  /*computed: {
-      // Opciones para el primer combo de países
-      departOptions() {
-        return this.departamentos
-      },
-    },*/
+
 
   methods: {
 
+    perfilOperacionesList(item) {
+     // this.perfilOperacionesArray = this.people.map(oper => oper.operaciones_concat);
+    //  this.perfilOperacionesArray =this.perfilOperacionesArray.split("-");
+    this.perfilOperacionesArray =item.operaciones_concat.split("-");
+
+    const itemNew = [this.item.map(oper => ({
+          fila: oper.fila,
+          rol: oper.rol,
+          roles_sigla: oper.roles_sigla,
+          operaciones_sigla_concat: oper.operaciones_sigla_concat,
+          operaciones_concat:this.perfilOperacionesArray,
+          nivel_geografico_sigla: oper.nivel_geografico_sigla,
+          estado: oper.estado
+        }))  ];
+
+      this.perfilOperacionesArray =item.operaciones_concat.split("-");
+ // Convertir cada elemento de la propiedad 'numeros' en un objeto separado
+ this.perfilOperacionesArray = itemNew.flatMap(objeto => 
+    objeto.operaciones_concat.map(numero => ({
+      fila: oper.fila,
+          rol: oper.rol,
+          roles_sigla: oper.roles_sigla,
+          operaciones_sigla_concat: oper.operaciones_sigla_concat,
+          nivel_geografico_sigla: oper.nivel_geografico_sigla,
+          estado: oper.estado,
+        operaciones_concat: numero  // Cada numero se convierte en un objeto separado
+    }))
+);
+      const seguimientoIndex = this.perfilOperacionesArray.find(seg => seg.fila === item);
+      //this.editedIndex = this.people.indexOf(item);
+      this.perfilOperacionesArray = Object.assign({}, seguimientoIndex);
+      console.log('this.seguimiento :', this.seguimiento);
+    },
+
+    cargarPerfilOperaciones(item) {
+
+      const seguimientoIndex = this.perfilOperacionesArray.find(seg => seg.fila === item);
+      //this.editedIndex = this.people.indexOf(item);
+      this.seguimiento = Object.assign({}, seguimientoIndex);
+      console.log('this.seguimiento :', this.seguimiento);
+    },
 
     async gradoList() {
       Grado.gradoList()
@@ -392,29 +412,14 @@ export default {
             this.gradoOptions = Object.values(response.data);
             console.log("gradoOptions  : ", this.gradoOptions);
           } else {
-            this.showSnackbar('Error recuperando Usuario ' + response, 'red');
+            this.showSnackbar('Error recuperando Rol ' + response, 'red');
           }
         })
         .catch(e => {
           console.log(e);
         });
     },
-    async rolList() {
-      Rol.rolList()
-        .then((response) => {
-          // console.log("response.data[0]  : ", response.data[0], response.status);
-          if (response.status === 200) {
 
-            this.rolOptions = Object.values(response.data);
-            console.log("rolOptions  : ", this.rolOptions);
-          } else {
-            this.showSnackbar('Error recuperando Usuario ' + response, 'red');
-          }
-        })
-        .catch(e => {
-          console.log(e);
-        });
-    },
     async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
@@ -426,10 +431,11 @@ export default {
             this.deptoOptions = this.departamentos.map(depart => ({
               depto: depart.depto,
               depto_id: depart.depto_id,
+              depto_sigla: depart.depto_sigla,
             }));
             console.log("deptoOptions  : ", this.deptoOptions);
           } else {
-            this.showSnackbar('Error recuperando Usuario ' + response, 'red');
+            this.showSnackbar('Error recuperando Rol ' + response, 'red');
           }
         })
         .catch(e => {
@@ -440,84 +446,68 @@ export default {
 
     onDepartChange() {
       // Encuentra el depart seleccionado por su id
-      const departMun = this.departamentos.find(c => c.depto_id === this.editedItemUsuario.departamento);
+      const departMun = this.departamentos.find(c => c.depto_id === this.editedItemRol.departamento);
       // Actualiza las municip según el depart seleccionado
       this.munOptions = departMun ? departMun.municipios : [];
       console.log("munOptions  : ", this.munOptions);
       // Resetear la mun seleccionada al cambiar el país
-      this.editedItemUsuario.municipio = '';
+      this.editedItemRol.municipio = '';
 
-      this.editedItemUsuario.depto_id = this.editedItemUsuario.departamento;
+      this.editedItemRol.depto_id = this.editedItemRol.departamento;
 
     },
 
     onEstadoChange() {
       // Encuentra el depart seleccionado por su id
-      const estado = this.estadoOptions.find(c => c.transac === this.editedItemUsuario.estado);
+      const estado = this.estadoOptions.find(c => c.transac === this.editedItemRol.estado);
       // Actualiza las municip según el depart seleccionado
 
-      this.editedItemUsuario.estado = estado.est;
-      this.editedItemUsuario.transaccion = estado.transac;
+      this.editedItemRol.estado = estado.est;
+      this.editedItemRol.transaccion = estado.transac;
     },
 
     onGradoChange() {
       // Encuentra el depart seleccionado por su id
-      const grado = this.gradoOptions.find(c => c.grado === this.editedItemUsuario.grado);
+      const grado = this.gradoOptions.find(c => c.grado === this.editedItemRol.grado);
       // Actualiza las municip según el depart seleccionado
       console.log("gradoOptions  : ", this.gradoOptions);
-      this.editedItemUsuario.grados_sigla = grado.sigla;
-      //this.editedItemUsuario.grado= grado.grado;
+      this.editedItemRol.grados_sigla = grado.sigla;
+      //this.editedItemRol.grado= grado.grado;
     },
 
     onRolChange() {
       // Encuentra el depart seleccionado por su id
-      const rol = this.rolOptions.find(c => c.roles_sigla === this.editedItemUsuario.rol);
+      const rol = this.rolOptions.find(c => c.roles_sigla === this.editedItemRol.rol);
       // Actualiza las municip según el depart seleccionado
       console.log("rolOptions  : ", this.rolOptions);
-      this.editedItemUsuario.roles_sigla = rol.roles_sigla;
-      // this.editedItemUsuario.u_rol_id = rol.rol_id;
-      //this.editedItemUsuario.grado= grado.grado;
+      this.editedItemRol.roles_sigla = rol.roles_sigla;
+      // this.editedItemRol.u_rol_id = rol.rol_id;
+      //this.editedItemRol.grado= grado.grado;
     },
 
 
-
-    /*const formulario = {
-    nombre: {
-        value: 'Juan'
-    },
-    apellido: {
-        value: 'Pérez'
-    },
-    edad: {
-        value: 30
-    }
-};*/
     validateForm() {
       //this.validationErrors = {};
 
-      if (!this.editedItemUsuario.nombres || !this.editedItemUsuario.apellido_pat || !this.editedItemUsuario.apellido_mat) this.validationErrors.nombres = { value: true };
-      else delete this.validationErrors.nombres;
+      if (!this.editedItemRol.roles_sigla ) this.validationErrors.roles_sigla = { value: true };
+      else delete this.validationErrors.roles_sigla;
 
-      if (!this.editedItemUsuario.ci_y_complemento || !this.editedItemUsuario.ci_expedido || !this.editedItemUsuario.grado) this.validationErrors.ci_y_complemento = { value: true };
-      else delete this.validationErrors.ci_y_complemento;
-
-      if (!this.editedItemUsuario.telefono || !this.editedItemUsuario.email || !this.editedItemUsuario.departamento) this.validationErrors.telefono = { value: true };
-      else delete this.validationErrors.telefono;
-
-      if (!this.editedItemUsuario.municipio || !this.editedItemUsuario.user_login || !this.editedItemUsuario.password_hash) this.validationErrors.municipio = { value: true };
-      else delete this.validationErrors.municipio;
-
-      if (!this.editedItemUsuario.rol || !this.editedItemUsuario.estado) this.validationErrors.rol = { value: true };
+      if (!this.editedItemRol.rol ) this.validationErrors.rol = { value: true };
       else delete this.validationErrors.rol;
+
+      if (!this.editedItemRol.operaciones_concat ) this.validationErrors.operaciones_concat = { value: true };
+      else delete this.validationErrors.operaciones_concat;
+
+
 
 
       return !Object.keys(this.validationErrors).length;
     },
 
-    usuariosRolUpdate() {
-      this.editedItemRolUsu.id = this.editedItemUsuario.u_rol_id === '' ? this.editedItemRolUsu.id : this.editedItemUsuario.u_rol_id;
-      this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
-      this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.roles_sigla;
+ /*   usuariosRolUpdate() {
+      this.editedItemRolUsu.id = this.editedItemRol.u_rol_id === '' ? this.editedItemRolUsu.id : this.editedItemRol.u_rol_id;
+      this.editedItemRolUsu.roles_id = this.editedItemRol.id;
+      this.editedItemRolUsu.roles_sigla = this.editedItemRol.roles_sigla;
       this.editedItemRolUsu.descripcion = 'Cambio de rol';
       this.editedItemRolUsu.estado = 'ACTIVO';
       this.editedItemRolUsu.transaccion = 'MODIFICAR';
@@ -525,13 +515,13 @@ export default {
       this.editedItemRolUsu.fec_mod = new Date();
 
 
-      UsuariosRol.UsuariosRolUpdate(this.editedItemRolUsu.id, JSON.stringify(this.editedItemRolUsu))
+      RolsRol.RolsRolUpdate(this.editedItemRolUsu.id, JSON.stringify(this.editedItemRolUsu))
         .then((response) => {
           if (response.status === 200) {
-            console.log("usuarioUpdate  : ", response.status, response);
+            console.log("rolUpdate  : ", response.status, response);
 
-            //  this.showSnackbar('Usuario rol modificado correctamente !', 'green')
-            toast.success('Usuario rol modificado correctamente ! ', {
+            //  this.showSnackbar('Rol rol modificado correctamente !', 'green')
+            toast.success('Rol rol modificado correctamente ! ', {
               autoClose: 3000,
               position: toast.POSITION.TOP_RIGHT,
               // toastClassName: 'custom-toast', // Add your custom class name here
@@ -539,10 +529,10 @@ export default {
             });
             //this.close()
           } else {
-            console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error modificando Usuario rol: ' + response.response.request.response, 'red');
+            console.log("rolUpdate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error modificando Rol rol: ' + response.response.request.response, 'red');
 
-            toast.info('Error modificando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
+            toast.info('Error modificando Rol rol: ' + 'Revise logs con el Administrador del sistema', {
               autoClose: 5000,
               position: toast.POSITION.TOP_RIGHT,
 
@@ -550,36 +540,36 @@ export default {
           }
         })
         .catch(error => {
-          this.showSnackbar('Log Error modificando Usuario rol ' + error, 'red');
-          console.log('Log Error modificando Usuario rol: ', error);
+          this.showSnackbar('Log Error modificando Rol rol ' + error, 'red');
+          console.log('Log Error modificando Rol rol: ', error);
         });
 
     },
-
-
-    usuariosRolCreate() {
-      this.editedItemRolUsu.usuarios_id = this.editedItemUsuario.id;
-      this.editedItemRolUsu.roles_sigla = this.editedItemUsuario.rol;
+*/
+/*
+usuariosRolCreate() {
+      this.editedItemRolUsu.roles_id = this.editedItemRol.id;
+      this.editedItemRolUsu.roles_sigla = this.editedItemRol.rol;
       this.editedItemRolUsu.descripcion = 'Asignacion de rol';
       this.editedItemRolUsu.estado = 'ACTIVO';
       this.editedItemRolUsu.transaccion = 'ACTIVAR';
       this.editedItemRolUsu.usu_cre = this.username;
 
-      UsuariosRol.UsuariosRolCreate(JSON.stringify(this.editedItemRolUsu))
+      UsuariosRol.usuariosRolCreate(JSON.stringify(this.editedItemRolUsu))
         .then((response) => {
 
           if (response.status === 201) {
 
-            this.editedItemUsuario.u_rol_id = response.data.id;
+            this.editedItemRol.u_rol_id = response.data.id;
             this.editedItemRolUsu.id = response.data.id;
-            console.log("UsuariosRolCreate  : ", response.status, response);
-            this.showSnackbar('Usuario rol creado correctamente!', 'green')
+            console.log("RolsRolCreate  : ", response.status, response);
+            this.showSnackbar('Rol rol creado correctamente!', 'green')
             // this.close()
           } else {
 
-            console.log("UsuariosRolCreate  : ", response.status, "error:   : ", response.response.request.response);
-            this.showSnackbar('Error creando usuario Rol: ' + response.response.request.response, 'red');
-            toast.info('Error creando Usuario rol: ' + 'Revise logs con el Administrador del sistema', {
+            console.log("RolsRolCreate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error creando rol Rol: ' + response.response.request.response, 'red');
+            toast.info('Error creando Rol rol: ' + 'Revise logs con el Administrador del sistema', {
               autoClose: 5000,
               position: toast.POSITION.TOP_RIGHT,
 
@@ -587,12 +577,12 @@ export default {
           }
         })
         .catch(error => {
-          this.showSnackbar('Log Error creando Usuario rol: ' + error, 'red');
-          console.log('Log Error creando Usuario rol: ', error);
+          this.showSnackbar('Log Error creando Rol rol: ' + error, 'red');
+          console.log('Log Error creando Rol rol: ', error);
         })
     },
-
-    usuariosSave() {
+*/
+    rolesSave() {
       try {
 
         if (!this.validateForm()) {
@@ -604,35 +594,35 @@ export default {
           return false;
         }
 
-        // if( this.editedItemUsuario && this.editedItemUsuario ){
+        // if( this.editedItemRol && this.editedItemRol ){
         // const dateParts = (form.value.fecha || '').split("/");      
         // fec_ejecucion:   new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]).toISOString(), // form.value.fecha,        
 
-        this.editedItemUsuario.mun_id = this.editedItemUsuario.municipio.mun_id ? this.editedItemUsuario.municipio.mun_id : this.editedItemUsuario.mun_id;
+        this.editedItemRol.mun_id = this.editedItemRol.municipio.mun_id ? this.editedItemRol.municipio.mun_id : this.editedItemRol.mun_id;
 
-        console.log('editedItemUsuario 2 : ', JSON.stringify(this.editedItemUsuario));
+        console.log('editedItemRol 2 : ', JSON.stringify(this.editedItemRol));
 
         if (this.editedIndex > -1) {   // Update person
 
 
-          // this.editedItemUsuario.estado = 'ACTIVO';
-          this.editedItemUsuario.transaccion = 'MODIFICAR';
-          this.editedItemUsuario.usu_mod = this.username;
-          this.editedItemUsuario.fec_mod = new Date();
+          // this.editedItemRol.estado = 'ACTIVO';
+          this.editedItemRol.transaccion = 'MODIFICAR';
+          this.editedItemRol.usu_mod = this.username;
+          this.editedItemRol.fec_mod = new Date();
 
-          Usuario.usuarioUpdate(this.editedItemUsuario.id, JSON.stringify(this.editedItemUsuario))
+          Rol.rolUpdate(this.editedItemRol.id, JSON.stringify(this.editedItemRol))
             .then((response) => {
               if (response.status === 200) {
                 // this.people = response.data;
-                Object.assign(this.people[this.editedIndex], this.editedItemUsuario)
+                Object.assign(this.people[this.editedIndex], this.editedItemRol)
 
-                console.log("usuarioUpdate  : ", response.status, response);
+                console.log("rolUpdate  : ", response.status, response);
                 // toast('Wow so easy !', { containerId: 'A' });
-                this.usuariosRolUpdate();
+               // this.usuariosRolUpdate();
 
 
-                //  this.showSnackbar('Usuario modificado correctamente !', 'green')
-                toast.success('Usuario modificado correctamente ! ', {
+                //  this.showSnackbar('Rol modificado correctamente !', 'green')
+                toast.success('Rol modificado correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
                   // toastClassName: 'custom-toast', // Add your custom class name here
@@ -640,10 +630,10 @@ export default {
                 });
                 this.close()
               } else {
-                console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Usuario: ' + response.response.request.response, 'red');
+                console.log("rolUpdate  : ", response.status, "error:   : ", response.response.request.response);
+                this.showSnackbar('Error modificando Rol: ' + response.response.request.response, 'red');
 
-                toast.info('Error modificando Usuario: ' + 'Revise el usuario de logueo', {
+                toast.info('Error modificando Rol: ' + 'Revise el rol de logueo', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
 
@@ -651,8 +641,8 @@ export default {
               }
             })
             .catch(error => {
-              this.showSnackbar('Log Error modificando Usuario ' + error, 'red');
-              console.log('Log Error modificando Usuario: ', error);
+              this.showSnackbar('Log Error modificando Rol ' + error, 'red');
+              console.log('Log Error modificando Rol: ', error);
             });
 
 
@@ -660,27 +650,27 @@ export default {
 
         } else {  // Add new person
 
-          this.editedItemUsuario.reset_key = 'PENDIENTE';
-          this.editedItemUsuario.reset_date = new Date();
+          this.editedItemRol.reset_key = 'PENDIENTE';
+          this.editedItemRol.reset_date = new Date();
 
-          this.editedItemUsuario.estado = 'ACTIVO';
-          this.editedItemUsuario.transaccion = 'ACTIVAR';
-          this.editedItemUsuario.usu_cre = this.username;
+          this.editedItemRol.estado = 'ACTIVO';
+          this.editedItemRol.transaccion = 'ACTIVAR';
+          this.editedItemRol.usu_cre = this.username;
 
 
-          Usuario.usuarioCreate(JSON.stringify(this.editedItemUsuario))
+          Rol.rolCreate(JSON.stringify(this.editedItemRol))
             .then((response) => {
 
               if (response.status === 201) {
                 //  this.people = response.data;
-                this.people.push(this.editedItemUsuario);
+                this.people.push(this.editedItemRol);
 
-                this.editedItemUsuario.id = response.data.id;
-                this.usuariosRolCreate();
+                this.editedItemRol.id = response.data.id;
+                this.rolesRolCreate();
 
-                console.log("usuarioCreate  : ", response.status, response);
-              //  this.showSnackbar('Usuario creado correctamente!', 'green')
-                toast.success('Usuario creado correctamente ! ', {
+                console.log("rolCreate  : ", response.status, response);
+              //  this.showSnackbar('Rol creado correctamente!', 'green')
+                toast.success('Rol creado correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
                   // toastClassName: 'custom-toast', // Add your custom class name here
@@ -689,9 +679,9 @@ export default {
                 this.close()
               } else {
 
-                console.log("usuarioCreate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error creando Usuario: ' + response.response.request.response, 'red');
-                toast.info('Error creando Usuario: ' + 'Revise el usuario de logueo', {
+                console.log("rolCreate  : ", response.status, "error:   : ", response.response.request.response);
+                this.showSnackbar('Error creando Rol: ' + response.response.request.response, 'red');
+                toast.info('Error creando Rol: ' + 'Revise el rol de logueo', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
 
@@ -699,11 +689,11 @@ export default {
               }
             })
             .catch(error => {
-              this.showSnackbar('Log Error creando Usuario: ' + error, 'red');
-              console.log('Log Error creando Usuario: ', error);
+              this.showSnackbar('Log Error creando Rol: ' + error, 'red');
+              console.log('Log Error creando Rol: ', error);
             });
 
-          // this.showSnackbar('Usuario creado correctamente!', 'green')
+          // this.showSnackbar('Rol creado correctamente!', 'green')
           // this.close()
 
 
@@ -715,20 +705,20 @@ export default {
         }
 
       } catch (error) {
-        this.showSnackbar('Error creating Usuario: ' + error, 'red');
+        this.showSnackbar('Error creating Rol: ' + error, 'red');
       }
 
 
     },
 
-    async usuarioList() {
-      Usuario.usuarioList()
+    async rolList() {
+      Rol.rolList()
         .then((response) => {
-          console.log("usuarioList  : ", response.data, response.status);
+          console.log("rolList  : ", response.data, response.status);
           if (response.status === 200) {
             this.people = response.data;
           } else {
-            this.showSnackbar('Error recuperando Usuario ' + response, 'red');
+            this.showSnackbar('Error recuperando Rol ' + response, 'red');
           }
         })
         .catch(e => {
@@ -739,7 +729,7 @@ export default {
 
     addNewPerson() {
       this.editedIndex = -1
-      this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
+      this.editedItemRol = Object.assign({}, this.defaultItemUsu)
       this.dialog = true
 
 
@@ -747,21 +737,23 @@ export default {
 
     editItem(item) {
       this.editedIndex = this.people.indexOf(item)
-      this.editedItemUsuario = Object.assign({}, item)
+      this.editedItemRol = Object.assign({}, item)
       this.dialog = true
       this.lockField = false
+      this.perfilOperacionesList(item);
     },
 
     viewItem(item) {
       //this.editedIndex = this.people.indexOf(item)
-      this.editedItemUsuario = Object.assign({}, item)
+      this.editedItemRol = Object.assign({}, item)
       this.dialog = true
       this.lockField = true
+      this.perfilOperacionesList(item);
     },
 
     deleteItem(item) {
       this.editedIndex = this.people.indexOf(item)
-      this.editedItemUsuario = Object.assign({}, item)
+      this.editedItemRol = Object.assign({}, item)
       this.dialogDelete = true
     },
 
@@ -773,7 +765,7 @@ export default {
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {
-        this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
+        this.editedItemRol = Object.assign({}, this.defaultItemUsu)
         this.editedIndex = -1
       })
     },
@@ -781,7 +773,7 @@ export default {
     close() {
       this.dialog = false
       this.$nextTick(() => {
-        this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
+        this.editedItemRol = Object.assign({}, this.defaultItemUsu)
         this.editedIndex = -1
       })
     },
@@ -796,7 +788,7 @@ export default {
     },
 
     resetForm() {
-      this.editedItemUsuario = Object.assign({}, this.defaultItemUsu)
+      this.editedItemRol = Object.assign({}, this.defaultItemUsu)
       this.editedIndex = -1
       this.dialog = false
       //this.editingUserId = null;
@@ -818,7 +810,7 @@ export default {
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Adicionar Usuario' : 'Modificar Usuario'
+      return this.editedIndex === -1 ? 'Adicionar Rol' : 'Modificar Rol'
     },
     filteredItems() {
       return this.people.filter(item => {
@@ -845,7 +837,7 @@ export default {
 
   // created() {
   // this.initialize()
-  //this.listByFkUsuario () 
+  //this.listByFkRol () 
   //},
 
 
@@ -894,7 +886,22 @@ export default {
   /* Add more styles as needed */
 }
 
+table {
+  /* ojo no borrar estilos para la tabla html */
+  width: 100%;
+  border-collapse: collapse;
+}
 
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #f2f2f2;
+}
 
 /*
 .table-header {

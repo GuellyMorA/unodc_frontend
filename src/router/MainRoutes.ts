@@ -25,6 +25,20 @@ const MainRoutes = {
             component: () => import('@/views/administracion/Usuario.vue')
         },
         {
+            name: 'AdmRolForm',
+            path: '/administracion/admRolForm',
+            requiresAuth: true,
+            component: () => import('@/views/administracion/Rol.vue')
+        },
+        {
+            name: 'AdmPerfilForm',
+            path: '/administracion/admPerfilForm',
+            requiresAuth: true,
+            component: () => import('@/views/administracion/Perfil.vue')
+        },
+
+
+        {
             name: 'DenunciaForm',
             path: '/denuncia/denunciaForm',
             //requiresAuth: true,
@@ -36,6 +50,7 @@ const MainRoutes = {
             requiresAuth: true,
             component: () => import('@/views/denuncia/Index.vue'),
         },
+   
         {
             name: 'AdmDenunciaForm',
             path: '/denuncia/admDenunciaForm',
@@ -48,7 +63,12 @@ const MainRoutes = {
             requiresAuth: true,
             component: () => import('@/views/denuncia/DenunciaSeguimiento.vue'),
         },
-    
+         {
+            name: 'DenunciaConclusion',
+            path: '/denuncia/denunciaConclusion',
+            requiresAuth: true,
+            component: () => import('@/views/denuncia/DenunciaConclusion.vue'),
+        },
         {
             name: 'Reportes',
             path: '/reportes/reportesDash',

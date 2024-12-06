@@ -329,7 +329,7 @@
         <v-card-title >
           <v-container>
 
-            <span class="text-h5"> Adicionar actividad de seguimiento a una denuncia </span>
+            <span class="text-h5"> Conclusion denuncia </span>
           </v-container>
         </v-card-title>
 
@@ -354,15 +354,15 @@
             </v-col>
           </v-row>
 
-          <v-row class="p-0 py-4 px-0  ">
+          <v-row class="p-0 py-0 px-0  ">
             <v-col class="p-0 py-0 px-1">
-              <v-textarea v-model="seguimiento.observacion" :readonly="lockField2" label="Observacion a la denuncia"
+              <v-textarea v-model="seguimiento.observacion" :readonly="lockField2" label="Recomendacion a la conclusion de la denuncia"
                 :rules="[v => !!v || 'Observacion es requerida']" placeholder="Observaciones/recomendaciones"></v-textarea>
             </v-col>
           </v-row>
           <v-row>
-            <v-col  class="p-0 py-0 px-0">     
-                <h4>Adjuntar documentación: </h4> 
+            <v-col  class="p-0 py-4 px-0">     
+                <h4>Adjuntar informe final y documentación complementaria: </h4> 
             </v-col>       
           </v-row>  
 
@@ -548,7 +548,7 @@ export default {
     files:[], 
     fileTypes: [
         { label: 'Cargar Fotos (JPEG/PNG)', accept: 'image/jpeg,image/png,image/bmp' },
-        { label: 'Cargar PDF', accept: 'application/pdf' },
+        { label: 'Cargar PDF  (Informe final)', accept: 'application/pdf' },
        // { label: 'Cargar Texto (TXT)', accept: 'text/plain' },
       //  { label: 'Cargar Archivo de Word', accept: '.doc,.docx' },
         //{ label: 'Cargar Archivo de Excel', accept: '.xls,.xlsx' },
@@ -611,6 +611,14 @@ export default {
     codDenuncia: '',
 
     // propiedades del formulario 
+    denPerDnteUpd: {
+      estado: '',
+      transaccion: '',
+
+      usu_mod: null,
+      fec_mod: null
+    },
+
     denPerDnte: {
       fila: '',
       id: null,
@@ -659,7 +667,7 @@ export default {
       actividades_id: '',
       actividad: '',
       actividad_sigla: '',
-      
+
       estado: '',
       transaccion: '',
       usu_cre: null,
@@ -1096,6 +1104,9 @@ export default {
           if (response.status === 200) {
 
             this.actividadOptions = Object.values(response.data);
+            this.actividadOptions = this.actividadOptions.filter(elemento => elemento.actividad.startsWith('DENUNCIA'));
+         //   this.actividadOptions = this.actividadOptions.filter((elemento) => elemento.edad >= 30);
+
             console.log("actividadOptions  : ", this.actividadOptions);
           } else {
             this.showSnackbar('Error recuperando actividad ' + response, 'red');
@@ -1249,7 +1260,7 @@ export default {
 
     },
     onActividadChange() {
-      // Encuentra el depart seleccionado por su id
+      // Encuentra el actividad seleccionado por su id
       const actividad = this.actividadOptions.find(c => c.id === this.seguimiento.actividades_id);
       // Actualiza las actividades_id según el actividad seleccionado
       console.log("actividadOptions  : ", this.actividadOptions);
@@ -1367,6 +1378,8 @@ export default {
         
           return false;
         }
+
+
        // this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
 
         console.log('seguimientoSave denPerDnte 2 : ', JSON.stringify(this.denPerDnte));
@@ -1423,10 +1436,8 @@ export default {
         const dateParts =   this.seguimiento.fec_registro.split("/"); //// "2024-05-17".split("/");  //
         this.seguimiento.fec_registro = new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
        // this.seguimiento.observacion = this.denPerDnte.observacion;
-          this.seguimiento.estado = 'SEGUIMIENTO';
+          this.seguimiento.estado = 'CONCLUSION';
           this.seguimiento.transaccion =  this.seguimiento.actividad_sigla  ;//'DEN_ACEPTAR';
-      //  this.seguimiento.transaccion = 'DEN_CONTROLAR_SEGUIMIENTO';
-
           this.seguimiento.usu_cre = this.username;
 
 //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
@@ -1439,7 +1450,6 @@ export default {
                
                this.enviarArchivos() ;
 
-
                 console.log("seguimientoCreate  : ", response.status, response);
                 toast.success('seguimiento creado correctamente ! ', {
                   autoClose: 5000,
@@ -1447,6 +1457,17 @@ export default {
                   // toastClassName: 'custom-toast', // Add your custom class name here
 
                 });
+
+                  //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
+
+                  this.denPerDnteUpd.estado = 'CONCLUSION';
+                  this.denPerDnteUpd.transaccion =  this.seguimiento.actividad_sigla  ;//'DEN_ACEPTAR';
+                  //this.denPerDnteUpd.transaccion = 'DEN_DERIVAR';
+                  this.denPerDnteUpd.usu_mod = this.username;
+                  this.denPerDnteUpd.fec_mod = new Date();
+
+                  this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+
                 this.close()
               } else {
 
@@ -1463,9 +1484,6 @@ export default {
               this.showSnackbar('Log Error creando seguimiento: ' + error, 'red');
               console.log('Log Error creando seguimiento: ', error);
             });
-
-          // this.showSnackbar('Denuncia creado correctamente!', 'green')
-          // this.close()
 
 
         }
@@ -1591,6 +1609,40 @@ export default {
         this.showSnackbar('Error en la carga de archivos:' + error, 'red');
       }
     },
+    async denunciaUpdate(seguimiento_id,seguimiento_data)  {                  
+
+await Denuncia.denunciaUpdate(seguimiento_id, seguimiento_data)
+  .then((response) => {
+    if (response.status === 200) {
+  
+      // Object.assign(this.people[this.editedIndex], this.editedItemseguimiento)
+
+      console.log("denunciaUpdate  : ", response.status, response);
+
+        //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
+        toast.success('Denuncia modificado correctamente ! ', {
+        autoClose: 5000,
+        position: toast.POSITION.TOP_RIGHT,
+        // toastClassName: 'custom-toast', // Add your custom class name here
+
+      });
+      this.close()
+    } else {
+      console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
+      this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
+
+      toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
+        autoClose: 5000,
+        position: toast.POSITION.TOP_RIGHT,
+
+      });
+    }
+  })
+  .catch(error => {
+    this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
+    console.log('Log Error modificando Denuncia: ', error);
+  });
+},
 
     addNewPerson() {
       this.editedIndex = -1
