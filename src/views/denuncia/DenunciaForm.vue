@@ -668,9 +668,9 @@ export default {
     this.generateCaptcha();
     this.updateBreadcrumbs();
 
-    this.denunciaPersonasGetByCod();
-    this.denunciadoListByCod();
-    this.documentosPathListByCod();
+   // this.denunciaPersonasGetByCod();
+    //this.denunciadoListByCod();
+   // this.documentosPathListByCod();
   
   },
 

@@ -15,6 +15,11 @@ const AuthRoutes = {
             name: 'Register',
             path: '/auth/register',
             component: () => import('@/views/authentication/BoxedRegister.vue')
+        },
+        {
+            name: 'DenunciaForm',
+            path: '/denuncia/denunciaForm',
+            component: () => import('@/views/denuncia/DenunciaForm.vue')
         }
     ]
 };
