@@ -28,22 +28,22 @@
           <v-row>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denPerDnte.nombres" :readonly="lockField" label="nombres"
-                :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+              placeholder="nombres." :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denPerDnte.apellido_pat" :readonly="lockField" label="apellido pat"
-                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+              placeholder="Apellido" :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denPerDnte.apellido_mat" :readonly="lockField" label="apellido mat"
-                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+              placeholder="Apellido" :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denPerDnte.email" :readonly="lockField" label="correo electronico"
-                :rules="[v => !!v || 'email es requerido']"></v-text-field>
+                :rules="[v => !!v || 'email es requerido']"  ></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-select v-model="denPerDnte.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
