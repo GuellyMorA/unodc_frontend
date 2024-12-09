@@ -668,10 +668,10 @@ export default {
     this.generateCaptcha();
     this.updateBreadcrumbs();
 
-   // this.denunciaPersonasGetByCod();
-    //this.denunciadoListByCod();
-   // this.documentosPathListByCod();
-  
+    this.denunciaPersonasGetByCod();
+    this.denunciadoListByCod();
+    this.documentosPathListByCod();
+    this.isLoading= false;
   },
 
 
@@ -950,7 +950,7 @@ export default {
  
 
     async denunciaPersonasGetByCod() {
-          Denuncia.denunciaPersonasGetByCod('C-002-10-24') //  this.denPerDnte.id
+          Denuncia.denunciaPersonasGetByCod('SD-0305-11-2024') //  this.denPerDnte.id
         .then((response) => {
           console.log("denunciaPersonasGetByCod  : ", response.data, response.status);
           if (response.status === 200) {
@@ -964,7 +964,7 @@ export default {
         });
     },
     async denunciadoListByCod() {
-      Denunciado.denunciadoListByCod('C-002-10-24')
+      Denunciado.denunciadoListByCod('SD-0306-11-2024')
         .then((response) => {
           console.log("denunciadoListByCod 1  : ", response.data, response.status);
           if (response.status === 200) {
@@ -979,7 +979,7 @@ export default {
         });
     },  
     async documentosPathListByCod() {
-         await DocumentosPath.documentosPathListByCod('C-002-10-24') //  this.denPerDnte.id
+         await DocumentosPath.documentosPathListByCod('SD-0306-11-2024') //  this.denPerDnte.id
         .then((response) => {
           console.log("documentosPathListByCod  : ", response.data, response.status);
           if (response.status === 200) {

@@ -943,7 +943,7 @@ export default {
     this.loading = true;
 
     //this.userId= localStorage.getItem('userId'); 
-    this.seguimientoList( this.userId , this.deptoId  );
+    this.seguimientoList( this.userId , this.deptoId, this.rolDesc  );
     this.deptoList();
     this.gradoList();
 
@@ -1146,9 +1146,9 @@ export default {
            this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + error, 'red'); 
         });
     },
-    async seguimientoList(usuarios_id,depto_id)  {
+    async seguimientoList(usuarios_id,depto_id,rol_desc)  {
      
-      await Seguimiento.seguimientoListByCod(usuarios_id,depto_id) 
+      await Seguimiento.seguimientoListByCod(usuarios_id,depto_id,rol_desc) 
         .then((response) => {
           console.log("seguimientoListByCod : ", response.data, response.status);
           if (response.status === 200) {

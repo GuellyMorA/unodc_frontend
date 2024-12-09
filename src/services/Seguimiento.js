@@ -12,8 +12,8 @@ class SeguimientoService {
     });
   }
 
-  seguimientoListByCod(data_user_id,data_depto_id ) {
-    return http.get(`/seguimientoListByCod/${data_user_id}/${data_depto_id}`,).catch((error) => {
+  seguimientoListByCod(data_user_id,data_depto_id ,rol_desc) {
+    return http.get(`/seguimientoListByCod/${data_user_id}/${data_depto_id}/${rol_desc}`,).catch((error) => {
       return error;
     });
   }
