@@ -7,6 +7,7 @@
   </v-alert>
   <h1>Formulario de denuncias</h1>
   <v-container>
+    
 
     <v-card class="mx-auto  mt-1" max-width="700">
 
