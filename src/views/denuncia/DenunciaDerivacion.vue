@@ -429,7 +429,7 @@ export default {
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: localStorage.getItem('username'),
-    rolDesc: localStorage.getItem('rol_desc'),
+    rol: localStorage.getItem('rol'),
     deptoId: localStorage.getItem('depto_id'),
 
     lockField: false,
@@ -898,6 +898,12 @@ export default {
           if (response.status === 200) {
 
             this.gestorOptions = Object.values(response.data);
+
+            this.gestorOptions.sort(function(a, b){
+                if(a.nombres.toLowerCase() < b.nombres.toLowerCase()) { return -1; }
+                if(a.nombres.toLowerCase() > b.nombres.toLowerCase()) { return 1; }
+                return 0;
+            })
             console.log("gestorOptions  : ", this.gestorOptions);
           } else {
             this.showSnackbar('Error recuperando gestor ' + response, 'red');
@@ -932,7 +938,8 @@ export default {
         });
     },
     async denunciaList() {
-      await Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId)
+      console.log('this.deptoId' ,this.deptoId, ',this.rol: ',this.rol );
+      await Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId, this.rol)
         .then((response) => {
           console.log("denunciaPersonasGetByNivelGeo  : ", response.data, response.status);
           if (response.status === 200) {
@@ -980,22 +987,7 @@ export default {
         });
     },
 
-    async seguimientoListByCodXXX(cod_denuncia, depto_id) {
-      await Seguimiento.seguimientoListByCod(cod_denuncia,depto_id) 
-        .then((response) => {
-          console.log("seguimientoByCod  : ", response.data, response.status);
-          if (response.status === 200) {
-            this.seguimientosArray = response.data;
 
-          } else {
-            this.showSnackbar('Error recuperando seguimientoByCod ' + response, 'red');
-          }
-        })
-        .catch(error => {
-          this.showSnackbar('Error recuperando seguimientoByCod ' + error, 'red');
-
-        });
-    },
 
     onDepartChange() {
       // Encuentra el depart seleccionado por su id

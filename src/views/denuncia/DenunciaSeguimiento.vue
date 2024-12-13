@@ -72,12 +72,19 @@
   <template>
     <!-- view Dialog denuncia-->
     <v-dialog v-model="dialog" max-width="1000px">
+   
+
       <v-card class="mx-auto  mt-4" max-width="700">
- <div ref="contenidoPopup">
+ <div ref="popupContent">
+              
+
         <v-card-title class="mt-4">
           <v-container>
             <v-row>
-              <v-col cols="4" class="p-0 py-0 px-1">
+                 <h2>    Formulario de denuncias</h2>
+                </v-row>
+          <v-row class="mt-8" >    
+              <v-col class="p-0 py-0 px-1"  cols="4" >
                 <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
                   :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
               </v-col>
@@ -97,7 +104,20 @@
               </v-col>
 
             </v-row>
-            <span class="text-h5"> Datos del Denunciante </span>
+          <v-row>
+            <v-col class="p-0 py-0 px-0" cols="4">
+            <label class="text-h5">Datos del Denunciante  </label>
+        
+          </v-col>
+          <v-col class="p-0 py-3 px-9" cols="4">
+           
+            <label >Denuncia anonima ? : </label>
+          </v-col>
+            <v-col class="p-0 py-0 px-0" cols="4">
+                <v-checkbox  v-model="denPerDnte.denuncia_anonima" :readonly="lockField"
+                  label=""></v-checkbox>
+                </v-col>
+          </v-row>
           </v-container>
         </v-card-title>
 
@@ -314,8 +334,8 @@
 
         <v-card-actions v-else-if="lockField === true">
           <v-spacer></v-spacer>
-                 <v-btn @click="imprimirContenido">Imprimir</v-btn>
-          <v-btn @click="">Exportar a PDF</v-btn>
+                 <v-btn class="custom-green-btn"  @click="downloadPDF">Exportar a PDF</v-btn>
+      
           <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
       
         </v-card-actions>
@@ -529,7 +549,6 @@ import Denuncia from '@/services/Denuncia';
 import NivelGeografico from '@/services/NivelGeografico';
 import Grado from '@/services/Grado';
 import Rol from '@/services/Rol';
-import DenunciasRol from '@/services/NivelGeografico';
 import Denunciado from '@/services/Denunciado';
 import { downloadFile } from '../../utils/fileDownloader';
 import DocumentosPath from '@/services/DocumentosPath';
@@ -537,6 +556,8 @@ import Usuario from '@/services/Usuario';
 import Seguimiento from '@/services/Seguimiento';
 import Actividad from '@/services/Actividad';
 import axios from 'axios';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 export default {
 
@@ -572,9 +593,11 @@ export default {
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: localStorage.getItem('username'),
     userId: localStorage.getItem('usuario_id'),
-    rolDesc: localStorage.getItem('rol_desc'),
+    rol: localStorage.getItem('rol'),
     deptoId: localStorage.getItem('depto_id'),
+  //  arrayOper:  JSON.parse(localStorage.getItem('menu_operaciones')),
 
+//    this.arrayOper,this.menuModulo, this.moduloOperaciones) 
     lockField: false,
     lockField2: false,
 
@@ -941,9 +964,11 @@ export default {
 
   mounted() {
     this.loading = true;
+   // console.log('this.arrayOper ' ,this.arrayOper );
+    //this.operacionModulo('M_DEN_SEG');
+    console.log('this.deptoId' ,this.deptoId, ',this.rol: ',this.rol );
 
-    //this.userId= localStorage.getItem('userId'); 
-    this.seguimientoList( this.userId , this.deptoId, this.rolDesc  );
+    this.seguimientoList( this.userId , this.deptoId, this.rol  );
     this.deptoList();
     this.gradoList();
 
@@ -960,11 +985,41 @@ export default {
 
 
   methods: {
+
+    downloadPDF() {
+      const popupContent = this.$refs.popupContent;
+
+      html2canvas(popupContent).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+        const imgWidth = 190; // Ajusta el ancho de la imagen, si es necesario
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+
+        let position = 0;
+
+        // Añade la imagen al PDF
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Si la imagen es más larga que una página, hay que añadir más en páginas nuevas
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save('download.pdf'); // Nombre del archivo PDF
+      });
+    },
+
  imprimirContenido() {
-       const popupContent = this.$refs.contenidoPopup;
+       const popupContent = this.$refs.popupContent;
 
  const printWindow = window.open("", "_blank");
-      const content =  this.$refs.contenidoPopup; //contenidoPopup.value;
+      const content =  this.$refs.popupContent; //popupContent.value;
 
       if (printWindow && content) {
         printWindow.document.write(`
@@ -1097,6 +1152,20 @@ export default {
           if (response.status === 200) {
 
             this.actividadOptions = Object.values(response.data);
+            if(  this.rol.substring (0,7) === 'GES_DEP'){
+             // this.actividadOptions = this.actividadOptions.filter(elemento => elemento.actividad.startsWith('DENUNCIA'));
+            }
+            else{
+              this.actividadOptions = this.actividadOptions.filter(elemento => !elemento.actividad.startsWith('DENUNCIA'));
+            }
+           // this.actividadOptions =this.actividadOptions.sort((c, d)=> c.actividad.toLowerCase().charCodeAt(0) - d.actividad.toLowerCase().charCodeAt(0))
+            this.actividadOptions.sort(function(a, b){
+                if(a.actividad.toLowerCase() < b.actividad.toLowerCase()) { return -1; }
+                if(a.actividad.toLowerCase() > b.actividad.toLowerCase()) { return 1; }
+                return 0;
+            })
+
+
             console.log("actividadOptions  : ", this.actividadOptions);
           } else {
             this.showSnackbar('Error recuperando actividad ' + response, 'red');
@@ -1146,9 +1215,9 @@ export default {
            this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + error, 'red'); 
         });
     },
-    async seguimientoList(usuarios_id,depto_id,rol_desc)  {
+    async seguimientoList(usuarios_id,depto_id,rol)  {
      
-      await Seguimiento.seguimientoListByCod(usuarios_id,depto_id,rol_desc) 
+      await Seguimiento.seguimientoListByCod(usuarios_id,depto_id,rol) 
         .then((response) => {
           console.log("seguimientoListByCod : ", response.data, response.status);
           if (response.status === 200) {
@@ -1265,7 +1334,27 @@ export default {
       this.denPerDnte.grados_sigla = grado.sigla;
       //this.denPerDnte.grado= grado.grado;
     },
+    operacionModuloxxx(menus_sigla, operaciones_sigla) {
+      const arrayOper= JSON.parse(localStorage.getItem('menu_operaciones'));
 
+      // Encuentra el depart seleccionado por su id
+      const menuModulo = arrayOper.find(c => c.menus_sigla === menus_sigla &&  c.operaciones_sigla === operaciones_sigla);
+      // Actualiza las municip según el depart seleccionado
+      console.log("menus_sigla  : ", menus_sigla, 'operaciones_sigla', operaciones_sigla);
+      let menuModExist= false;
+      let  moduloExist=false;
+      if(menuModulo){
+        menuModExist= menuModulo.menus_sigla ? true : false ;
+        moduloExist= menuModulo.operaciones_sigla ? true : false ;
+        console.log("menuModExist  : ", menuModExist, 'moduloExist', moduloExist);
+      }
+      else {
+        console.log("menuModExist  : ", menuModExist, 'moduloExist', moduloExist);
+
+      }
+      //this.menuModulo = grado.sigla;
+      //this.operaciones_sigla.grado= operaciones_sigla;
+    },
     onRolChange() {
       // Encuentra el depart seleccionado por su id
       const rol = this.rolOptions.find(c => c.roles_sigla === this.denPerDnte.rol);

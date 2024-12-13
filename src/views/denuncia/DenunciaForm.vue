@@ -5,10 +5,14 @@
   <v-alert v-if="loading" type="info" dismissible>
     Cargando datos...
   </v-alert>
-  <h1>Formulario de denuncias</h1>
   <v-container>
-    
+    <v-card class="mx-auto  mt-1" max-width="700">
 
+<v-card-title class="text-multiline">
+  <h2>    Formulario de denuncias</h2>
+</v-card-title>
+
+</v-card>
     <v-card class="mx-auto  mt-1" max-width="700">
 
       <v-card-title class="text-multiline  title-small">
@@ -21,7 +25,21 @@
 
     <v-card class="mx-auto mt-4" max-width="700">
       <v-card-title>
-        <span class="text-h5"> Datos del Denunciante </span>
+        
+        <v-row class="mt-4 ml-4">
+            <v-col class="p-0 py-0 px-0" cols="4">
+            <label class="text-h5">Datos del Denunciante  </label>
+        
+          </v-col>
+          <v-col class="p-0 py-3 px-9" cols="4">
+           
+            <label >Denuncia anonima ? : </label>
+          </v-col>
+            <v-col class="p-0 py-0 px-0" cols="4">
+                <v-checkbox  v-model="denPerDnte.denuncia_anonima" :readonly="lockField"
+                  label=""></v-checkbox>
+                </v-col>
+          </v-row>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -459,6 +477,7 @@ export default {
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
+      denuncia_anonima: '',
       reserva_identidad:'',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
@@ -499,9 +518,10 @@ export default {
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
-      reserva_identidad:'',
-      reserva_identidad_si: '',
-      reserva_identidad_no: '',
+      denuncia_anonima: false,
+      reserva_identidad: false,
+      reserva_identidad_si: false,
+      reserva_identidad_no: false,
       dnte_id: null,
       apellido_pat: '',
       apellido_mat: '',
@@ -1166,7 +1186,8 @@ export default {
           var dateParts =   this.denPerDnte.fec_registro_hecho.split("/"); //// "2024-05-17".split("/");  //
           this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
 
-          this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? this.denPerDnte.reserva_identidad_si:  this.denPerDnte.reserva_identidad_no
+          this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? true:  
+                                              this.denPerDnte.reserva_identidad_no ? false:  false;
 
           await this.denunciaPersonasList() ;
 
@@ -1188,7 +1209,7 @@ export default {
                 this.denuncianteCreate();
                 this.denunciadoCreate();
                 this.enviarArchivos() ;
-
+                this.captcha='';
                 console.log("denunciaCreate  correctamente: ", response.status, response);
                 
                 this.showSnackbar('Denuncia creada correctamente!', 'green');
@@ -1199,7 +1220,7 @@ export default {
                 });
 
               } else {
-
+                 this.captcha='';
                 console.log("denuncia  : ", response.status, "error:   : ", response.response.request.response);
                 this.showSnackbar('Error creando denuncia: ' + response.response.request.response, 'red');
                 toast.info('Error creando Denuncia: ' + 'Revise logs con el Administrador del sistema', {

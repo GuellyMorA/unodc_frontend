@@ -33,9 +33,7 @@
     <template v-slot:top>
       <v-toolbar flat>
 
-        <v-toolbar-title class="text-center">Seguimiento de denuncias registradas en sistema</v-toolbar-title>
-
-
+        <v-toolbar-title class="text-center">Conclusion de denuncias registradas en sistema</v-toolbar-title>
 
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -572,7 +570,7 @@ export default {
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: localStorage.getItem('username'),
     userId: localStorage.getItem('usuario_id'),
-    rolDesc: localStorage.getItem('rol_desc'),
+    rol: localStorage.getItem('rol'),
     deptoId: localStorage.getItem('depto_id'),
 
     lockField: false,
@@ -950,8 +948,8 @@ export default {
   mounted() {
     this.loading = true;
 
-    //this.userId= localStorage.getItem('userId'); 
-    this.seguimientoList( this.userId , this.deptoId  );
+    console.log('this.deptoId' ,this.deptoId, ',this.rol: ',this.rol );
+    this.seguimientoList( this.userId , this.deptoId, this.rol  );
     this.deptoList();
     this.gradoList();
 
@@ -1021,7 +1019,7 @@ export default {
       try {//  en utils
         // await downloadFile('/archivo', 'archivo_descargado.ext'); // Cambia el nombre y la ruta específica del archivo
         await downloadFile(fileName); // Cambia el nombre y la ruta específica del archivo
- this.dialog3 = true; // vuelve a abrir el popup cerrado por la llamda previa a axios
+         this.dialog3 = true; // vuelve a abrir el popup cerrado por la llamda previa a axios
         this.snackbar.message = 'Archivo descargado exitosamente!';
         this.snackbar.color = 'success';
         console.log('Archivos descargados correctamente1');
@@ -1057,6 +1055,7 @@ export default {
           if (response.status === 200) {
 
             this.gradoOptions = Object.values(response.data);
+            
             console.log("gradoOptions  : ", this.gradoOptions);
           } else {
             this.showSnackbar('Error recuperando Denuncia ' + response, 'red');
@@ -1073,6 +1072,7 @@ export default {
           if (response.status === 200) {
 
             this.rolOptions = Object.values(response.data);
+           
             console.log("rolOptions  : ", this.rolOptions);
           } else {
             this.showSnackbar('Error recuperando Denuncia ' + response, 'red');
@@ -1089,6 +1089,7 @@ export default {
           if (response.status === 200) {
 
             this.gestorOptions = Object.values(response.data);
+          
             console.log("gestorOptions  : ", this.gestorOptions);
           } else {
             this.showSnackbar('Error recuperando gestor ' + response, 'red');
@@ -1107,7 +1108,7 @@ export default {
             this.actividadOptions = Object.values(response.data);
             this.actividadOptions = this.actividadOptions.filter(elemento => elemento.actividad.startsWith('DENUNCIA'));
          //   this.actividadOptions = this.actividadOptions.filter((elemento) => elemento.edad >= 30);
-
+         this.actividadOptions = this.actividadOptions.sort();
             console.log("actividadOptions  : ", this.actividadOptions);
           } else {
             this.showSnackbar('Error recuperando actividad ' + response, 'red');
@@ -1157,9 +1158,9 @@ export default {
            this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + error, 'red'); 
         });
     },
-    async seguimientoList(usuarios_id,depto_id)  {
-     
-      await Seguimiento.seguimientoListByCod(usuarios_id,depto_id) 
+    async seguimientoList(usuarios_id,depto_id,rol)  {
+
+      await Seguimiento.seguimientoListByCod(usuarios_id,depto_id,rol) 
         .then((response) => {
           console.log("seguimientoListByCod : ", response.data, response.status);
           if (response.status === 200) {
