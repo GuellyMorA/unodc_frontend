@@ -5,8 +5,9 @@ const apiUrl = import.meta.env;
 
 class DenunciaService {
 
-  denunciaPersonasGetByNivelGeo(data) {
-    return http.get(`/denunciaPersonasGetByNivelGeo/${data}`,).catch((error) => {
+  denunciaPersonasGetByNivelGeo(data_depto_id ,rol) {
+    return http.get(`/denunciaPersonasGetByNivelGeo/${data_depto_id}/${rol}`,).catch((error) => {
+      console.log("error denunciaPersonasGetByNivelGeo  url  : ", error.config.url);
       return error;
     });
   }
@@ -20,6 +21,7 @@ class DenunciaService {
 
   denunciaPersonasList() {
     return http.get(`/denunciaPersonasList`,).catch((error) => {
+      
       return error;
     });
 

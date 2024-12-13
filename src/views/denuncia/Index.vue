@@ -1,13 +1,92 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref , onMounted } from 'vue';
 import UiParentCard from '@/components/shared/UiParentCard.vue';
 import { useRouter } from "vue-router";
+import Utils from '@/utils/Utils';
+
+
 const router = useRouter();
 
+// Definir variables reactivas usando `ref`
+const isDisabled1 = ref(true);
+const isDisabled2 = ref(true);
+const isDisabled3 = ref(true);
+const rol = localStorage.getItem('rol');
+const  operacionModM_DEN_DERI = ref({});
+const  operAltaM_DEN_DERI = ref(true);
+const  operEdicioM_DEN_DERI = ref(true);
+const  operConsultaM_DEN_DERI = ref(true);
+
+const  operacionModM_DEN_SEG = ref({});
+const  operAltaM_DEN_SEG = ref(true);
+const  operEdicionM_DEN_SEG = ref(true);
+const  operConsultaM_DEN_SEG = ref(true);
+
+const  operacionModM_DEN_CON = ref({});
+const  operAltaM_DEN_CON = ref(true);
+const  operEdicionM_DEN_CON = ref(true);
+const  operConsultaM_DEN_CON = ref(true);
+
+// Función para habilitar/deshabilitar
+const desabilitarxx = () => {
+  console.log('SEG rol', rol)
+  isDisabled1.value =   rol.substring (0,7) === 'GES_DEP'  ? false : true; // derivacion
+  isDisabled2.value = rol === 'TRANSP_NAL' || rol === 'DIRECT_NAL' || rol.substring (0,7) === 'GES_DEP' || rol.substring (0,7) === 'SEG_DEP'  ? false : true; // seguimiento
+
+  isDisabled3.value = rol.substring (0,7) === 'GES_DEP'  ? false : true;
+};
+// Función para habilitar/deshabilitar
+const desabilitar = () => {
+  console.log('DERIV rol', rol)
+   operacionModM_DEN_DERI.value = Utils.operacionModulo('M_DEN_DERI');
+   console.log('operacionModM_DEN_DERI', operacionModM_DEN_DERI)
+   operAltaM_DEN_DERI.value=!operacionModM_DEN_DERI.value.operAlta.operExist;
+   operEdicioM_DEN_DERI.value=!operacionModM_DEN_DERI.value.operEdicion.operExist;
+  operConsultaM_DEN_DERI.value =!operacionModM_DEN_DERI.value.operConsulta.operExist;
+
+
+   operacionModM_DEN_SEG.value = Utils.operacionModulo('M_DEN_SEG');
+   console.log('operacionModM_DEN_SEG', operacionModM_DEN_SEG)
+
+   operAltaM_DEN_SEG.value=!operacionModM_DEN_SEG.value.operAlta.operExist;
+   operEdicionM_DEN_SEG.value=!operacionModM_DEN_SEG.value.operEdicion.operExist;
+  operConsultaM_DEN_SEG.value =!operacionModM_DEN_SEG.value.operConsulta.operExist;
+
+
+    operacionModM_DEN_CON.value = Utils.operacionModulo('M_DEN_CON');
+    console.log('operacionModM_DEN_CON', operacionModM_DEN_CON)
+
+    operAltaM_DEN_CON.value=!operacionModM_DEN_CON.value.operAlta.operExist;
+    operEdicionM_DEN_CON.value=!operacionModM_DEN_CON.value.operEdicion.operExist;
+  operConsultaM_DEN_CON.value =!operacionModM_DEN_CON.value.operConsulta.operExist;
+
+
+};
+
+
+// Utilizar el ciclo de vida
+onMounted(() => {
+  desabilitar();
+});
+
 </script>
+<style scoped>
+.container {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.disabled {
+  background-color: #9c9393;
+  opacity: 0.5;
+  pointer-events: none; /* Desactiva eventos dentro del contenedor */
+}
+</style>
 <template>
     <v-row>    
         <v-col cols="12" lg="3" sm="6">
+            <div :class="['container', { 'disabled': operConsultaM_DEN_DERI }]">
             <v-card elevation="10" class="withbg">
                 <v-card-item>
                     <div class="d-sm-flex align-center justify-space-between pt-sm-2">
@@ -22,8 +101,11 @@ const router = useRouter();
                 </v-card-item>
                 <img src="@/assets/school-d037249b.png" class="bg-img-1 mt-sm-0 mt-sm-n10" data-v-81e7cbfb="">
             </v-card>
+        </div>
         </v-col>
+        
         <v-col cols="12" lg="3" sm="6">
+            <div :class="['container', { 'disabled': operConsultaM_DEN_SEG }]">
             <v-card elevation="10" class="withbg">
                 <v-card-item>
                     <div class="d-sm-flex align-center justify-space-between pt-sm-2">
@@ -38,8 +120,11 @@ const router = useRouter();
                 </v-card-item>
                 <img src="@/assets/school-d037249b.png" class="bg-img-1 mt-sm-0 mt-sm-n10" data-v-81e7cbfb="">
             </v-card>
+           </div>
         </v-col>
+
         <v-col cols="12" lg="3" sm="6">
+            <div :class="['container', { 'disabled': operConsultaM_DEN_CON }]">
             <v-card elevation="10" class="withbg">
                 <v-card-item>
                     <div class="d-sm-flex align-center justify-space-between pt-sm-2">
@@ -54,32 +139,8 @@ const router = useRouter();
                 </v-card-item>
                 <img src="@/assets/welcome-bg2-660061c8.png" class="bg-img-1 mb-n4 mt-4" alt="image" width="330" data-v-81e7cbfb="">
             </v-card>
+          </div> 
         </v-col>
-     
-<!--        <v-col cols="12" md="12"> 
-            <UiParentCard title="Herramientas "> 
-                <div class=""><p class="text-body-1">Normativa</p></div>
-                <div class=""><p class="text-body-1">Formulario de registro de construcción del PCPA</p></div>
-                <div class=""><p class="text-body-1">Formulario de aprobación del PCPA</p></div>
-                <div class=""><p class="text-body-1">Formulario de socialización del PCPA</p></div>
-                <div class=""><p class="text-body-1">Formulario de implementación del PCPA</p></div>
-                
-                <div class="v-col-sm-6 v-col-lg-3 v-col-6">
-                    <div class="v-card v-theme--BLUE_THEME v-card--density-default elevation-10 rounded-xl v-card--variant-elevated overflow-visible" data-v-81e7cbfb="">                       
-                        <div class="v-card-text position-relative pb-5" data-v-81e7cbfb="">
-                            <h5 class="text-h5 mb-1 font-weight-semibold" data-v-81e7cbfb=""> Registro </h5>
-                            <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Adolescentes embarazadas / Uniones a temprana edad</div>
-                            <button type="button" class="v-btn v-btn--elevated v-theme--BLUE_THEME bg-primary v-btn--density-default rounded-pill v-btn--size-large v-btn--variant-elevated mt-4 mb-2 px-7" data-v-81e7cbfb="">
-                                <span class="v-btn__overlay"></span>
-                                <span class="v-btn__underlay"></span>
-                                <span class="v-btn__content" data-no-activator=""> Ingresar </span>
-                            </button>
-                        </div>
-                        <img src="@/assets/school-d037249b.png" class="bg-img-1 mt-sm-0 mt-sm-n10" data-v-81e7cbfb=""><span class="v-card__underlay"></span>
-                    </div>
-                </div>
-               
-            </UiParentCard>
-        </v-col> -->
+
     </v-row>
 </template>

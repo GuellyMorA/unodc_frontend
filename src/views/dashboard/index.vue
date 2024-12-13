@@ -104,13 +104,14 @@ const router = useRouter();
 // Definir variables reactivas usando `ref`
 const isDisabled = ref(true);
 
-const rolDesc = localStorage.getItem('rol_desc');
+const rol = localStorage.getItem('rol');
 
 // Función para habilitar/deshabilitar
 const desabilitar = () => {
-    isDisabled.value = rolDesc === 'ADMIN' || rolDesc === 'DIRECT_NAL' ? false : true;
+    console.log('rol:',rol);
+    isDisabled.value = false; // rol === 'ADMIN' || rol === 'TRANSP_NAL' || rol === 'DIRECT_NAL' ? false : true;
 };
-
+ 
 // Utilizar el ciclo de vida
 onMounted(() => {
     desabilitar();
