@@ -198,7 +198,6 @@ import Rol from '@/services/Rol';
 import NivelGeografico from '@/services/NivelGeografico';
 import Grado from '@/services/Grado';
 
-import UsuariosRol from '@/services/UsuariosRol';
 
 export default {
 

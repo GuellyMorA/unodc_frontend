@@ -26,12 +26,10 @@ const form = ref({
   pin_hora_expiracion: '',
   // rol: 'TRANSP_NAL'
 });
-const primeraVez = ref(false);
+const primeraVez = ref('');
+
 let dialog = ref('');
 const password_hash_equals = ref('');
-
-
-
 
 const editedItemSesionLog = {
   id: 0,
@@ -74,14 +72,14 @@ const editedItemUsuario = {
 
 
 const submit = async (event: any) => {
-  // localStorage.setItem('username', JSON.stringify({}));
-  // router.push('/');
-  // return true;
+
+
+
   form.value.user_login = form.value.user_login.trim();
   const respuesta = await Auth.login(form.value).then((res) => {
     if (res.status === 200) {
 
-      if (res.data.codigo_sie) {
+      if (res.data.codigo_s) {
         //localStorage.setItem('user', JSON.stringify(res.data));
         localStorage.setItem('username', form.value.user_login);
         console.log('**1 Auth.login: ', res.data);
@@ -89,7 +87,7 @@ const submit = async (event: any) => {
         return res;
       }
       else {
-        //  localStorage.setItem('username', JSON.stringify({codigo_sie: 80730460, token: res.data.token}));
+        //  localStorage.setItem('username', JSON.stringify({codigo_s: 80730460, token: res.data.token}));
         //localStorage.setItem('userJson',JSON.stringify(res.data ));
 
         localStorage.setItem('username', form.value.user_login);
@@ -121,21 +119,25 @@ const submit = async (event: any) => {
         primeraVez.value = res.data.cambio_clave == 'PENDIENTE' ? true : false;
         console.log('primeraVez : ', primeraVez.value);
 
-        showPinDialog.value = true; // Mostramos el cuadro de diálogo para ingresar el PIN
-        // Si la autenticación es exitosa, enviamos un PIN al correo
-        //   const mailOptions = Mailer.sendPinToEmail(res.data.nombre,form.value.user_login,res.data.email   );
-        //   if(mailOptions ){
+        if(!primeraVez.value){
+          showPinDialog.value = true; // Mostramos el cuadro de diálogo para ingresar el PIN
+            // Si la autenticación es exitosa, enviamos un PIN al correo
+            enviarPin();
+            // this.close()
+        }
+        else{ // actualizar la hora de envio de pin para el caso de un primer ingreso lugo del reseto de clave
+         // editedItemSesionLog.pin_hora_expiracion = new Date().toLocaleTimeString();
+        //  editedItemSesionLog.pin = 123456; //Math.floor(100000 + Math.random() * 900000); // Generar un PIN de 6 dígitos
 
-        enviarPin();
-        // this.close()
-
+        }
+        
         //   router.push('/');  
-        return res;
+       return res;
 
       }
     }
     else {
-      toast.error('Usuario y contraseña no válido', {
+      toast.error('Usuario y/o contraseña no válido', {
         autoClose: 3000,
         position: toast.POSITION.TOP_RIGHT
       });
@@ -147,8 +149,9 @@ const submit = async (event: any) => {
 };
 const verificarPin = async () => {    //  hacer update sesion log
   //comparar el pin introducido y cambiar el estado del pin a USADO en la BD
-  const validar5minutos = tiempoPasado(editedItemSesionLog.pin_hora_expiracion);  //form.pin_hora_expiracion
+  const validar5minutos = !primeraVez.value ? tiempoPasado(editedItemSesionLog.pin_hora_expiracion): false ;  //form.pin_hora_expiracion
   console.log('form.pin  ', form.value.pin);
+  // aki reucperar el pin con el usu , el reg debe tar en estado activo no utiliizado
   if (form.value.pin != editedItemSesionLog.pin) {
     toast.info('El pin no es correcto: ' + 'Revise el Pin ingresado', {
       autoClose: 5000,
@@ -194,9 +197,12 @@ const verificarPin = async () => {    //  hacer update sesion log
       });
 
   }
-  else {  //  hacer update sesion log
+  else {
+    // PIN  es correcto
+    //  hacer update sesion log
     sesionLogUpdate(editedItemSesionLog.id);
    // showPinDialog.close();
+   // pin correcto entonces redigir al dash del sistema
    router.push('/');
            //     return res;  
   }
@@ -219,7 +225,7 @@ const sesionLogUpdate = async (sesion_id) => {
 
         console.log("sesionLogUpdate  : ", response.status, response);
         // toast('Wow so easy !', { containerId: 'A' });
-        toast.success('Usuario modificado correctamente ! ', {
+        toast.success('Usuario sera monitoreado ! ', {
           autoClose: 5000,
           position: toast.POSITION.TOP_RIGHT,
           // toastClassName: 'custom-toast', // Add your custom class name here
@@ -227,9 +233,9 @@ const sesionLogUpdate = async (sesion_id) => {
         });
       //  close()
       } else {
-        console.log("sesionLogUpdate  : ", response.status, "error:   : ", response.response.request.response);
+        console.log("sesionLogUpdate  : ", response.status, "error:   : ", response);
 
-        toast.info('Error modificando sesionLog: ' + 'Revise el pin de logueo', {
+        toast.info('Error monitoreando Usuario: ' + 'Revise el pin de logueo', {
           autoClose: 5000,
           position: toast.POSITION.TOP_RIGHT,
 
@@ -237,12 +243,12 @@ const sesionLogUpdate = async (sesion_id) => {
       }
     })
     .catch(error => {
-      toast.info('Error modificando sesionLog: ' + 'Revise el pin de logueo', {
+      toast.info('Error en  envio de correo: ' + 'Consulte al administrador del servidor de correo', {
         autoClose: 5000,
         position: toast.POSITION.TOP_RIGHT,
 
       });
-      console.log('Log Error modificando sesionLogUpdate: ', error);
+      console.log('Log Error envio de correo en sesionLogUpdate: ', error);
     });
   //      }
 };
@@ -278,7 +284,7 @@ const enviarPin = () => {
   editedItemSesionLog.email = form.value.email;
   editedItemSesionLog.nombre = form.value.nombre;
   editedItemSesionLog.pin = 123456; //Math.floor(100000 + Math.random() * 900000); // Generar un PIN de 6 dígitos
-  form.value.pin = '123456';//editedItemSesionLog.pin ;
+  form.value.pin = editedItemSesionLog.pin ;
   editedItemSesionLog.pin_hora_expiracion = new Date().toLocaleTimeString();
   form.value.pin_hora_expiracion = new Date().toLocaleTimeString();
   editedItemSesionLog.pin_estado = 'PENDIENTE';
@@ -290,14 +296,14 @@ const enviarPin = () => {
     .then((res) => {
 
       if (res.status === 201) {
-        console.log("sesionLogCreate  : ", res.status, res);
+        console.log("sesionLogCreate res : ", res.status, res);
 
         editedItemSesionLog.id = res.data.id;
         // return response.data.id ; 
 
-        console.log(`Correo electrónico enviado correctamente a ${form.value.email}.`);
+        console.log(`PIN enviado correctamente a ${form.value.email}.`);
 
-        toast.success(`Correo electrónico enviado correctamente a ${form.value.email}`, {
+        toast.success(`PIN enviado correctamente a ${form.value.email}`, {
           autoClose: 5000,
           position: toast.POSITION.TOP_RIGHT,
         });
@@ -372,17 +378,25 @@ const usuarioUpdate = async () => {
 
           console.log("usuarioUpdate  : ", response.status, response);
           // toast('Wow so easy !', { containerId: 'A' });
-          toast.success('Usuario modificado correctamente ! ', {
+          toast.success('Contraseña modificada correctamente !. ', {
             autoClose: 5000,
             position: toast.POSITION.TOP_RIGHT,
             // toastClassName: 'custom-toast', // Add your custom class name here
 
           });
           //close()
+          dialog.value = false; // ocultar el popup de cambio de contraseña
+          
+          enviarPin() ; // enviar pin al correo
+           //      router.push('/auth/login');  // redigir al login nuevamente para q se refresque el nuevo PIN generado y almacenado en cache
+         
+          showPinDialog.value = true; // Mostrar el cuadro de diálogo para ingresar el PIN
+            // Si la autenticación es exitosa, enviamos un PIN al correo
+           //xxxxx enviarPin();
         } else {
           console.log("usuarioUpdate  : ", response.status, "error:   : ", response.response.request.response);
 
-          toast.info('Error modificando Usuario: ' + 'Revise el usuario de logueo', {
+          toast.info('Error modificando contraseña: ' + 'Revise el usuario de logueo', {
             autoClose: 5000,
             position: toast.POSITION.TOP_RIGHT,
 
