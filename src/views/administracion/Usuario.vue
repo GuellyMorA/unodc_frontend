@@ -629,7 +629,8 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
 
         if (this.editedIndex > -1) {   // Update person
 
-
+          this.editedItemUsuario.reset_key = 'PENDIENTE';
+          this.editedItemUsuario.reset_date = new Date();
           // this.editedItemUsuario.estado = 'ACTIVO';
           this.editedItemUsuario.transaccion = 'MODIFICAR';
           this.editedItemUsuario.usu_mod = this.username;
@@ -768,7 +769,7 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
     },
 
     viewItem(item) {
-      //this.editedIndex = this.people.indexOf(item)
+     this.editedIndex = -2; //this.people.indexOf(item)
       this.editedItemUsuario = Object.assign({}, item)
       this.dialog = true
       this.lockField = true
@@ -833,7 +834,7 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
 
   computed: {
     formTitle() {
-      return this.editedIndex === -1 ? 'Adicionar Usuario' : 'Modificar Usuario'
+      return this.editedIndex === -1 ? 'Adicionar Usuario' : (this.editedIndex === -2 ? 'Consultar Usuario' : 'Modificar Usuario')
     },
     filteredItems() {
       return this.people.filter(item => {
