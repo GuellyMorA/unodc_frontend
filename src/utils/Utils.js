@@ -41,6 +41,43 @@ class UtilsTools {
 
      return permisosMod;
    }
+
+  // para enviar un correo electrónico con el PIN de identificación al usuario. Se debe reemplazar tu-correo-electronico@gmail.com y tu-contraseña con tus propias credenciales de correo electrónico.
+/*
+   const nodemailer = require('nodemailer');
+   
+   const transporter = nodemailer.createTransport({
+     host: 'smtp.policia.bo',
+     port: 587,
+     secure: false, // o true si se utiliza SSL
+     auth: {
+       user: 'transparencia.prueba@policia.bo',
+       pass: 'N1Wc1xF4KH',
+     },
+   });
+ //   implementación del método sendPinToEmail() utilizando Node.js y el servicio de correo electrónico Nodemailer:
+  
+   const sendPinToEmail = async (email, pin) => {
+     try {
+       const mailOptions = {
+         from: 'tu-correo-electronico@gmail.com',
+         to: email,
+         subject: 'PIN de identificación',
+         text: `Su PIN de identificación es: ${pin}`,
+       };
+   
+       await transporter.sendMail(mailOptions);
+       console.log('Correo electrónico enviado correctamente');
+     } catch (error) {
+       console.error('Error al enviar correo electrónico:', error);
+     }
+   };
+   
+   module.exports = sendPinToEmail;
+   
+*/
+
+
     
 
 }
