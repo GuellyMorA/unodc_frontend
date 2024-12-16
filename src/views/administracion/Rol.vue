@@ -114,14 +114,14 @@
               <thead>
                 <tr>
                   <th>Fila</th>
-                  <th>Modulo:Perfil</th>
+                  <th>Perfiles por Módulo activos</th>
                   <th>Asignar</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(operacion, index) in perfilOperacionesArray" :key="index">
                   <td>{{ index +1 }}</td>
-                  <td>{{ operacion.operaciones_concat }}</td>
+                  <td>{{ operacion }}</td>
                  
                    <td>
                     <v-icon small  @click="cargarPerfilOperaciones(operacion.operaciones_concat)"> mdi-arrow-right-bold</v-icon>
@@ -137,7 +137,7 @@
               <thead>
                 <tr>
                     <th>Devol.</th>
-                  <th>Modulo:Perfil</th>
+                  <th>Perfiles por Módulo inactivos</th>
                 
                 </tr>
               </thead>
@@ -147,7 +147,7 @@
                     <v-icon small  @click="quitarPerfilOperaciones(operacion.operaciones_concat)"> mdi-arrow-left-bold</v-icon>
                   </td>
                  
-                  <td>{{ operacion.operaciones_concat }}</td>
+                  <td>{{ operacion }}</td>
               
                 </tr>
               </tbody>
@@ -197,6 +197,7 @@ import { toast } from 'vue3-toastify';
 import Rol from '@/services/Rol';
 import NivelGeografico from '@/services/NivelGeografico';
 import Grado from '@/services/Grado';
+import RolMenusOperaciones from '@/services/RolMenusOperaciones';
 
 
 export default {
@@ -256,34 +257,19 @@ export default {
 
     },
     // ... propiedades del formulario 
-
+    itemArray:[],
+    itemArray2:[],
     perfilOperacionesArray:[],
     perfilOperNewArray:[],
-    editedItemRol: {
-      fila: '',
-      id: null,
+
+    editedItemMenuOper: {
+        id: 0,
+      menus_sigla: '',
+      roles_sigla: '',
+      operaciones_sigla: '',
+      descripcion: '',
 
       operaciones_concat: '',
-      ci_y_complemento: '',
-      ci_expedido: '',
-      grado: '',
-      grados_sigla: '',
-      telefono: '',
-      email: '',
-      departamento: '',
-      depto_id: '',
-    
-
-      municipio: '',
-      mun_id: '',
-      user_login: '',
-      password_hash: '',
-      u_rol_id: '',
-      roles_sigla: '',
-      rol: '',
-    
-      reset_key: '',
-      reset_date: '',
 
       estado: '',
       transaccion: '',
@@ -291,33 +277,43 @@ export default {
       fec_cre: null,
       usu_mod: null,
       fec_mod: null
+    },
 
+    editedItemRol: {
+      fila: '',
+      id: null,
+      menus_sigla: '',
+      rol:'',
+      roles_sigla: '',
+      operaciones_sigla: '',
+      descripcion: '',
 
+      operaciones_concat: '',
+      municipio: '',
+      mun_id: '',
+      
+
+      estado: '',
+      transaccion: '',
+      usu_cre: null,
+      fec_cre: null,
+      usu_mod: null,
+      fec_mod: null
     },
 
     defaultItemUsu: {
       fila: '',
       id: null,
- 
+      menus_sigla: '',
+      rol:'',
+      roles_sigla: '',
+      operaciones_sigla: '',
+      descripcion: '',
+
       operaciones_concat: '',
-      ci_y_complemento: '',
-      ci_expedido: '',
-      grado: '',
-      grados_sigla: '',
-      telefono: '',
-      email: '',
-      departamento: '',
-      depto_id: '',
-  
       municipio: '',
       mun_id: '',
-      user_login: '',
-      password_hash: '',
-      u_rol_id: '',
-      roles_sigla: '',
-      rol: '',
-      reset_key: '',
-      reset_date: '',
+      
 
       estado: '',
       transaccion: '',
@@ -369,43 +365,56 @@ export default {
   methods: {
 
     perfilOperacionesList(item) {
-     // this.perfilOperacionesArray = this.people.map(oper => oper.operaciones_concat);
-    //  this.perfilOperacionesArray =this.perfilOperacionesArray.split("-");
-   // this.perfilOperacionesArray =  item.operaciones_concat.split("-");
-
-        const itemArray = [item ];
-        const itemArray2 = itemArray.map(oper => ({
+  
+         this.itemArray = [item ];
+         this.itemArray2 = this.itemArray.map(oper => ({
           fila: oper.fila,
           rol: oper.rol,
           roles_sigla: oper.roles_sigla,
-          operaciones_sigla_concat: oper.operaciones_sigla_concat,
-          operaciones_concat:item.operaciones_concat.split("-"), //this.perfilOperacionesArray,
+          operaciones_sigla_concat: oper.operaciones_sigla_concat.split("+"),
+          operaciones_concat:item.operaciones_concat.split("-"),
+          operaciones_concat_estado:item.operaciones_concat_estado.split("-"),
           nivel_geografico_sigla: oper.nivel_geografico_sigla,
           departamento:oper.departamento,
-          estado: oper.estado
+          rol_estado: oper.rol_estado
         })) ;
 
-    // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
-        this.perfilOperacionesArray = itemArray2.flatMap(oper => 
+        // filtrar solo los roles-modulos  en estado activo
+       // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+       this.perfilOperacionesArray=  this.itemArray2.flatMap(grupo =>  grupo.operaciones_concat_estado.filter(modul => modul.includes('(ACTIVO)')) ) ;
+       //this.perfilOperacionesArray= [{'operaciones_concat': itemArray2.flatMap(grupo =>  grupo.operaciones_concat_estado.filter(modul => modul.includes('(ACTIVO)')) )  }];
+
+    // segunda forma para  Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+  /*      this.perfilOperacionesArray = itemArray2.flatMap(oper => 
             oper.operaciones_concat.map(objeto => ({
                 fila: oper.fila,
                 rol: oper.rol,
                 roles_sigla: oper.roles_sigla,
                 operaciones_sigla_concat: oper.operaciones_sigla_concat,
+               // operaciones_sigla_concat_estado: oper.operaciones_sigla_concat_estado,
                 nivel_geografico_sigla: oper.nivel_geografico_sigla,
                 departamento:oper.departamento,
-                estado: oper.estado,
+                rol_estado: oper.rol_estado,
                 operaciones_concat: objeto  // Cada numero se convierte en un objeto separado
           }))
-    );
+        );
+*/
+         //   this.perfilOperacionesArray = this.perfilOperacionesArray.filter((elemento) => elemento.edad >= 30);
+         this.perfilOperacionesArray = this.perfilOperacionesArray.sort();
+            console.log("perfilOperacionesArray  : ", this.perfilOperacionesArray);
 
-      console.log('this.perfilOperacionesArray :', this.perfilOperacionesArray);
+
+            // CARGAR los roles mmodulos inactivos
+                         // filtrar solo los roles-modulos  en estado activo
+       // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+       this.perfilOperNewArray=  this.itemArray2.flatMap(grupo =>  grupo.operaciones_concat_estado.filter(modul => modul.includes('(INACTIVO)')) ) ;
+
+      console.log('this.perfilOperNewArray :', this.perfilOperNewArray);
   },
 
     cargarPerfilOperaciones(operaciones_concat) {
 
       const operacionObjeto = this.perfilOperacionesArray.find(oper => oper.operaciones_concat === operaciones_concat);
-      //this.editedIndex = this.people.indexOf(item);
       this.perfilOperNewArray.push(operacionObjeto); // Object.assign({}, operacionObjeto);
       console.log('this.perfilOperNewArray :', this.perfilOperNewArray);
       
@@ -431,10 +440,9 @@ export default {
             if (indice !== -1) {
             
               const operacionObjeto = this.perfilOperNewArray.find(oper => oper.operaciones_concat === operaciones_concat);
-              //this.editedIndex = this.people.indexOf(item);
               this.perfilOperacionesArray.push(operacionObjeto); // Object.assign({}, operacionObjeto);
               console.log('this.perfilOperacionesArray :', this.perfilOperacionesArray);
-  this.perfilOperNewArray.splice(indice, 1);
+              this.perfilOperNewArray.splice(indice, 1);
               console.log('this.perfilOperNewArray :', this.perfilOperNewArray);
 
             } else {
@@ -643,32 +651,62 @@ usuariosRolCreate() {
         // if( this.editedItemRol && this.editedItemRol ){
         // const dateParts = (form.value.fecha || '').split("/");      
         // fec_ejecucion:   new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]).toISOString(), // form.value.fecha,        
+    
+        //id|menus_sigla|roles_sigla|operaciones_sigla|descripcion      
+      //  this.editedItemRol.mun_id = this.editedItemRol.municipio.mun_id ? this.editedItemRol.municipio.mun_id : this.editedItemRol.mun_id;
 
-        this.editedItemRol.mun_id = this.editedItemRol.municipio.mun_id ? this.editedItemRol.municipio.mun_id : this.editedItemRol.mun_id;
-
-        console.log('editedItemRol 2 : ', JSON.stringify(this.editedItemRol));
+        //console.log('editedItemRol 2 : ', JSON.stringify(this.editedItemRol));
 
         if (this.editedIndex > -1) {   // Update person
 
+              // segunda forma para  Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+          this.itemArray = this.itemArray2.flatMap(oper => 
+                oper.operaciones_sigla_concat.map(objeto => ({
+                fila: oper.fila,
+                rol: oper.rol,
+                roles_sigla: oper.roles_sigla,
+                //operaciones_sigla_concat: oper.operaciones_sigla_concat,
+                operaciones_sigla_concat_estado: oper.operaciones_sigla_concat_estado,
+                nivel_geografico_sigla: oper.nivel_geografico_sigla,
+                departamento:oper.departamento,
+                rol_estado: oper.rol_estado,
+                operaciones_sigla_concat: objeto  // Cada numero se convierte en un objeto separado
+          }))
+        );
+                console.log("itemArray  : ", this.itemArray);
 
-          // this.editedItemRol.estado = 'ACTIVO';
-          this.editedItemRol.transaccion = 'MODIFICAR';
-          this.editedItemRol.usu_mod = this.username;
-          this.editedItemRol.fec_mod = new Date();
+          this.perfilOperacionesArray.forEach( (element, index) => {
+            
+            console.log("2 perfilOperNewArray operaciones_sigla_concat  : ", element.operaciones_sigla_concat);
+            this.editedItemMenuOper.descripcion = element.split(':')[0];
+         //   this.editedItemMenuOper.id = element[1];
+        //    const operAlta= operaciones.split(',')[0]; 
+          //  const operConsulta= operaciones.split(',')[1]; 
+          //  const operEdicion= operaciones.split(',')[2]; 
+          let moduloRol=  this.itemArray.filter(modul => modul.operaciones_sigla_concat.includes(this.editedItemMenuOper.descripcion.trim() ))  ;
+          moduloRol=moduloRol[0].operaciones_sigla_concat.split('-');
+          this.editedItemMenuOper.id = moduloRol[0];
+        //  this.editedItemMenuOper.menus_sigla = moduloRol[1];
+      //    this.editedItemMenuOper.operaciones_sigla = moduloRol[2];
 
-          Rol.rolUpdate(this.editedItemRol.id, JSON.stringify(this.editedItemRol))
+          this.editedItemMenuOper.estado = 'ACTIVO';
+          this.editedItemMenuOper.transaccion = 'ACTIVAR';
+          this.editedItemMenuOper.usu_mod = this.username;
+          this.editedItemMenuOper.fec_mod = new Date();
+
+          RolMenusOperaciones.rolMenusOperacionesUpdate(this.editedItemMenuOper.id, (this.editedItemMenuOper))
             .then((response) => {
               if (response.status === 200) {
                 // this.people = response.data;
-                Object.assign(this.people[this.editedIndex], this.editedItemRol)
+             //   Object.assign(this.people[this.editedIndex], this.editedItemMenuOper)
 
-                console.log("rolUpdate  : ", response.status, response);
+                console.log("rolMenusOperacionesUpdate  : ", response.status, response);
                 // toast('Wow so easy !', { containerId: 'A' });
                // this.usuariosRolUpdate();
 
 
                 //  this.showSnackbar('Rol modificado correctamente !', 'green')
-                toast.success('Rol modificado correctamente ! ', {
+                toast.success('Rol operaciones modificado correctamente ! ', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
                   // toastClassName: 'custom-toast', // Add your custom class name here
@@ -676,10 +714,10 @@ usuariosRolCreate() {
                 });
                 this.close()
               } else {
-                console.log("rolUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Rol: ' + response.response.request.response, 'red');
+                console.log("rolMenusOperacionesUpdate  : ", response.status, "error:   : ", response.response.request.response);
+                this.showSnackbar('Error modificando Rol operaciones: ' + response.response.request.response, 'red');
 
-                toast.info('Error modificando Rol: ' + 'Revise el rol de logueo', {
+                toast.info('Error modificando Rol operaciones: ' + 'Revise el rol de logueo', {
                   autoClose: 5000,
                   position: toast.POSITION.TOP_RIGHT,
 
@@ -687,12 +725,67 @@ usuariosRolCreate() {
               }
             })
             .catch(error => {
-              this.showSnackbar('Log Error modificando Rol ' + error, 'red');
-              console.log('Log Error modificando Rol: ', error);
+              this.showSnackbar('Log Error modificando Rol operaciones' + error, 'red');
+              console.log('Log Error modificando Rol operaciones: ', error);
             });
 
+          });
+
+          this.perfilOperNewArray.forEach( (element, index) => {
+            
+            console.log("2 perfilOperNewArray operaciones_sigla_concat  : ", element.operaciones_sigla_concat);
+            this.editedItemMenuOper.descripcion = element.split(':')[0];
+         //   this.editedItemMenuOper.id = element[1];
+        //    const operAlta= operaciones.split(',')[0]; 
+          //  const operConsulta= operaciones.split(',')[1]; 
+          //  const operEdicion= operaciones.split(',')[2]; 
+          let moduloRol=  this.itemArray.filter(modul => modul.operaciones_sigla_concat.includes(this.editedItemMenuOper.descripcion.trim() ))  ;
+          moduloRol=moduloRol[0].operaciones_sigla_concat.split('-');
+          this.editedItemMenuOper.id = moduloRol[0];
+        //  this.editedItemMenuOper.menus_sigla = moduloRol[1];
+      //    this.editedItemMenuOper.operaciones_sigla = moduloRol[2];
+
+          this.editedItemMenuOper.estado = 'INACTIVO';
+          this.editedItemMenuOper.transaccion = 'INACTIVAR';
+          this.editedItemMenuOper.usu_mod = this.username;
+          this.editedItemMenuOper.fec_mod = new Date();
+
+          RolMenusOperaciones.rolMenusOperacionesUpdate(this.editedItemMenuOper.id, (this.editedItemMenuOper))
+            .then((response) => {
+              if (response.status === 200) {
+                // this.people = response.data;
+             //   Object.assign(this.people[this.editedIndex], this.editedItemMenuOper)
+
+                console.log("rolMenusOperacionesUpdate  : ", response.status, response);
+                // toast('Wow so easy !', { containerId: 'A' });
+               // this.usuariosRolUpdate();
 
 
+                //  this.showSnackbar('Rol modificado correctamente !', 'green')
+                toast.success('Rol operaciones modificado correctamente ! ', {
+                  autoClose: 5000,
+                  position: toast.POSITION.TOP_RIGHT,
+                  // toastClassName: 'custom-toast', // Add your custom class name here
+
+                });
+                this.close()
+              } else {
+                console.log("rolMenusOperacionesUpdate  : ", response.status, "error:   : ", response.response.request.response);
+                this.showSnackbar('Error modificando Rol operaciones: ' + response.response.request.response, 'red');
+
+                toast.info('Error modificando Rol operaciones: ' + 'Revise el rol de logueo', {
+                  autoClose: 5000,
+                  position: toast.POSITION.TOP_RIGHT,
+
+                });
+              }
+            })
+            .catch(error => {
+              this.showSnackbar('Log Error modificando Rol operaciones' + error, 'red');
+              console.log('Log Error modificando Rol operaciones: ', error);
+            });
+
+          });
 
         } else {  // Add new person
 
