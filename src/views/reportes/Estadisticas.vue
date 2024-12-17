@@ -4,7 +4,7 @@
       <div class="grid-container">
         <div class="chart" id="barChart"></div>
         <div class="chart" id="pieChart"></div>
-        <div class="chart" id="lineChart"></div>
+  
         <div class="chart" id="regionChart"></div>
         <div class="chart" id="totalDenunciasChart"></div>
         <div class="chart" id="monthlyReportChart"></div>
@@ -14,14 +14,14 @@
   
   <script>
   import Highcharts from 'highcharts';
-  import { mockData } from '../../mock/data.js';
+  import { mockData } from '../../data/mock/data.js';
   
   export default {
     name: 'Dashboard',
     mounted() {
       this.renderBarChart();
       this.renderPieChart();
-      this.renderLineChart();
+      //this.renderLineChart();
       this.renderRegionChart();
       this.renderTotalDenunciasChart();
       this.renderMonthlyReportChart();
@@ -40,8 +40,8 @@
         });
       },
       renderPieChart() {
-        const regiones = mockData.denunciasPorRegion.map(d => d.region);
-        const totales = mockData.denunciasPorRegion.map(d => d.total);
+        const regiones = mockData.denunciasPorDepto.map(d => d.region);
+        const totales = mockData.denunciasPorDepto.map(d => d.total);
   
         Highcharts.chart('pieChart', {
           chart: { type: 'pie' },
@@ -72,8 +72,8 @@
       renderRegionChart() {
         // Similar al renderPieChart, puedes personalizarlo
         // Para ilustrar, dejémoslo como un gráfico de columnas más
-        const regiones = mockData.denunciasPorRegion.map(d => d.region);
-        const totales = mockData.denunciasPorRegion.map(d => d.total);
+        const regiones = mockData.denunciasPorDepto.map(d => d.region);
+        const totales = mockData.denunciasPorDepto.map(d => d.total);
   
         Highcharts.chart('regionChart', {
           chart: { type: 'column' },

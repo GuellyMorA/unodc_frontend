@@ -11,7 +11,15 @@ class RolMenusOperacionesService {
     });
 
   }
+  
 
+
+  modulosOperacionesList() {
+    return http.get(`/modulosOperacionesList`,).catch((error) => {
+      return error;
+    });
+
+  }
   rolMenusOperacionesListByFk(data) {
     return http.get(`/rolMenusOperacionesListByFk/${data}`,).catch((error) => {
       return error;
