@@ -19,7 +19,7 @@ const AuthRoutes = {
         {
             name: 'DenunciaForm',
             path: '/denuncia/denunciaForm',
-            component: () => import('@/views/denuncia/DenunciaForm.vue')
+            component: () => import('@/views/denuncia/Denun.vue')
         }
     ]
 };
