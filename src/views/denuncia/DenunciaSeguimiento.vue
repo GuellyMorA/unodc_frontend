@@ -83,7 +83,7 @@
             <v-row>
                  <h2>    Formulario de denuncias</h2>
                 </v-row>
-          <v-row class="mt-8" >    
+             <v-row class="mt-8" >    
               <v-col class="p-0 py-0 px-1"  cols="4" >
                 <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
                   :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>

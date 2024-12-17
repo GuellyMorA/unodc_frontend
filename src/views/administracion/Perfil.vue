@@ -32,7 +32,7 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Roles por modulo y perfil habilitado</v-toolbar-title>
+          <v-toolbar-title>Perfiles de usuario por módulo y operacion</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
 
@@ -67,7 +67,6 @@
 
     <!-- Add New Person Button -->
   
-
 
 
     <template>
@@ -232,12 +231,11 @@ export default {
         key: 'fila',
         class: 'background'
       },
-      { title: 'Codigo Rol', key: 'roles_sigla', class: 'success--text title' },
-      { title: 'Rol', key: 'rol' },
-      { title: 'Modulo/Perfil', key: 'operaciones_concat' },
-      { title: 'Estado', key: 'rol_estado' },
 
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Modulo/Perfil', key: 'modulo_operacion_concat' },
+      { title: 'Estado', key: 'estado' },
+
+  
     ],
     people: [],
     editedIndex: -1,
@@ -350,9 +348,9 @@ export default {
   mounted() {
     this.loading = true;
     //this.username= localStorage.getItem('username');
-    this.rolList();
-    this.deptoList();
-    this.gradoList();
+    this.modulosOperacionesList();
+   // this.deptoList();
+   // this.gradoList();
     this.loading = false;
 
 
@@ -424,10 +422,7 @@ export default {
   },
 
     cargarPerfilOperaciones(operaciones_concat) {
-      if(!this.lockField ){
 
-
-    
       const operacionObjeto = this.perfilOperacionesArray.find(oper => oper === operaciones_concat);
       this.perfilOperNewArray.push(operacionObjeto); // Object.assign({}, operacionObjeto);
       console.log('this.perfilOperNewArray :', this.perfilOperNewArray);
@@ -443,11 +438,10 @@ export default {
             } else {
                 console.log(`No se encontró operaciones_concat con nombre: ${operaciones_concat}`);
             }
-         }
+
 
     },
     quitarPerfilOperaciones(operaciones_concat) {
-      if(!this.lockField ){
         // Encontrar el índice del elemento
         const indice = this.perfilOperNewArray.findIndex(oper => oper === operaciones_concat);
             
@@ -465,7 +459,7 @@ export default {
             }
        
          
-          }
+
     },
     async gradoList() {
       Grado.gradoList()
@@ -732,14 +726,14 @@ export default {
 
     },
 
-    async rolList() {
-      Rol.rolList()
+    async modulosOperacionesList() {
+      RolMenusOperaciones.modulosOperacionesList()
         .then((response) => {
-          console.log("rolList  : ", response.data, response.status);
+          console.log("modulosOperacionesList  : ", response.data, response.status);
           if (response.status === 200) {
             this.people = response.data;
           } else {
-            this.showSnackbar('Error recuperando Rol ' + response, 'red');
+            this.showSnackbar('Error recuperando modulosOperacionesList' + response, 'red');
           }
         })
         .catch(e => {
