@@ -51,8 +51,10 @@
       </v-toolbar>
     </template>
     <!-- Action Buttons Column -->
-    <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click="viewItemDenuncia(item)"> mdi-printer </v-icon>
+    <template v-slot:item.actions="{ item }"> 
+        <v-icon small class="mr-2" @click="viewItemDenuncia(item)"> mdi-folder-plus </v-icon>
+      <v-icon small class="mr-2" @click="viewItemDenunciaPrint(item)"> mdi-printer </v-icon>
+   
 
       <v-icon small @click="viewItemSeguimiento(item)"> mdi-eye</v-icon>
       <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
@@ -70,8 +72,300 @@
 
 
   <template>
-    <!-- view Dialog denuncia-->
-    <v-dialog v-model="dialog" max-width="1000px">
+        <!-- view Dialog denuncia   reporte denuncia-->
+   <v-dialog v-model="dialogPrint" max-width="1000px">
+  
+   <v-card class="mx-auto  mt-4" >
+    <div ref="popupContent"> 
+    <v-card>
+      <v-card-title class="text-center">
+        <v-container>
+        <h3>FORMULARIO DE DENUNCIA MG-UTLCC No. {{ denPerDnte.cod_denuncia }}</h3>
+      
+          </v-container>
+      </v-card-title>
+
+      <v-card-text>
+        <v-container>
+           
+          <v-row>
+            <v-col class="p-0 py-0 px-0" cols="4">
+          </v-col>  
+            <v-col class="p-0 py-0 px-0 mb-2" cols="4">
+            <label class="text-h5">Datos del Denunciante  </label>
+        
+          </v-col>    
+          </v-row>
+          <!-- Datos del denunciante -->
+          <v-row>
+        
+              
+              
+              <h3 class="p-0 py-3 px-2 ">Nombres y apellidos:</h3>
+              <v-text-field
+              v-model="denPerDnte.den_nombre_completo " 
+                label="Nombres y apellidos"
+                placeholder="Nombre del denunciante"
+                outlined
+              ></v-text-field>
+          
+          </v-row>
+          <v-row>
+              
+              <h3 class="p-0 py-3 px-2 ">Carnet de identidad:</h3>
+       
+              <v-text-field
+                label="Carnet de identidad"
+                placeholder="CI"
+                outlined
+              ></v-text-field>
+     
+              
+              <h3 class="p-0 py-3 px-2 ml-4">Ciudad:</h3>
+      
+              <v-text-field
+
+                label="Ciudad"
+                placeholder="Ciudad"
+                outlined
+              ></v-text-field>
+          </v-row>
+
+          <v-row>
+                   
+              <h3  class="p-0 py-3 px-2">Correo electrónico:</h3>
+        
+              <v-text-field
+              v-model="denPerDnte.email" 
+                label="Correo electrónico"
+                placeholder="Correo electrónico"
+                outlined
+              ></v-text-field>        
+              
+              <h3 class="p-0 py-3 px-2 ml-4">Teléfono:</h3>
+            
+              <v-text-field
+              v-model="denPerDnte.telefono" 
+                label="Teléfono"
+                placeholder="Teléfono"
+                outlined
+              ></v-text-field>
+         
+          </v-row>
+
+          <!-- Checkbox: Denuncia anónima -->
+          <v-row>
+            <v-col class="p-0 py-4 px-0" cols="4">
+                <!-- Primera columna -->
+                <h3 class="p-0 py-0 px-0 ml-16">Denuncia anónima :</h3>
+              </v-col>
+              <v-col class="p-0 py-0 px-0" cols="1">
+                <v-checkbox  v-model="denPerDnte.denuncia_anonima" 
+                  label="Si"></v-checkbox>
+              </v-col>
+              <v-col class="p-0 py-0 px-0" cols="2">
+                <v-checkbox  v-model="denPerDnte.denuncia_anonima_no"
+                  label="No"></v-checkbox>
+              </v-col>
+          </v-row>
+          <v-row>
+          <v-col class="p-0 py-4 px-0" cols="4">
+                <!-- Primera columna -->
+                <h3>Solicita reserva de identidad :</h3>
+              </v-col>
+              <v-col class="p-0 py-0 px-0" cols="1">
+                <v-checkbox  v-model="denPerDnte.reserva_identidad_si" 
+                  label="Si"></v-checkbox>
+              </v-col>
+              <v-col class="p-0 py-0 px-0" cols="2">
+                <v-checkbox  v-model="denPerDnte.reserva_identidad_no" 
+                  label="No"></v-checkbox>
+              </v-col>
+
+            </v-row>
+      
+          <!-- Datos del denunciado -->
+          <v-row>
+            <v-col class="p-0 py-0 px-0" cols="4">
+          </v-col>  
+            <v-col class="p-0 py-0 px-0 mb-2" cols="4">
+            <label class="text-h5 ">Datos del Denunciado(s)  </label>
+          </v-col>    
+          </v-row>
+          <v-row>
+            <v-col class="p-0 py-3 px-0" cols="4">
+              
+              <h3>Nombres y apellidos denunciado(s):</h3>
+                </v-col>
+            <v-col cols="8" class="p-0 py-0 px-0">
+              <v-text-field
+              v-model="denunciado.dnado_nombre_completo" 
+                label="Nombres y apellidos del denunciado"
+                placeholder="Nombres del denunciado"
+                outlined
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <h3 class="p-0 py-3 px-0 ">Lugar del hecho:</h3>
+              <v-text-field
+              v-model="denPerDnte.lugar_hecho" 
+                label="Dirección General"
+                placeholder="Dirección General"
+                outlined
+              ></v-text-field>
+            
+              <h3 class="p-0 py-3 px-2 ml-4">Unidad:</h3>
+              <v-text-field   
+              v-model="denunciado.unidad_policial_desc" 
+                label="Unidad"
+                placeholder="Unidad"
+                outlined
+              ></v-text-field>
+            </v-row>
+          <v-row>
+              <h3 class="p-0 py-3 px-0">Cargo que ocupa:</h3>
+              <v-text-field
+              v-model="denunciado.puesto_cargo_funcion" 
+                label="Cargo que ocupa"
+                placeholder="Cargo que ocupa"
+                outlined
+              ></v-text-field>
+        
+          </v-row>
+
+          <!-- Hechos en los que se basa la denuncia -->
+          <v-row>
+            <v-col class="p-0 py-0 px-0" cols="4">
+          </v-col> 
+            <v-col class="p-0 py-0 px-0 mb-4" cols="8">
+            <label class="text-h5">Hechos en los que se basa la denuncia  </label>
+        
+          </v-col>    
+          </v-row>
+          <v-row>
+            <h3 class="p-0 py-3 px-0">¿Quién o quienes habrían incurrido?:</h3>
+              <v-textarea
+              v-model="denunciado.dnado_nombre_completo_concat" 
+                label="¿Quién o quienes habrían incurrido?"
+                placeholder="Describa los hechos"
+                outlined    rows="2" cols="1" 
+              ></v-textarea>
+          
+          </v-row>
+
+          <!-- Documentos adjuntos -->
+          <v-row>
+                 <v-col class="p-0 py-0 px-0" cols="4">
+          </v-col> 
+            <v-col class="p-0 py-0 px-0" cols="8">
+            <label class="text-h5">Documentación adjunta acompaña pruebas
+                   </label>
+        
+          </v-col>    
+          </v-row>
+          <v-row>
+            <v-col class="p-0 py-4 px-0" cols="4">
+              
+            <h3>Documentos adjuntos:</h3>
+              </v-col>
+              <v-col class="p-0 py-0 px-0" cols="1">
+                <v-checkbox  v-model="docsPath_adj_si" 
+                  label="Si"></v-checkbox>
+              </v-col>
+              <v-col class="p-0 py-0 px-0" cols="2">
+                <v-checkbox  v-model="docsPath_adj_no" 
+                  label="No"></v-checkbox>
+              </v-col>
+            </v-row>
+          <v-row>
+            <h3 class="p-0 py-3 px-2 ">Número de hojas:</h3>
+              <v-text-field
+                label="Número de hojas"
+                placeholder="Número de hojas"
+                outlined
+              ></v-text-field>
+         
+          </v-row>
+          <v-row>
+
+            <v-col class="p-0 py-4 px-0" cols="4">
+              
+              <h3>Clase de documentos:</h3>
+                </v-col>
+            <v-col cols="4" class="p-0 py-0 px-0">
+              <v-checkbox label="Fotocopia" />
+            </v-col>
+            <v-col cols="4" class="p-0 py-0 px-0">
+              <v-checkbox label="Original" />
+            </v-col>
+          </v-row>
+
+          <!-- Otro tipo de pruebas -->
+          <v-row>
+            <h3 class="p-0 py-3 px-0">Otro tipo de pruebas:</h3>
+              <v-textarea
+
+                label="Otro tipo de pruebas"
+                placeholder="Detalles de pruebas adicionales"
+                outlined   rows="2" cols="1" 
+              ></v-textarea>
+            </v-row>
+
+                <v-row class="mb-4"   >      
+              <div v-for="file in docsPath" :key="file.descripcion">
+                <a @click="downloadArch(file.descripcion)" href="#" class="download-link">{{ file.descripcion }}
+                </a>
+                <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
+
+              </div>
+          </v-row>
+
+          <!-- Firma y fecha -->
+          <v-row>
+            <h3 class="p-0 py-3 px-0">Firma:</h3>
+              <v-text-field
+                label="Firma"
+                placeholder="Firma"
+                outlined
+              ></v-text-field>
+              <h3 class="p-0 py-3 px-2 ml-4">Fecha:</h3>
+              <v-text-field
+                label="Fecha"
+                placeholder="Fecha"
+                outlined
+              ></v-text-field>
+     
+          </v-row>
+
+          <!-- Responsable de admisión -->
+          <v-row>
+           
+              <h3 class="p-0 py-3 px-0">Responsable de admisión:</h3>
+              <v-text-field
+                label="Responsable de admisión"
+                placeholder="Responsable de admisión"
+                outlined
+              ></v-text-field>
+     
+          </v-row>
+        </v-container>
+      </v-card-text>
+
+      <!-- Botón de Enviar -->
+      <v-card-actions >
+          <v-spacer></v-spacer>
+                 <v-btn class="custom-green-btn"  @click="downloadPDF">Exportar a PDF</v-btn>
+      
+          <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
+      
+        </v-card-actions>
+    </v-card>
+    </div>
+   </v-card>
+ </v-dialog>
+    <!-- view Dialog denuncia consult denuncia-->
+    <v-dialog  v-model="dialog" max-width="1000px">
    
 
       <v-card class="mx-auto  mt-4" max-width="700">
@@ -281,7 +575,7 @@
           <v-row>
             <v-col class="p-0 py-0 px-1">
               <v-textarea v-model="denPerDnte.detalle_hecho" :readonly="lockField" label="Breve detalle del hecho"
-                :rules="[v => !!v || 'Detalle hecho es requerido']" placeholder="detalle del hecho"></v-textarea>
+                :rules="[v => !!v || 'Detalle hecho es requerido']" placeholder="detalle del hecho"  ></v-textarea>
             </v-col>
 
           </v-row>
@@ -588,6 +882,7 @@ export default {
     dialog: false,
     dialog2: false,
     dialog3: false,
+    dialogPrint:false,
 
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
@@ -653,6 +948,7 @@ export default {
       hora_registro_hecho: '',
       detalle_hecho: '',
       denuncia_anonima: '',
+      denuncia_anonima_no: '',
       reserva_identidad: '',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
@@ -660,6 +956,8 @@ export default {
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      den_nombre_completo: '',
+
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -709,6 +1007,8 @@ export default {
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
+      denuncia_anonima: '',
+      denuncia_anonima_no: '',
       reserva_identidad: '',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
@@ -716,6 +1016,8 @@ export default {
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      den_nombre_completo: '',
+
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -790,7 +1092,7 @@ export default {
    
 
   
-
+    //denunciadosConcat:'',
     denunciado: {
       fila: '',
       id: null,   //  id de la tabla padre denuncia
@@ -810,6 +1112,8 @@ export default {
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      dnado_nombre_completo: '',
+      dnado_nombre_completo_concat: '',
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -849,6 +1153,8 @@ export default {
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      dnado_nombre_completo: '',
+      dnado_nombre_completo_concat:'',
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -888,7 +1194,8 @@ export default {
 
     },
     docsPath: [],
-
+    docsPath_adj_si:false,
+  docsPath_adj_no:false,
 
     //******************************************** */
 
@@ -992,6 +1299,7 @@ export default {
       html2canvas(popupContent).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
         const pdf = new jsPDF();
+    
         const imgWidth = 190; // Ajusta el ancho de la imagen, si es necesario
         const pageHeight = pdf.internal.pageSize.height;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
@@ -1011,11 +1319,11 @@ export default {
           heightLeft -= pageHeight;
         }
 
-        pdf.save('download.pdf'); // Nombre del archivo PDF
+        pdf.save('evidencia.pdf'); // Nombre del archivo PDF
       });
     },
 
- imprimirContenido() {
+     imprimirContenido() {
        const popupContent = this.$refs.popupContent;
 
  const printWindow = window.open("", "_blank");
@@ -1202,7 +1510,7 @@ export default {
     },
 
     async denunciaPersonasGetByCod(cod_denuncia) {
-          Denuncia.denunciaPersonasGetByCod(cod_denuncia) //  this.denPerDnte.id
+          Denuncia.denunciaPersonasGetByCod(cod_denuncia) //  
         .then((response) => {
           console.log("denunciaPersonasGetByCod  : ", response.data, response.status);
           if (response.status === 200) {
@@ -1233,7 +1541,7 @@ export default {
         });
     },
   
- async seguimientoListByCodByNivelGeoByUsuId(usuarios_id,depto_id,cod_denuncia )  {
+    async seguimientoListByCodByNivelGeoByUsuId(usuarios_id,depto_id,cod_denuncia )  {
       Seguimiento.seguimientoListByCodByNivelGeoByUsuId(usuarios_id,depto_id,cod_denuncia ) 
         .then((response) => {
           console.log("seguimientoListByCodByNivelGeoByUsuId  : ", response.data, response.status);
@@ -1251,6 +1559,7 @@ export default {
           this.showSnackbar('Error recuperando seguimientoListByCodByNivelGeoByUsuId ' + error, 'red');
         });
     },
+   
     async denunciadoListByCod(cod_denuncia) {
       Denunciado.denunciadoListByCod(cod_denuncia)
         .then((response) => {
@@ -1258,6 +1567,26 @@ export default {
           if (response.status === 200) {
 
             this.denunciadosArray = response.data;
+         //   this.denunciadosConcat =  this.denunciadosArray .join(", ");
+
+            let nombres_concat = ''; // Inicializamos una cadena vacía
+
+            this.denunciadosArray.forEach(persona => {
+              nombres_concat += persona.dnado_nombre_completo + ', '; // Concatenamos el apellido y un espacio
+          });
+
+          // Retiramos el espacio extra al final
+          nombres_concat = nombres_concat.trim();
+
+          // Añadimos la propiedad nombres_concat a cada objeto
+          this.denunciadosArray.forEach(persona => {
+              persona.dnado_nombre_completo_concat = nombres_concat;
+          });
+          this.denunciado.dnado_nombre_completo= this.denunciadosArray[0].dnado_nombre_completo;
+          this.denunciado.unidad_policial_desc= this.denunciadosArray[0].unidad_policial_desc;
+
+          this.denunciado.dnado_nombre_completo_concat = nombres_concat +' - Detalle hecho: ' + this.denunciadosArray[0].detalle_hecho; //  cargarPersona(item) ;
+
             this.loading = false;
           } else {
             this.showSnackbar('Error recuperando denunciadoListByCod ' + response, 'red');
@@ -1270,10 +1599,12 @@ export default {
     async documentosPathListByCod(cod_denuncia) {
       await DocumentosPath.documentosPathListByCod(cod_denuncia) //  this.denPerDnte.id
         .then((response) => {
-          console.log("documentosPathListByCod  : ", response.data, response.status);
-          if (response.status === 200) {
-            this.docsPath = response.data;
+                      console.log("documentosPathListByCod  : ", response.data, response.status);
 
+          if (response.status === 200) {
+
+            this.docsPath = response.data;
+      
           } else {
             this.showSnackbar('Error recuperando documentosPathListByCod ' + response, 'red');
           }
@@ -1468,42 +1799,7 @@ export default {
           this.denPerDnte.transaccion = 'MODIFICAR';
           this.denPerDnte.usu_mod = this.username;
           this.denPerDnte.fec_mod = new Date();
-         /*
-          Denuncia.denunciaUpdate(this.denPerDnte.id, JSON.stringify(this.denPerDnte))
-            .then((response) => {
-              if (response.status === 200) {
-                // this.people = response.data;
-                Object.assign(this.people[this.editedIndex], this.denPerDnte)
-
-                console.log("denunciaUpdate  : ", response.status, response);
-                // toast('Wow so easy !', { containerId: 'A' });
-                this.denunciasRolUpdate();
-
-
-                //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
-                toast.success('Denuncia modificado correctamente ! ', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // 
-
-                });
-                this.close()
-              } else {
-                console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
-
-                toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-
-                });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
-              console.log('Log Error modificando Denuncia: ', error);
-            });
-         */
+         
         } 
         else {  // Add new seguimiento
    
@@ -1732,6 +2028,20 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
 
 
     },
+    viewItemDenunciaPrint(item) {
+      //this.editedIndex = this.people.indexOf(item)
+      //this.denPerDnte = Object.assign({}, item);
+      this.dialogPrint = true;
+      this.lockField = true;
+      this.lockField2 = true;
+
+      this.denunciaPersonasGetByCod(item.cod_denuncia) 
+      this.denunciadoListByCod(item.cod_denuncia);
+      this.documentosPathListByCod(item.cod_denuncia);
+      this.docsPath_adj_si = this.docsPath.length =0  ? false : true
+          this.docsPath_adj_no = this.docsPath.length =0  ? true : false
+
+    },
     viewItemSeguimiento(item) {
           this.editedIndex = -1
           this.seguimiento = Object.assign({}, item)  
@@ -1773,7 +2083,7 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
       this.dialog = false;
       this.dialog2 = false;
       this.dialog3 = false;
-     
+      this.dialogPrint = false;
 
       this.$nextTick(() => {
         this.denPerDnte = Object.assign({}, this.defaultItemUsu)
