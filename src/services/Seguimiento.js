@@ -3,7 +3,14 @@ import http2 from 'axios';
 
 
 class SeguimientoService {
-  
+  seguimientolistRepByNivelGeoByUsuId(data_user_id,data_depto_id ) {
+    return http.get(`/seguimientolistRepByNivelGeoByUsuId/${data_user_id}/${data_depto_id}`,).catch((error) => {
+      console.log("error seguimientolistRepByNivelGeoByUsuId  url  : ", error.config.url);
+
+      return error;
+    });
+  }
+
   seguimientoListByCodByNivelGeoByUsuId(data_user_id,data_depto_id,data_cod_denuncia ) {
     return http.get(`/seguimientoListByCodByNivelGeoByUsuId/${data_user_id}/${data_depto_id}/${data_cod_denuncia}`,).catch((error) => {
       console.log("error seguimientoListByCodByNivelGeoByUsuId  url  : ", error.config.url);
