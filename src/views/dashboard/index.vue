@@ -1,8 +1,9 @@
 <template  >
     <v-container>
+  
         <v-dialog v-model="dialog" >
 
-            <v-card class="mt-2"  max-width="500" >
+            <v-card class="mx-auto mt-2"  max-width="500" >
                 <v-card-title class="text-center">
                     <v-container>
                         <h3>ALERTA DE SEGUIMIENTO</h3>
@@ -24,7 +25,7 @@
 
 
                             <h3 class="p-0 py-0 px-0 ">Denuncias sin seguimiento:</h3>
-                            <v-text-field v-model="denPerDnte.sin_seguimiento" :readonly="true" 
+                            <v-text-field v-model="segEstadoCount.sin_seguimiento" :readonly="true" 
                                 placeholder="Nombre del denunciante" outlined></v-text-field>
 
                         </v-row>
@@ -33,7 +34,7 @@
 
 
                             <h3 class="p-0 py-0 px-0 ">Denuncias con seguimiento:</h3>
-                            <v-text-field v-model="denPerDnte.con_seguimiento" :readonly="true" 
+                            <v-text-field v-model="segEstadoCount.con_seguimiento" :readonly="true" 
                                 placeholder="Nombre del denunciante" outlined></v-text-field>
 
                         </v-row>
@@ -41,14 +42,14 @@
 
                             <h3 class="p-0 py-0 px-0 ">Denuncias rechazadas:</h3>
 
-                            <v-text-field v-model="denPerDnte.rechazadas" :readonly="true" 
+                            <v-text-field v-model="segEstadoCount.rechazadas" :readonly="true" 
                                 placeholder="CI" outlined></v-text-field>
 
                         </v-row>
                         <v-row>
                             <h3 class="p-0 py-0 px-0 ">Denuncias aceptadas con informe final:</h3>
 
-                            <v-text-field v-model="denPerDnte.aceptadas" :readonly="true"  placeholder="Ciudad" outlined></v-text-field>
+                            <v-text-field v-model="segEstadoCount.aceptadas" :readonly="true"  placeholder="Ciudad" outlined></v-text-field>
                         </v-row>
 
 
@@ -64,7 +65,8 @@
                 </v-card-actions>
             </v-card>
         </v-dialog>
-     
+    
+
     </v-container>
 
     <div :class="['container', { 'disabled': isDisabled }]">
@@ -172,14 +174,17 @@ import { useRouter } from "vue-router";
 
 import Highcharts from 'highcharts';
 import { mockData } from '../../data/mock/data.js';
+import Seguimiento from '@/services/Seguimiento';
 
-const denPerDnte = {
 
-    sin_seguimiento: 12,
-    con_seguimiento: 5,
-    rechazadas: 4,
-    aceptadas:3,
-    total_denuncias: 15,
+
+const segEstadoCount = {
+    
+    sin_seguimiento: 12, // SOLICITADO
+    con_seguimiento: 5,  // ASIGMNADO
+    rechazadas: 4, // RECHAZO
+    aceptadas:3, // CONCLUSION
+    total_denuncias: 15, // TOTAL
 
 };
 // Definir variables reactivas usando `ref`
@@ -196,6 +201,8 @@ const close = () => {
     dialog.value = false;
 
 };
+ let   seguimientosArray= [];
+   
 // Utilizar el ciclo de vida
 onMounted(() => {
     // Código que se ejecuta después de que el componente se ha montado
@@ -207,6 +214,14 @@ onMounted(() => {
     renderLineChart();
     renderLineChart2();
     renderRegionChart();
+    const username= localStorage.getItem('username');
+    const userId= localStorage.getItem('usuario_id');
+    const rol= localStorage.getItem('rol');
+    const deptoId= localStorage.getItem('depto_id');
+
+    seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
+
+
 });
 const renderLineChart = () => {
 
@@ -222,7 +237,32 @@ const renderLineChart = () => {
     });
 };
 
+const  seguimientolistRepByNivelGeoByUsuId =(usuarios_id,depto_id ) => {
+      Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
+        .then((response) => {
+          console.log("seguimientolistRepByNivelGeoByUsuId  : ", response.data, response.status);
+          if (response.status === 200) {
 
+            seguimientosArray = response.data;
+
+            segEstadoCount.sin_seguimiento = seguimientosArray.cantidad[0];
+            segEstadoCount.con_seguimiento = seguimientosArray.cantidad[1];
+            segEstadoCount.rechazadas = seguimientosArray.cantidad[2];
+            segEstadoCount.aceptadas = seguimientosArray.cantidad[0];
+            //segEstadoCount.total_denuncias = seguimientosArray.cantidad[1];
+           
+          } else {
+            //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + response, 'red');
+               console.log("error seguimientolistRepByNivelGeoByUsuId  response  : ", response);
+
+         }
+        })
+        .catch(error => {
+            console.log("error seguimientolistRepByNivelGeoByUsuId error  : ", error);
+
+          //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + error, 'red');
+        });
+    };
 const renderRegionChart = () => {
     // Similar al renderPieChart, puedes personalizarlo
     // Para ilustrar, dejémoslo como un gráfico de columnas más

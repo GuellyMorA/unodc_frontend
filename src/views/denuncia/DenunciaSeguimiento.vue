@@ -281,8 +281,7 @@
           <v-row>
             <h3 class="p-0 py-3 px-2 ">Número de hojas:</h3>
               <v-text-field
-                label="Número de hojas"
-                placeholder="Número de hojas"
+       
                 outlined
               ></v-text-field>
          
@@ -306,8 +305,7 @@
             <h3 class="p-0 py-3 px-0">Otro tipo de pruebas:</h3>
               <v-textarea
 
-                label="Otro tipo de pruebas"
-                placeholder="Detalles de pruebas adicionales"
+         
                 outlined   rows="2" cols="1" 
               ></v-textarea>
             </v-row>
@@ -325,14 +323,12 @@
           <v-row>
             <h3 class="p-0 py-3 px-0">Firma:</h3>
               <v-text-field
-                label="Firma"
-                placeholder="Firma"
+               
                 outlined
               ></v-text-field>
               <h3 class="p-0 py-3 px-2 ml-4">Fecha:</h3>
               <v-text-field
-                label="Fecha"
-                placeholder="Fecha"
+           
                 outlined
               ></v-text-field>
      
