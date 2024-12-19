@@ -163,7 +163,7 @@
               <v-textarea
                 label="¿Quién o quienes habrían incurrido?"
                 placeholder="Describa los hechos"
-                outlined
+                outlined    rows="2" cols="1" 
               ></v-textarea>
           
           </v-row>
@@ -221,7 +221,7 @@
               <v-textarea
                 label="Otro tipo de pruebas"
                 placeholder="Detalles de pruebas adicionales"
-                outlined
+                outlined   rows="2" cols="1" 
               ></v-textarea>
            
           </v-row>

@@ -212,7 +212,7 @@
           <v-row>
             <v-col class="p-0 py-0 px-0">
                <v-textarea class="mx-auto  mt-4" v-model="denPerDnte.detalle_hecho" :readonly="lockField"
-            label="Breve detalle del hecho" :rules="[v => !!v || 'Detalle hecho es requerido']"></v-textarea>
+               rows="3" cols="1" label="Breve detalle del hecho" :rules="[v => !!v || 'Detalle hecho es requerido']"></v-textarea>
             </v-col>
       
           </v-row>
