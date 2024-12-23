@@ -1842,13 +1842,30 @@ export default {
                 //primera ampliacion 305
  /// si sol ampliacion cambiar el param 1 de amplaicion de tiempo para el aasignado
  //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
+     this.denunciaPersonasGetByCod(this.seguimiento.cod_denuncia) ;
+ 
  if(this.seguimiento.actividad_sigla=='DEN_SOL_AMPLIACION'){
-          this.denPerDnteUpd.modulos_sigla_amp_1 = 'DEN_SEG_AMP_5_DIAS';
+   if(this.denPerDnte.estado=='SOLICITADO'){
+
+    this.denPerDnteUpd.modulos_sigla_amp_1 = 'DEN_SEG_AMP_5_DIAS';
          this.denPerDnteUpd.fec_ampliacion_1 = new Date();
-          this.denPerDnteUpd.usu_mod = this.username;
+         this.denPerDnteUpd.usu_mod = this.username;
           this.denPerDnteUpd.fec_mod = new Date();
 
           this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+ 
+        }
+   if(this.denPerDnte.estado=='ASIGNADO'){
+
+this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
+     this.denPerDnteUpd.fec_ampliacion_2 = new Date();
+     this.denPerDnteUpd.usu_mod = this.username;
+          this.denPerDnteUpd.fec_mod = new Date();
+
+          this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+ 
+    }     
+ 
  }
      
 

@@ -863,6 +863,7 @@ this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
 
       },
 
+      
     cargarPersona(item) {
       const denunciadoIndex = this.denunciadosArray.find(dndo => dndo.fila === item);
       this.denunciado = Object.assign({}, denunciadoIndex);
