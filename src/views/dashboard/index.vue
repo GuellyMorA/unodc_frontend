@@ -7,10 +7,8 @@
                 <v-card-title class="text-center">
                     <v-container>
                         <h3>ALERTA DE SEGUIMIENTO</h3>
-
                       
                                 <label class="text-h5 mt-4">Denuncias asignadas a su persona </label>
-
                          
                     </v-container>
                 </v-card-title>
@@ -19,38 +17,39 @@
                     <v-container>
                         <!-- Denuncias nuevas asignadas -->
                         <v-row>
-                            <h3 class="p-0 py-0 px-0 ">Denuncias nuevas asignadas:</h3>
-                            <v-text-field  max-width="5" v-model="segEstadoCount.nuevas" :readonly="true" 
+                            <h3 class="p-0 py-2 px-0 ">Denuncias nuevas :</h3>
+                            <v-text-field  v-model="segEstadoCount.nuevas_hoy" :readonly="true" 
                                 outlined></v-text-field>
 
                         </v-row>
-                    
-                        <!-- Denuncias sin seguimiento -->
-                        <v-row>
-                            <h3 class="p-0 py-0 px-0 ">Denuncias con retraso en los plazos:</h3>
-                            <v-text-field v-model="segEstadoCount.sin_seguimiento" :readonly="true" 
-                               outlined></v-text-field>
-
-                        </v-row>
                         <v-row>
 
-                            <h3 class="p-0 py-0 px-0 ">Denuncias con seguimiento:</h3>
+                        <h3 class="p-0 py-2 px-0 ">Denuncias rechazadas:</h3>
+
+                        <v-text-field v-model="segEstadoCount.rechazado" :readonly="true" 
+                        outlined></v-text-field>
+
+                        </v-row>                    
+                 
+                        <v-row>
+
+                            <h3 class="p-0 py-2 px-0 ">Denuncias sin retraso en los plazos:</h3>
                             <v-text-field v-model="segEstadoCount.con_seguimiento" :readonly="true" 
                                 outlined></v-text-field>
 
                         </v-row>
-                        <v-row>
-
-                            <h3 class="p-0 py-0 px-0 ">Denuncias rechazadas:</h3>
-
-                            <v-text-field v-model="segEstadoCount.rechazadas" :readonly="true" 
+                                           <!-- Denuncias sin seguimiento -->
+                          <v-row>
+                            <h3 class="p-0 py-2 px-0 ">Denuncias con retraso en los plazos:</h3>
+                            <v-text-field v-model="segEstadoCount.retraso" :readonly="true" 
                                outlined></v-text-field>
 
                         </v-row>
-                        <v-row>
-                            <h3 class="p-0 py-0 px-0 ">Denuncias aceptadas con informe final:</h3>
 
-                            <v-text-field v-model="segEstadoCount.aceptadas" :readonly="true" 
+                        <v-row>
+                            <h3 class="p-0 py-2 px-0 ">Denuncias aceptadas con informe final:</h3>
+
+                            <v-text-field v-model="segEstadoCount.conclusion" :readonly="true" 
                             outlined></v-text-field>
                         </v-row>
 
@@ -171,6 +170,7 @@
 <script setup lang="ts">
 //import { ref } from 'vue';
 import { ref, onMounted } from 'vue';
+import { reactive } from 'vue';
 
 import { useRouter } from "vue-router";
 
@@ -180,13 +180,15 @@ import Seguimiento from '@/services/Seguimiento';
 
 
 
-const segEstadoCount = ref({
-    nuevas:0,
-    sin_seguimiento: 0, // SOLICITADO
-    con_seguimiento: 0,  // ASIGMNADO
-    rechazadas: 0, // RECHAZO
-    aceptadas:0, // CONCLUSION
-    total_denuncias: 0, // TOTAL
+const segEstadoCount = reactive({
+    nuevas_hoy:0, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar) 
+    retraso: 0, // RETRASO
+    conclusion:0, //aceptadas CONCLUSION
+rechazado: 0, // RECHAZADO
+    con_seguimiento: 0,  //  SEGUIMIENTO esta ASIGNADO  // SEGUIMIENTO  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
+    solicitado: 0,  //sin_seguimiento: 12, // SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
+
+    //total_denuncias: 0, // TOTAL
 
 });
 // Definir variables reactivas usando `ref`
@@ -209,7 +211,7 @@ const close = () => {
 onMounted(() => {
     // Código que se ejecuta después de que el componente se ha montado
     // window.alert('¡La página se ha cargado!');
-    dialog.value = true;
+  
     console.log('alert:');
 
     desabilitar();
@@ -223,7 +225,7 @@ onMounted(() => {
 
     seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
 
-
+  dialog.value = true;
 });
 const renderLineChart = () => {
 
@@ -239,19 +241,19 @@ const renderLineChart = () => {
     });
 };
 
-const  seguimientolistRepByNivelGeoByUsuId =(usuarios_id,depto_id ) => {
-      Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
+const  seguimientolistRepByNivelGeoByUsuId =async (usuarios_id,depto_id ) => {
+    await Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
         .then((response) => {
           console.log("seguimientolistRepByNivelGeoByUsuId  : ", response.data, response.status);
           if (response.status === 200) {
 
             seguimientosArray = response.data;
-            segEstadoCount.nuevas = seguimientosArray[4].cantidad; // nuevas   SOLICITADO
-            segEstadoCount.sin_seguimiento = seguimientosArray[0].cantidad;// Denuncias con retraso en los plazos:
+            segEstadoCount.nuevas_hoy = seguimientosArray[4].cantidad; // nuevas hoy  SOLICITADO
+            segEstadoCount.retraso = seguimientosArray[0].cantidad;// Denuncias con retraso en los plazos:
+            segEstadoCount.rechazado = seguimientosArray[2].cantidad; // rechazadO
 
             segEstadoCount.con_seguimiento = seguimientosArray[3].cantidad;// Denuncias con SEGUIMEINTO
-            segEstadoCount.rechazadas = seguimientosArray[2].cantidad; // rechazadO
-            segEstadoCount.aceptadas = seguimientosArray[1].cantidad; // Denuncias aceptadas con informe final: COCLUSION
+            segEstadoCount.conclusion = seguimientosArray[1].cantidad; // Denuncias aceptadas con informe final: COCLUSION
 
             console.log("segEstadoCount  : ", segEstadoCount, response.status);
             //segEstadoCount.total_denuncias = seguimientosArray.cantidad[1];
@@ -268,6 +270,7 @@ const  seguimientolistRepByNivelGeoByUsuId =(usuarios_id,depto_id ) => {
           //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + error, 'red');
         });
     };
+    
 const renderRegionChart = () => {
     // Similar al renderPieChart, puedes personalizarlo
     // Para ilustrar, dejémoslo como un gráfico de columnas más

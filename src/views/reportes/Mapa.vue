@@ -24,7 +24,6 @@ export default {
       people: [],      
       capitalsArray: [],
       username: localStorage.getItem('username'),
-      // rol: localStorage.getItem('rol'),
       deptoId: 0, //localStorage.getItem('depto_id'),
       boliviaDptos : {
           "bolivia": {
@@ -118,8 +117,7 @@ export default {
                 console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.descripcion}`);
               }           
               
-      //  this.people = this.denunciasArray
-            
+     
       });
          this.fetchData();
     },

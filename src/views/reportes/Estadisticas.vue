@@ -15,22 +15,28 @@
   <script>
   import Highcharts from 'highcharts';
   import { mockData } from '../../data/mock/data.js';
-  
+  import Seguimiento from '@/services/Seguimiento';
+
   export default {
     name: 'Dashboard',
     data() {
 
       return {
-        
+              
+        seguimientosArray: [],
         people: [],      
-        capitalsArray: [],
+      capitalsArray: [],
+      username: localStorage.getItem('username'),
+      deptoId: 0, //localStorage.getItem('depto_id'),
 
         denunciasPorTipo : [
-          { codigo:'nuevas' ,tipo: 'Den.nuevas asignadas', total: 120 }, //nuevas:5,
-          { codigo:'sin_seguimiento' ,tipo: 'Den.con retraso en plazos', total: 85 },// sin_seguimiento: 12, // SOLICITADO
-          { codigo:'con_seguimiento' ,tipo: 'Denu.con seguimiento', total: 56 },// con_seguimiento: 5,  // ASIGMNADO
-          { codigo:'rechazadas' ,tipo: 'Denuncias rechazadas', total: 33 },//rechazadas: 4, // RECHAZO
-          { codigo:'aceptadas' ,tipo: 'Den.con informe final', total: 75 },// aceptadas:3, // CONCLUSION
+        { codigo:'NUEVAS_HOY' ,tipo: 'Den.nuevas asignadas hoy', total: 1 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
+          { codigo:'RETRASO' ,tipo: 'Den.con retrazo en los plazos', total: 4 }, //retraso:5, // RETRASO
+          { codigo:'CONCLUSION' ,tipo: 'Den.con informe final', total: 3 },// aceptadas:3, // CONCLUSION
+          { codigo:'RECHAZADO' ,tipo: 'Denuncias rechazadas', total: 4 },//rechazadas: 4, // RECHAZADO
+          { codigo:'SEGUIMIENTO' ,tipo: 'Den.con seguimiento', total: 7 },// SEGUIMIENTO esta ASIGNADO:  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
+          { codigo:'SOLICITADO' ,tipo: 'Den.sin asignacion', total: 2 },//  SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
+
          // total_denuncias: 15, // TOTAL  
       ],
 
@@ -74,14 +80,75 @@
     },
  
     mounted() {
-      this.renderBarChart();
+      const username= localStorage.getItem('username');
+    const userId= localStorage.getItem('usuario_id');
+    const rol= localStorage.getItem('rol');
+    const deptoId= localStorage.getItem('depto_id');
+
+     // this.seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
+
+     this.renderBarChart();
       this.renderPieChart();
-      //this.renderLineChart();
       this.renderRegionChart();
+
      // this.renderTotalDenunciasChart();
      // this.renderMonthlyReportChart();
+      //this.renderLineChart();
+
     },
+
     methods: {
+  denunciaAddCantidad() {
+      // filtrar solo los roles-modulos  en estado activo
+      // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+
+      // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
+      const denunciasArray = this.people.map(denuncia => ({ ...denuncia }));
+      
+     // this.capitalsArray = this.denunciasPorTipo;
+      denunciasArray.forEach(async denuncia => {
+       
+            //const capitals = response.bolivia.capitals;          
+              const depto = this.denunciasPorTipo.find(p => p.codigo === denuncia.estado); // Buscar la persona por id
+
+              if (depto) {
+                depto.total = denuncia.cantidad; // Nuevo valor para la propiedad estado
+                 console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+              } else {
+                console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.estado}`);
+              }           
+              
+     
+      });
+      this.renderBarChart();
+    },
+
+    async  seguimientolistRepByNivelGeoByUsuId (usuarios_id,depto_id ) {
+       await Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
+        .then((response) => {
+          console.log("seguimientolistRepByNivelGeoByUsuId  : ", response.data, response.status);
+          if (response.status === 200) {
+
+            this.people = response.data;
+            this.denunciaAddCantidad();
+          
+            console.log("this.people  : ", this.people, response.status);
+           
+          } else {
+            //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + response, 'red');
+               console.log("error seguimientolistRepByNivelGeoByUsuId  response  : ", response);
+
+         }
+        })
+        .catch(error => {
+            console.log("error seguimientolistRepByNivelGeoByUsuId error  : ", error);
+
+          //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + error, 'red');
+        });
+    },
+
+
+
       renderBarChart() {
         const tipos = this.denunciasPorTipo.map(d => d.tipo); // mockData
         const totales = this.denunciasPorTipo.map(d => d.total);
