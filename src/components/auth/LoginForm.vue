@@ -437,6 +437,8 @@ const usuarioUpdate = async () => {
         <v-btn size="large" rounded="pill" class="custom-green-btn rounded-pill" block type="submit" flat
           @click="submit">Ingresar</v-btn>
       </v-col>
+      
+      <v-label class="font-weight-medium">_-Ver.3.0.1</v-label>
     </v-row>
   </div>
   <template v-if="primeraVez">

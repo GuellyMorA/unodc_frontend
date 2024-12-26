@@ -917,7 +917,7 @@ export default {
 
       { title: 'Fecha Derivacion', key: 'fec_registro' },
       { title: 'Actividad', key: 'actividad' },
-      { title: 'Tiempo de respuesta', key: 'tiempo_respuesta' },
+     // { title: 'Tiempo de respuesta', key: 'tiempo_respuesta' },
       { title: 'Estado', key: 'estado' },
       { title: 'Aciones', value: 'actions', sortable: false },
     ],

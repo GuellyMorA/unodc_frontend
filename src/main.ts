@@ -8,9 +8,7 @@ import PerfectScrollbar from 'vue3-perfect-scrollbar';
 
 import VueApexCharts from 'vue3-apexcharts';
 
-import Highcharts from "highcharts";
-import HighchartsMap from "highcharts/modules/map";
-import HighchartsVue from "highcharts-vue";
+
 
 import VueTablerIcons from 'vue-tabler-icons';
 import Maska from 'maska';
@@ -39,10 +37,15 @@ app.use(Maska);
 app.use(VueApexCharts);
 //app.use(Highcharts);
 //app.use(HighchartsVue);
-app.use(HighchartsVue, {tagName: 'charts'}, {
-	highcharts: Highcharts
-})
-//app.use(HighchartsMap);
+//app.use(HighchartsVue, {tagName: 'charts'}, {
+	//highcharts: Highcharts
+//})
+import Highcharts from "highcharts";
+import Maps from "highcharts/modules/map";
+import HighchartsVue from "highcharts-vue";
+
+//Maps(Highcharts);
+app.use(HighchartsVue);
 
 
 app.use( 
