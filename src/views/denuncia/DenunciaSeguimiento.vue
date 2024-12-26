@@ -924,7 +924,16 @@ export default {
     people: [],
     editedIndex: -1,
     codDenuncia: '',
+    denPerDnteUpd: {
 
+      modulos_sigla_amp_1: '',
+      fec_ampliacion_1: '',
+      estado: '',
+      transaccion: '',
+
+      usu_mod: null,
+      fec_mod: null
+    },
     // propiedades del formulario 
     denPerDnte: {
       fila: '',
@@ -1829,6 +1838,40 @@ export default {
                   // toastClassName: 'custom-toast', // Add your custom class name here
 
                 });
+
+                //primera ampliacion 305
+ /// si sol ampliacion cambiar el param 1 de amplaicion de tiempo para el aasignado
+ //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
+     this.denunciaPersonasGetByCod(this.seguimiento.cod_denuncia) ;
+ 
+ if(this.seguimiento.actividad_sigla=='DEN_SOL_AMPLIACION'){
+   if(this.denPerDnte.estado=='SOLICITADO'){
+
+    this.denPerDnteUpd.modulos_sigla_amp_1 = 'DEN_SEG_AMP_5_DIAS';
+         this.denPerDnteUpd.fec_ampliacion_1 = new Date();
+         this.denPerDnteUpd.usu_mod = this.username;
+          this.denPerDnteUpd.fec_mod = new Date();
+
+          this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+ 
+        }
+   if(this.denPerDnte.estado=='ASIGNADO'){
+
+this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
+     this.denPerDnteUpd.fec_ampliacion_2 = new Date();
+     this.denPerDnteUpd.usu_mod = this.username;
+          this.denPerDnteUpd.fec_mod = new Date();
+
+          this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+ 
+    }     
+ 
+ }
+     
+
+
+
+
                 this.close()
               } else {
 
@@ -1858,7 +1901,40 @@ export default {
 
 
     },
+    async denunciaUpdate(seguimiento_id,seguimiento_data)  {                  
 
+await Denuncia.denunciaUpdate(seguimiento_id, seguimiento_data)
+  .then((response) => {
+    if (response.status === 200) {
+  
+      // Object.assign(this.people[this.editedIndex], this.editedItemseguimiento)
+
+      console.log("denunciaUpdate  : ", response.status, response);
+
+        //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
+        toast.success('Denuncia modificado correctamente ! ', {
+        autoClose: 5000,
+        position: toast.POSITION.TOP_RIGHT,
+        // toastClassName: 'custom-toast', // Add your custom class name here
+
+      });
+      this.close()
+    } else {
+      console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
+      this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
+
+      toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
+        autoClose: 5000,
+        position: toast.POSITION.TOP_RIGHT,
+
+      });
+    }
+  })
+  .catch(error => {
+    this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
+    console.log('Log Error modificando Denuncia: ', error);
+  });
+},
     async enviarArchivos() {
       try {
      

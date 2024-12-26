@@ -4,6 +4,13 @@ const apiUrl = import.meta.env;
 
 
 class DenunciaService {
+  
+  getByCodEstado(cod_denuncia,estado) {
+    return http.get(`/getByCodEstado/${cod_denuncia}/${estado}`,).catch((error) => {
+      console.log("error getByCodEstado  url  : ", error.config.url);
+      return error;
+    });
+  }
 
   denunciaPersonasGetByNivelGeo(data_depto_id ,rol) {
     return http.get(`/denunciaPersonasGetByNivelGeo/${data_depto_id}/${rol}`,).catch((error) => {

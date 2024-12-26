@@ -17,25 +17,26 @@
 
                 <v-card-text>
                     <v-container>
-
-                    
-                        <!-- Datos del denunciante -->
+                        <!-- Denuncias nuevas asignadas -->
                         <v-row>
+                            <h3 class="p-0 py-0 px-0 ">Denuncias nuevas asignadas:</h3>
+                            <v-text-field  max-width="5" v-model="segEstadoCount.nuevas" :readonly="true" 
+                                outlined></v-text-field>
 
-
-
-                            <h3 class="p-0 py-0 px-0 ">Denuncias sin seguimiento:</h3>
+                        </v-row>
+                    
+                        <!-- Denuncias sin seguimiento -->
+                        <v-row>
+                            <h3 class="p-0 py-0 px-0 ">Denuncias con retraso en los plazos:</h3>
                             <v-text-field v-model="segEstadoCount.sin_seguimiento" :readonly="true" 
-                                placeholder="Nombre del denunciante" outlined></v-text-field>
+                               outlined></v-text-field>
 
                         </v-row>
                         <v-row>
 
-
-
                             <h3 class="p-0 py-0 px-0 ">Denuncias con seguimiento:</h3>
                             <v-text-field v-model="segEstadoCount.con_seguimiento" :readonly="true" 
-                                placeholder="Nombre del denunciante" outlined></v-text-field>
+                                outlined></v-text-field>
 
                         </v-row>
                         <v-row>
@@ -43,13 +44,14 @@
                             <h3 class="p-0 py-0 px-0 ">Denuncias rechazadas:</h3>
 
                             <v-text-field v-model="segEstadoCount.rechazadas" :readonly="true" 
-                                placeholder="CI" outlined></v-text-field>
+                               outlined></v-text-field>
 
                         </v-row>
                         <v-row>
                             <h3 class="p-0 py-0 px-0 ">Denuncias aceptadas con informe final:</h3>
 
-                            <v-text-field v-model="segEstadoCount.aceptadas" :readonly="true"  placeholder="Ciudad" outlined></v-text-field>
+                            <v-text-field v-model="segEstadoCount.aceptadas" :readonly="true" 
+                            outlined></v-text-field>
                         </v-row>
 
 
@@ -179,7 +181,7 @@ import Seguimiento from '@/services/Seguimiento';
 
 
 const segEstadoCount = {
-    
+    nuevas:5,
     sin_seguimiento: 12, // SOLICITADO
     con_seguimiento: 5,  // ASIGMNADO
     rechazadas: 4, // RECHAZO
@@ -244,11 +246,14 @@ const  seguimientolistRepByNivelGeoByUsuId =(usuarios_id,depto_id ) => {
           if (response.status === 200) {
 
             seguimientosArray = response.data;
+            segEstadoCount.nuevas = seguimientosArray[4].cantidad; // nuevas   SOLICITADO
+            segEstadoCount.sin_seguimiento = seguimientosArray[0].cantidad;// Denuncias con retraso en los plazos:
 
-            segEstadoCount.sin_seguimiento = seguimientosArray.cantidad[0];
-            segEstadoCount.con_seguimiento = seguimientosArray.cantidad[1];
-            segEstadoCount.rechazadas = seguimientosArray.cantidad[2];
-            segEstadoCount.aceptadas = seguimientosArray.cantidad[0];
+            segEstadoCount.con_seguimiento = seguimientosArray[3].cantidad;// Denuncias con SEGUIMEINTO
+            segEstadoCount.rechazadas = seguimientosArray[2].cantidad; // rechazadO
+            segEstadoCount.aceptadas = seguimientosArray[1].cantidad; // Denuncias aceptadas con informe final: COCLUSION
+
+
             //segEstadoCount.total_denuncias = seguimientosArray.cantidad[1];
            
           } else {

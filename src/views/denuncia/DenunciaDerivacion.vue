@@ -34,8 +34,6 @@
 
         <v-toolbar-title class="text-center">Derivacion de denuncias registradas en sistema</v-toolbar-title>
 
-
-
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -49,6 +47,15 @@
         </v-dialog>
       </v-toolbar>
     </template>
+    <template v-slot:item.color_semaforo="{ item }">
+        <!-- Icono del semáforo {{item.color_semaforo}} -->
+      
+        <i v-if="item.color_semaforo == 'green'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
+        <i v-if="item.color_semaforo == 'yellow'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
+        <i v-if="item.color_semaforo == 'red'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
+
+       
+      </template>
     <!-- Action Buttons Column -->
     <template v-slot:item.actions="{ item }">
       <v-icon small class="mr-2" @click=""> mdi-printer </v-icon>
@@ -58,6 +65,8 @@
       <v-icon small @click="addNewSeguimiento(item)"> mdi-account-multiple-plus </v-icon>
 
     </template>
+
+
 
     <!--   <template v-slot:bottom>
       <div class="text-center pt-2">
@@ -410,7 +419,8 @@ import { downloadFile } from '../../utils/fileDownloader';
 import DocumentosPath from '@/services/DocumentosPath';
 import Usuario from '@/services/Usuario';
 import Seguimiento from '@/services/Seguimiento';
-
+//import Denuncia from '@/services/Denuncia';
+import 'font-awesome/css/font-awesome.css';
 export default {
 
   data: () => ({
@@ -444,8 +454,8 @@ export default {
       emailMatch: () => `The email and password you entered don't match`,
     },
 
-
-
+   // color: "red",
+iconColor: "fas fa-circle",
 
     headers: [
       {
@@ -461,9 +471,12 @@ export default {
       { title: 'Fecha', key: 'fec_registro_hecho' },
       { title: 'Gestor Seguimiento', key: 'gestor_seguimiento' },
       { title: 'Tipo Denuncia', key: 'tipo_denuncia' },
+      { title: 'Plazo', key: 'color_semaforo' },
       { title: 'Estado', key: 'estado' },
       { title: 'Aciones', value: 'actions', sortable: false },
     ],
+
+   // color_semaforo:'';
     people: [],
     editedIndex: -1,
     codDenuncia: '',
@@ -617,8 +630,10 @@ export default {
     },
     seguimientosArray: [],
 
-
-  
+    semaforoArray: [],
+    semaforoArray2: [],
+    semaforoArray3: [],
+    semaforoEstado:'',
 
     denunciado: {
       fila: '',
@@ -790,6 +805,9 @@ export default {
     this.loading = true;
     //this.username= localStorage.getItem('username');
     this.denunciaList();
+    //this.denunciaAddEstado();
+
+
     this.deptoList();
     this.gradoList();
 
@@ -807,9 +825,47 @@ export default {
   methods: {
 
 
+    denunciaAddEstado(){
+      // filtrar solo los roles-modulos  en estado activo
+       // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+      
+// Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
+this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
+
+       this.people.forEach(async denuncia => {
+          await Denuncia.getByCodEstado(denuncia.cod_denuncia, denuncia.estado)
+        .then((response) => {
+          // console.log("response.data[0]  : ", response.data[0], response.status);
+          if (response.status === 200) {
+
+            this.semaforoEstado = (response.data[0].color_semaforo);
+            const denun = this.semaforoArray.find(p => p.cod_denuncia === denuncia.cod_denuncia); // Buscar la persona por id
+
+            if (denun) {
+              denun.color_semaforo = this.semaforoEstado; // Nuevo valor para la propiedad estado
+             // denun.estado = estado; // Actualizar la estado
+                console.log(`cod_denuncia para el id ${denuncia.cod_denuncia}: ${denun.estado}`, ' semaforoEstado: ' ,  this.semaforoEstado );
+            } else {
+                console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.cod_denuncia}`);
+            }
+
+           // console.log("this.people  : ", this.people);
+          } else {
+            this.showSnackbar('Error recuperando Denuncia ' + response, 'red');
+          }
+        })
+        .catch(e => {
+          console.log(e);
+        });
+        this.people =  this.semaforoArray 
+
+       });
+
+      },
+
+      
     cargarPersona(item) {
       const denunciadoIndex = this.denunciadosArray.find(dndo => dndo.fila === item);
-      //this.editedIndex = this.people.indexOf(item);
       this.denunciado = Object.assign({}, denunciadoIndex);
       console.log('this.denPerDnte :', this.denPerDnte);
     },
@@ -914,8 +970,6 @@ export default {
         });
     },
 
-
-
     async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
@@ -937,6 +991,7 @@ export default {
           console.log(e);
         });
     },
+
     async denunciaList() {
       console.log('this.deptoId' ,this.deptoId, ',this.rol: ',this.rol );
       await Denuncia.denunciaPersonasGetByNivelGeo(this.deptoId, this.rol)
@@ -944,7 +999,7 @@ export default {
           console.log("denunciaPersonasGetByNivelGeo  : ", response.data, response.status);
           if (response.status === 200) {
             this.people = response.data;
-         
+            this.denunciaAddEstado();
           } else {
             this.showSnackbar('Error recuperando denunciaPersonasGetByNivelGeo ' + response, 'red');
           }
@@ -1392,6 +1447,12 @@ console.log("this.denPerDnte.fec_registro: "+  this.denPerDnte.fec_registro)
 
 
 <style scoped>
+i {
+  font-size: 24px; /* Ajusta el tamaño del icono */
+  vertical-align: middle; /* Para centrar el icono verticalmente */
+}
+
+
 /* Estilos para el enlace que actúa como un botón */
 
 .download-link {
