@@ -18,18 +18,73 @@
   
   export default {
     name: 'Dashboard',
+    data() {
+
+      return {
+        
+        people: [],      
+        capitalsArray: [],
+
+        denunciasPorTipo : [
+          { codigo:'nuevas' ,tipo: 'Den.nuevas asignadas', total: 120 }, //nuevas:5,
+          { codigo:'sin_seguimiento' ,tipo: 'Den.con retraso en plazos', total: 85 },// sin_seguimiento: 12, // SOLICITADO
+          { codigo:'con_seguimiento' ,tipo: 'Denu.con seguimiento', total: 56 },// con_seguimiento: 5,  // ASIGMNADO
+          { codigo:'rechazadas' ,tipo: 'Denuncias rechazadas', total: 33 },//rechazadas: 4, // RECHAZO
+          { codigo:'aceptadas' ,tipo: 'Den.con informe final', total: 75 },// aceptadas:3, // CONCLUSION
+         // total_denuncias: 15, // TOTAL  
+      ],
+
+      denunciasPorDepto: [
+        {  codigo:'LP',    region: 'LP', total: 100 },
+        {  codigo:'SC',    region: 'SC', total: 80 },
+        {  codigo:'CH',    region: 'CH', total: 45 },
+        {  codigo:'CBBA',   region: 'CBBA', total: 60 },
+        {  codigo:'OR',    region: 'OR', total: 100 },
+        {  codigo:'TAR',   region: 'TAR', total: 80 },
+        {  codigo:'BE',    region: 'BE', total: 45 },
+        {  codigo:'PAN',   region: 'PAN', total: 60 },
+      ],
+      denunciasPorMes: [
+        {  codigo:'Ene', mes: 'Enero', total: 45 },
+        {  codigo:'Feb', mes: 'Febrero', total: 60 },
+        {  codigo:'Mar', mes: 'Marzo', total: 75 },
+        {  codigo:'Abr', mes: 'Abril', total: 80 },
+        {  codigo:'May', mes: 'Mayo', total: 50 },
+        {  codigo:'Jun', mes: 'Junio', total: 40 },
+        {  codigo:'Jul', mes: 'Julio', total: 45 },
+        {  codigo:'Ago', mes: 'Agosto', total: 60 },
+        {  codigo:'Sep', mes: 'Septiembre', total: 75 },
+        {  codigo:'Oct', mes: 'Octubre', total: 80 },
+        {  codigo:'Nov', mes: 'Noviembre', total: 50 },
+        {  codigo:'Dic', mes: 'Diciembre', total: 40 }
+      ],
+      denunciasPorDeptoInfFinal: [
+        {  codigo:'LP',    region: 'LP', total: 100 },
+        {  codigo:'SC',    region: 'SC', total: 80 },
+        {  codigo:'CH',    region: 'CH', total: 45 },
+        {  codigo:'CBBA',   region: 'CBBA', total: 60 },
+        {  codigo:'OR',    region: 'OR', total: 100 },
+        {  codigo:'TAR',   region: 'TAR', total: 80 },
+        {  codigo:'BE',    region: 'BE', total: 45 },
+        {  codigo:'PAN',   region: 'PAN', total: 60 },
+      ],
+
+
+      }
+    },
+ 
     mounted() {
       this.renderBarChart();
       this.renderPieChart();
       //this.renderLineChart();
       this.renderRegionChart();
-      this.renderTotalDenunciasChart();
-      this.renderMonthlyReportChart();
+     // this.renderTotalDenunciasChart();
+     // this.renderMonthlyReportChart();
     },
     methods: {
       renderBarChart() {
-        const tipos = mockData.denunciasPorTipo.map(d => d.tipo);
-        const totales = mockData.denunciasPorTipo.map(d => d.total);
+        const tipos = this.denunciasPorTipo.map(d => d.tipo); // mockData
+        const totales = this.denunciasPorTipo.map(d => d.total);
   
         Highcharts.chart('barChart', {
           chart: { type: 'column' },
@@ -40,12 +95,12 @@
         });
       },
       renderPieChart() {
-        const regiones = mockData.denunciasPorDepto.map(d => d.region);
-        const totales = mockData.denunciasPorDepto.map(d => d.total);
+        const regiones = this.denunciasPorDepto.map(d => d.region);
+        const totales = this.denunciasPorDepto.map(d => d.total);
   
         Highcharts.chart('pieChart', {
           chart: { type: 'pie' },
-          title: { text: 'Denuncias por Región' },
+          title: { text: 'Denuncias por Departamento' },
           series: [{
             name: 'Denuncias',
             data: regiones.map((region, i) => ({
@@ -58,8 +113,8 @@
         });
       },
       renderLineChart() {
-        const meses = mockData.denunciasPorMes.map(d => d.mes);
-        const totales = mockData.denunciasPorMes.map(d => d.total);
+        const meses = this.denunciasPorMes.map(d => d.mes);
+        const totales = this.denunciasPorMes.map(d => d.total);
   
         Highcharts.chart('lineChart', {
           chart: { type: 'line' },
@@ -72,12 +127,12 @@
       renderRegionChart() {
         // Similar al renderPieChart, puedes personalizarlo
         // Para ilustrar, dejémoslo como un gráfico de columnas más
-        const regiones = mockData.denunciasPorDepto.map(d => d.region);
-        const totales = mockData.denunciasPorDepto.map(d => d.total);
+        const regiones = this.denunciasPorDeptoInfFinal.map(d => d.region);
+        const totales = this.denunciasPorDeptoInfFinal.map(d => d.total);
   
         Highcharts.chart('regionChart', {
           chart: { type: 'column' },
-          title: { text: 'Denuncias por Región' },
+          title: { text: 'Denuncias con Inf. Final' },
           xAxis: { categories: regiones },
           yAxis: { title: { text: 'Número de Denuncias' }},
           series: [{ name: 'Denuncias', data: totales }]

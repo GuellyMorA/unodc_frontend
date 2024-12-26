@@ -4,7 +4,15 @@ const apiUrl = import.meta.env;
 
 
 class DenunciaService {
-  
+
+  listRepDenByDepto(depto_id) {
+    return http.get(`/listRepDenByDepto/${depto_id}`,).catch((error) => {
+      console.log("error listRepDenByDepto  url  : ", error.config.url);
+      return error;
+    });
+  }
+
+
   getByCodEstado(cod_denuncia,estado) {
     return http.get(`/getByCodEstado/${cod_denuncia}/${estado}`,).catch((error) => {
       console.log("error getByCodEstado  url  : ", error.config.url);

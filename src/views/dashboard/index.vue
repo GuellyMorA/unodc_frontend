@@ -180,15 +180,15 @@ import Seguimiento from '@/services/Seguimiento';
 
 
 
-const segEstadoCount = {
-    nuevas:5,
-    sin_seguimiento: 12, // SOLICITADO
-    con_seguimiento: 5,  // ASIGMNADO
-    rechazadas: 4, // RECHAZO
-    aceptadas:3, // CONCLUSION
-    total_denuncias: 15, // TOTAL
+const segEstadoCount = ref({
+    nuevas:0,
+    sin_seguimiento: 0, // SOLICITADO
+    con_seguimiento: 0,  // ASIGMNADO
+    rechazadas: 0, // RECHAZO
+    aceptadas:0, // CONCLUSION
+    total_denuncias: 0, // TOTAL
 
-};
+});
 // Definir variables reactivas usando `ref`
 const isDisabled = ref(true);
 const dialog = ref(false);
@@ -253,7 +253,7 @@ const  seguimientolistRepByNivelGeoByUsuId =(usuarios_id,depto_id ) => {
             segEstadoCount.rechazadas = seguimientosArray[2].cantidad; // rechazadO
             segEstadoCount.aceptadas = seguimientosArray[1].cantidad; // Denuncias aceptadas con informe final: COCLUSION
 
-
+            console.log("segEstadoCount  : ", segEstadoCount, response.status);
             //segEstadoCount.total_denuncias = seguimientosArray.cantidad[1];
            
           } else {

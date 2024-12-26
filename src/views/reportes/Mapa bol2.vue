@@ -5,12 +5,10 @@
   </template>
   
   <script>
-//  import Highcharts from "highcharts/highmaps";
-//  import HighchartsVue from "highcharts-vue";
+
   import mapData from "@highcharts/map-collection/countries/bo/bo-all.geo.json"; // Mapa de Bolivia
   import Highcharts from "highcharts";
-import Maps from "highcharts/modules/map";
-import HighchartsVue from "highcharts-vue";
+
 
   export default {
     name: "MapaBolivia",
@@ -68,7 +66,7 @@ import HighchartsVue from "highcharts-vue";
     },
   
     created() {
-     // Highcharts.mapChart(this.$refs.chartContainer, this.chartOptions);
+      Highcharts.mapChart(this.$refs.chartContainer, this.chartOptions);
     }
   };
   </script>
