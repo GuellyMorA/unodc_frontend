@@ -30,12 +30,13 @@
       deptoId: 0, //localStorage.getItem('depto_id'),
 
         denunciasPorTipo : [
-        { codigo:'NUEVAS_HOY' ,tipo: 'Den.nuevas asignadas hoy', total: 1 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
-          { codigo:'RETRASO' ,tipo: 'Den.con retrazo en los plazos', total: 4 }, //retraso:5, // RETRASO
-          { codigo:'CONCLUSION' ,tipo: 'Den.con informe final', total: 3 },// aceptadas:3, // CONCLUSION
-          { codigo:'RECHAZADO' ,tipo: 'Denuncias rechazadas', total: 4 },//rechazadas: 4, // RECHAZADO
-          { codigo:'SEGUIMIENTO' ,tipo: 'Den.con seguimiento', total: 7 },// SEGUIMIENTO esta ASIGNADO:  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
-          { codigo:'SOLICITADO' ,tipo: 'Den.sin asignacion', total: 2 },//  SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
+        { codigo:'ASIGNADO_HOY' ,tipo: 'Den.nuevas asignadas hoy', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
+          { codigo:'RETRASO' ,tipo: 'Den.con retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
+          
+          { codigo:'CONCLUSION' ,tipo: 'Den.con informe final', total: 0 },// aceptadas:3, // CONCLUSION
+          { codigo:'RECHAZADO' ,tipo: 'Denuncias rechazadas', total: 0 },//rechazadas: 4, // RECHAZADO
+          { codigo:'SEGUIMIENTO' ,tipo: 'Den.con seguimiento', total: 0 },// SEGUIMIENTO esta ASIGNADO:  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
+          { codigo:'SOLICITADO' ,tipo: 'Den.sin asignacion', total: 0 },//  SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
 
          // total_denuncias: 15, // TOTAL  
       ],
@@ -85,9 +86,9 @@
     const rol= localStorage.getItem('rol');
     const deptoId= localStorage.getItem('depto_id');
 
-     // this.seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
+      this.seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
 
-     this.renderBarChart();
+    // this.renderBarChart();
       this.renderPieChart();
       this.renderRegionChart();
 
@@ -113,26 +114,27 @@
 
               if (depto) {
                 depto.total = denuncia.cantidad; // Nuevo valor para la propiedad estado
-                 console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                 console.log(`cod_denuncia para el id ${denuncia.estado}: ${depto.total}`);
               } else {
                 console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.estado}`);
+                console.log(`cod_denuncia para el id ${denuncia.estado}: 0`);
               }           
               
      
       });
-      this.renderBarChart();
+      //this.renderBarChart();
     },
 
     async  seguimientolistRepByNivelGeoByUsuId (usuarios_id,depto_id ) {
        await Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
         .then((response) => {
-          console.log("seguimientolistRepByNivelGeoByUsuId  : ", response.data, response.status);
+          console.log("seguimientolistRepByNivelGeoByUsuId  people: ", response.data, response.status);
           if (response.status === 200) {
 
             this.people = response.data;
             this.denunciaAddCantidad();
-          
-            console.log("this.people  : ", this.people, response.status);
+            this.renderBarChart();
+           // console.log("this.people  : ", this.people, response.status);
            
           } else {
             //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + response, 'red');
@@ -151,8 +153,12 @@
 
       renderBarChart() {
         const tipos = this.denunciasPorTipo.map(d => d.tipo); // mockData
-        const totales = this.denunciasPorTipo.map(d => d.total);
-  
+        const totales = this.denunciasPorTipo.map(d => parseInt(d.total));
+       // console.log(`tipos : ${tipos}`);
+       // console.log(`totales : ${totales}`);
+        console.log(`denunciasPorTipo : ${JSON.stringify(this.denunciasPorTipo)}`);
+
+        
         Highcharts.chart('barChart', {
           chart: { type: 'column' },
           title: { text: 'Denuncias por Tipo' },
@@ -163,7 +169,7 @@
       },
       renderPieChart() {
         const regiones = this.denunciasPorDepto.map(d => d.region);
-        const totales = this.denunciasPorDepto.map(d => d.total);
+        const totales = this.denunciasPorDepto.map(d => parseInt(d.total));
   
         Highcharts.chart('pieChart', {
           chart: { type: 'pie' },
@@ -181,7 +187,7 @@
       },
       renderLineChart() {
         const meses = this.denunciasPorMes.map(d => d.mes);
-        const totales = this.denunciasPorMes.map(d => d.total);
+        const totales = this.denunciasPorMes.map(d => parseInt(d.total));
   
         Highcharts.chart('lineChart', {
           chart: { type: 'line' },

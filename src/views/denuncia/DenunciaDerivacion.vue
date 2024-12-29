@@ -29,6 +29,11 @@
         </th>
       </tr>
     </template>
+
+    <template v-slot:item.fila2="{ index }">
+      <td class="text-center">{{ index + 1 }}</td>
+    </template>
+
     <template v-slot:top>
       <v-toolbar flat>
 
@@ -459,10 +464,10 @@ iconColor: "fas fa-circle",
 
     headers: [
       {
-        title: 'Num', key: 'fila', class: 'background',
-        align: 'start', sortable: false,
+        title: 'Num', key: 'fila2', class: 'background',
+        align: 'start', sortable: true,
       },
-      { title: 'Cod. Denuncia', key: 'cod_denuncia', class: 'success--text title' },
+      { title: 'Cod. Denuncia', key: 'cod_denuncia' },
 
       { title: 'Ap. Paterno', key: 'apellido_pat' },
       { title: 'Ap. Materno', key: 'apellido_mat' },

@@ -16,20 +16,28 @@
    </v-col>
   </v-row>
 
-  <!-- Data Table --> <!-- v-model:page="page" -->
+  <!-- Data Table --> <!-- v-model:page="page"     filteredItems-->
   <v-data-table :headers="headers" :items="filteredItems"
-    :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'cod_denuncia', order: 'desc' }]" class="elevation-1"
-    :search="search" :items-per-page="itemsPerPage" rows-per-page-text="Filas por página"
-    no-data-text="No existen registros." no-results-text="Sin resultados" page-text="de"
+    class="elevation-1"
+    :search="search" 
+    no-data-text="No existen registros." no-results-text="Sin resultados" 
+    page-text="de" :items-per-page="itemsPerPage"  
+    rows-per-page-text="Filas por página"   :page-count="pageCount"
     items-per-page-text="Registros por pagina ">
 
     <template v-slot:headers="{ props }">
       <tr v-bind="props">
-        <th v-for="header in headers" :key="header.value" class="text-center">
+        <th v-for="header in headers" :key="header.value" class="text-center"  >
           {{ header.title }}
+        
         </th>
       </tr>
     </template>
+    <!--  secuencial Column -->
+    <template v-slot:item.fila2="{ index }">
+      <td class="text-center">{{ index + 1 }}</td>
+    </template>
+
     <template v-slot:top>
       <v-toolbar flat>
 
@@ -65,9 +73,10 @@
     <!--   <template v-slot:bottom>
       <div class="text-center pt-2">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>
-      </div>    
-
+      </div>  
     </template>-->
+ 
+
   </v-data-table>
 
 
@@ -91,7 +100,7 @@
           <v-row>
             <v-col class="p-0 py-0 px-0" cols="4">
           </v-col>  
-            <v-col class="p-0 py-0 px-0 mb-2" cols="4">
+            <v-col class="p-0 py-0 px-0 mb-3" cols="4">
             <label class="text-h5">Datos del Denunciante  </label>
         
           </v-col>    
@@ -104,7 +113,7 @@
               <h3 class="p-0 py-3 px-2 ">Nombres y apellidos:</h3>
               <v-text-field
               v-model="denPerDnte.den_nombre_completo " 
-                label="Nombres y apellidos"
+                
                 placeholder="Nombre del denunciante"
                 outlined
               ></v-text-field>
@@ -115,7 +124,7 @@
               <h3 class="p-0 py-3 px-2 ">Carnet de identidad:</h3>
        
               <v-text-field
-                label="Carnet de identidad"
+                
                 placeholder="CI"
                 outlined
               ></v-text-field>
@@ -125,8 +134,8 @@
       
               <v-text-field
 
-                label="Ciudad"
-                placeholder="Ciudad"
+                
+                placeholder="Extención"
                 outlined
               ></v-text-field>
           </v-row>
@@ -137,7 +146,7 @@
         
               <v-text-field
               v-model="denPerDnte.email" 
-                label="Correo electrónico"
+              
                 placeholder="Correo electrónico"
                 outlined
               ></v-text-field>        
@@ -146,7 +155,7 @@
             
               <v-text-field
               v-model="denPerDnte.telefono" 
-                label="Teléfono"
+              
                 placeholder="Teléfono"
                 outlined
               ></v-text-field>
@@ -200,7 +209,7 @@
             <v-col cols="8" class="p-0 py-0 px-0">
               <v-text-field
               v-model="denunciado.dnado_nombre_completo" 
-                label="Nombres y apellidos del denunciado"
+              
                 placeholder="Nombres del denunciado"
                 outlined
               ></v-text-field>
@@ -210,7 +219,7 @@
             <h3 class="p-0 py-3 px-0 ">Lugar del hecho:</h3>
               <v-text-field
               v-model="denPerDnte.lugar_hecho" 
-                label="Dirección General"
+               
                 placeholder="Dirección General"
                 outlined
               ></v-text-field>
@@ -218,7 +227,7 @@
               <h3 class="p-0 py-3 px-2 ml-4">Unidad:</h3>
               <v-text-field   
               v-model="denunciado.unidad_policial_desc" 
-                label="Unidad"
+               
                 placeholder="Unidad"
                 outlined
               ></v-text-field>
@@ -247,7 +256,7 @@
             <h3 class="p-0 py-3 px-0">¿Quién o quienes habrían incurrido?:</h3>
               <v-textarea
               v-model="denunciado.dnado_nombre_completo_concat" 
-                label="¿Quién o quienes habrían incurrido?"
+             
                 placeholder="Describa los hechos"
                 outlined    rows="2" cols="1" 
               ></v-textarea>
@@ -280,10 +289,13 @@
             </v-row>
           <v-row>
             <h3 class="p-0 py-3 px-2 ">Número de hojas:</h3>
-              <v-text-field
-       
-                outlined
-              ></v-text-field>
+            
+    <v-text-field
+        outlined
+         
+        style="max-width: 100px;"
+    ></v-text-field>
+ 
          
           </v-row>
           <v-row>
@@ -871,6 +883,11 @@ export default {
    
 
 
+    pagination: {
+        page: 1,
+        sortBy: 'cod_denuncia',
+        sortDesc: false
+      },
 
     page: 1,
     itemsPerPage:10,
@@ -906,7 +923,7 @@ export default {
 
     headers: [
       {
-        title: 'Num', key: 'fila', class: 'background',
+        title: 'Num', key: 'fila2', class: 'background',
         align: 'start', sortable: false,
       },
       { title: 'Cod. Denuncia', key: 'cod_denuncia', class: 'success--text title' },
@@ -1297,6 +1314,7 @@ export default {
 
 
   methods: {
+ 
 
     downloadPDF() {
       const popupContent = this.$refs.popupContent;
@@ -2191,6 +2209,7 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
   },
 
   computed: {
+
     formTitle() {
       return this.editedIndex === -1 ? 'Adicionar Denuncia' : 'Modificar Denuncia'
     },
@@ -2203,9 +2222,25 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
         })
       })
     },
-    pageCount() {
-      return Math.ceil(this.people.length / this.itemsPerPage)
+ 
+    paginatedItems() {
+      const start = (this.pagination.page - 1) * this.itemsPerPage;
+      return this.filteredItems.slice(start, start + this.itemsPerPage);
     },
+    pageCount() {
+      return Math.ceil(this.filteredItems.length / this.itemsPerPage);
+    },
+    computedHeaders() {
+      return this.headers.map(header => ({
+        ...header,
+        sortable: true // Todas las columnas son ordenables
+      }));
+    },
+    sortBy(sortKey) {
+      this.pagination.sortBy = sortKey;
+      this.pagination.sortDesc = !this.pagination.sortDesc; // Alterna el orden
+    },
+
   },
 
   watch: {
