@@ -84,7 +84,7 @@ const MainRoutes = {
         {
             name: 'ReportesMapa',
             path: '/reportes/mapa',
-            //requiresAuth: true,
+            requiresAuth: true,
             component: () => import('@/views/reportes/Mapa.vue')
         },
 

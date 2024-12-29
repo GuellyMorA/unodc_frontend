@@ -248,12 +248,12 @@ const  seguimientolistRepByNivelGeoByUsuId =async (usuarios_id,depto_id ) => {
           if (response.status === 200) {
 
             seguimientosArray = response.data;
-            segEstadoCount.nuevas_hoy = seguimientosArray[4].cantidad; // nuevas hoy  SOLICITADO
-            segEstadoCount.retraso = seguimientosArray[0].cantidad;// Denuncias con retraso en los plazos:
-            segEstadoCount.rechazado = seguimientosArray[2].cantidad; // rechazadO
+            segEstadoCount.nuevas_hoy = seguimientosArray[4].cantidad; //error  nuevas hoy  SOLICITADO
+            segEstadoCount.retraso = seguimientosArray[0].cantidad;// Denuncias con RETRASO en los plazos:
+            segEstadoCount.rechazado = seguimientosArray[2].cantidad; // denuncias con RECHAZO
 
-            segEstadoCount.con_seguimiento = seguimientosArray[3].cantidad;// Denuncias con SEGUIMEINTO
-            segEstadoCount.conclusion = seguimientosArray[1].cantidad; // Denuncias aceptadas con informe final: COCLUSION
+            segEstadoCount.con_seguimiento = seguimientosArray[3].cantidad;// Denuncias SIN RETRASO , con seguimiento , 
+            segEstadoCount.conclusion = seguimientosArray[1].cantidad; // Denuncias con COCLUSION, aceptadas con informe final: 
 
             console.log("segEstadoCount  : ", segEstadoCount, response.status);
             //segEstadoCount.total_denuncias = seguimientosArray.cantidad[1];
