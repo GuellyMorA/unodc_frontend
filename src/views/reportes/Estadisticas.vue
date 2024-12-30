@@ -16,6 +16,9 @@
   import Highcharts from 'highcharts';
   import { mockData } from '../../data/mock/data.js';
   import Seguimiento from '@/services/Seguimiento';
+  import Denuncia from '@/services/Denuncia';
+  import { toast } from 'vue3-toastify';
+
 
   export default {
     name: 'Dashboard',
@@ -31,7 +34,7 @@
 
         denunciasPorTipo : [
         { codigo:'ASIGNADO_HOY' ,tipo: 'Den.nuevas asignadas hoy', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
-          { codigo:'RETRASO' ,tipo: 'Den.con retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
+        { codigo:'RETRASO' ,tipo: 'Den.con retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
           
           { codigo:'CONCLUSION' ,tipo: 'Den.con informe final', total: 0 },// aceptadas:3, // CONCLUSION
           { codigo:'RECHAZADO' ,tipo: 'Denuncias rechazadas', total: 0 },//rechazadas: 4, // RECHAZADO
@@ -42,14 +45,15 @@
       ],
 
       denunciasPorDepto: [
-        {  codigo:'LP',    region: 'LP', total: 100 },
-        {  codigo:'SC',    region: 'SC', total: 80 },
-        {  codigo:'CH',    region: 'CH', total: 45 },
-        {  codigo:'CBBA',   region: 'CBBA', total: 60 },
-        {  codigo:'OR',    region: 'OR', total: 100 },
-        {  codigo:'TAR',   region: 'TAR', total: 80 },
-        {  codigo:'BE',    region: 'BE', total: 45 },
-        {  codigo:'PAN',   region: 'PAN', total: 60 },
+        {  codigo:'LP',    region: 'La Paz', total: 0 },
+        {  codigo:'SC',    region: 'Santa Cruz', total: 0 },
+        {  codigo:'CH',    region: 'Chuquisaca', total: 0 },
+        {  codigo:'CBBA',  region: 'Cochabamba', total: 0 },
+        {  codigo:'OR',    region: 'Oruro', total: 0 },
+        {  codigo:'TAR',   region: 'Tarija', total: 0 },
+        {  codigo:'BE',    region: 'Beni', total: 0 },
+        {  codigo:'PAN',   region: 'Pando', total: 0 },
+        {codigo:'PO',   region: 'Potosí', total: 0 },
       ],
       denunciasPorMes: [
         {  codigo:'Ene', mes: 'Enero', total: 45 },
@@ -66,16 +70,39 @@
         {  codigo:'Dic', mes: 'Diciembre', total: 40 }
       ],
       denunciasPorDeptoInfFinal: [
-        {  codigo:'LP',    region: 'LP', total: 100 },
-        {  codigo:'SC',    region: 'SC', total: 80 },
-        {  codigo:'CH',    region: 'CH', total: 45 },
-        {  codigo:'CBBA',   region: 'CBBA', total: 60 },
-        {  codigo:'OR',    region: 'OR', total: 100 },
-        {  codigo:'TAR',   region: 'TAR', total: 80 },
-        {  codigo:'BE',    region: 'BE', total: 45 },
-        {  codigo:'PAN',   region: 'PAN', total: 60 },
+      {  codigo:'LP',    region: 'La Paz', total: 0 },
+        {  codigo:'SC',    region: 'Santa Cruz', total: 0 },
+        {  codigo:'CH',    region: 'Chuquisaca', total: 0 },
+        {  codigo:'CBBA',  region: 'Cochabamba', total: 0 },
+        {  codigo:'OR',    region: 'Oruro', total: 0 },
+        {  codigo:'TAR',   region: 'Tarija', total: 0 },
+        {  codigo:'BE',    region: 'Beni', total: 0 },
+        {  codigo:'PAN',   region: 'Pando', total: 0 },
+        {codigo:'PO',   region: 'Potosí', total: 0 },
       ],
 
+      boliviaDptos : {
+          "bolivia": {
+            "capitals": [
+              { "city": "La Paz", "lat": -15.5, "lon": -68.15, "cantidad": 0 },
+              { "city": "Chuquisaca", "lat": -19.0333, "lon": -65.2627, "cantidad": 0 },
+              { "city": "Santa Cruz", "lat": -17.7833, "lon": -62.1833, "cantidad": 0 },
+              { "city": "Cochabamba", "lat": -17.3895, "lon": -66.1568, "cantidad": 0 },
+              { "city": "Oruro", "lat": -18.9833, "lon": -68.00, "cantidad": 0 },
+              { "city": "Potosí", "lat": -20.5833, "lon": -66.75, "cantidad": 0 },
+              { "city": "Tarija", "lat": -21.5333, "lon": -64.7333, "cantidad": 0 },
+              { "city": "Beni", "lat": -14.8333, "lon": -64.9, "cantidad": 0 },
+              { "city": "Pando", "lat": -11.5333, "lon": -67.7333, "cantidad": 0 }
+            ]
+          }
+        },
+      snackbar: {
+      visible: false,
+      message: '',
+      color: "success",
+      mode: "",
+      timeout: 2500,
+    },
 
       }
     },
@@ -87,10 +114,14 @@
     const deptoId= localStorage.getItem('depto_id');
 
       this.seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
+      this.listRepDenByDepto(deptoId);
+
+      this.listRepDenByDeptoByInfFinal(deptoId);
+
 
     // this.renderBarChart();
-      this.renderPieChart();
-      this.renderRegionChart();
+    //  this.renderPieChart();
+    //  this.renderRegionChart();
 
      // this.renderTotalDenunciasChart();
      // this.renderMonthlyReportChart();
@@ -99,7 +130,113 @@
     },
 
     methods: {
-  denunciaAddCantidad() {
+
+      denunciaAddCantidadByDeptoByInfFinal() {
+      // filtrar solo los roles-modulos  en estado activo
+      // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+
+      // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
+      const denunciasArray = this.people.map(denuncia => ({ ...denuncia }));
+      
+   //   this.capitalsArray = this.boliviaDptos.bolivia.capitals;
+      denunciasArray.forEach(async denuncia => {
+       
+            //const capitals = response.bolivia.capitals;          
+              const depto = this.denunciasPorDeptoInfFinal.find(p => p.region === denuncia.descripcion); // 
+
+              if (depto) {
+                depto.total = denuncia.cantidad; // Nuevo valor para la propiedad estado
+                 console.log(`cod_denuncia para el id ${denuncia.descripcion}: ${denuncia.cantidad}`);
+              } else {
+                console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.descripcion}`);
+              }           
+              
+     
+      });
+       //  this.fetchData();
+    },
+
+    async listRepDenByDeptoByInfFinal(deptoId) {
+      console.log('this.deptoId', deptoId );
+      await  Denuncia.listRepDenByDeptoByInfFinal( deptoId)
+          .then((response) => {
+            console.log("listRepDenByDeptoByInfFinal  : ", response.data, response.status);
+            if (response.status === 200) {
+              this.people = response.data;
+              this.denunciaAddCantidadByDeptoByInfFinal();
+              this.renderRegionChart();
+
+
+            } else {
+              this.showSnackbar('Error recuperando listRepDenByDepto ' + response, 'red');
+            }
+          })
+          .catch(error => {
+            this.showSnackbar('Error recuperando listRepDenByDepto ' + error, 'red');
+            toast.error('Error recuperando datos por departamenteo: ' + 'Revise configuracion del mapa', {
+                  autoClose: 5000,
+                  position: toast.POSITION.TOP_RIGHT,
+
+                });
+          });
+    },
+
+
+
+
+
+      denunciaAddCantidadByDepto() {
+      // filtrar solo los roles-modulos  en estado activo
+      // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
+
+      // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
+      const denunciasArray = this.people.map(denuncia => ({ ...denuncia }));
+      
+   //   this.capitalsArray = this.boliviaDptos.bolivia.capitals;
+      denunciasArray.forEach(async denuncia => {
+       
+            //const capitals = response.bolivia.capitals;          
+              const depto = this.denunciasPorDepto.find(p => p.region === denuncia.descripcion); // 
+
+              if (depto) {
+                depto.total = denuncia.cantidad; // Nuevo valor para la propiedad estado
+                 console.log(`cod_denuncia para el id ${denuncia.descripcion}: ${denuncia.cantidad}`);
+              } else {
+                console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.descripcion}`);
+              }           
+              
+     
+      });
+       //  this.fetchData();
+    },
+
+    async listRepDenByDepto(deptoId) {
+      console.log('this.deptoId', deptoId );
+      await  Denuncia.listRepDenByDepto( deptoId)
+          .then((response) => {
+            console.log("listRepDenByDepto  : ", response.data, response.status);
+            if (response.status === 200) {
+              this.people = response.data;
+              this.denunciaAddCantidadByDepto();
+              this.renderPieChart();
+
+            } else {
+              this.showSnackbar('Error recuperando listRepDenByDepto ' + response, 'red');
+            }
+          })
+          .catch(error => {
+            this.showSnackbar('Error recuperando listRepDenByDepto ' + error, 'red');
+            toast.error('Error recuperando datos por departamenteo: ' + 'Revise configuracion del mapa', {
+                  autoClose: 5000,
+                  position: toast.POSITION.TOP_RIGHT,
+
+                });
+          });
+    },
+
+
+
+    denunciaAddCantidad() {
       // filtrar solo los roles-modulos  en estado activo
       // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
 
@@ -170,7 +307,8 @@
       renderPieChart() {
         const regiones = this.denunciasPorDepto.map(d => d.region);
         const totales = this.denunciasPorDepto.map(d => parseInt(d.total));
-  
+        console.log(`denunciasPorDepto : ${JSON.stringify(this.denunciasPorDepto)}`);
+
         Highcharts.chart('pieChart', {
           chart: { type: 'pie' },
           title: { text: 'Denuncias por Departamento' },

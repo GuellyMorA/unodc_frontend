@@ -4,6 +4,12 @@ const apiUrl = import.meta.env;
 
 
 class DenunciaService {
+  listRepDenByDeptoByInfFinal(depto_id) {
+    return http.get(`/listRepDenByDeptoByInfFinal/${depto_id}`,).catch((error) => {
+      console.log("error listRepDenByDeptoByInfFinal  url  : ", error.config.url);
+      return error;
+    });
+  }
 
   listRepDenByDepto(depto_id) {
     return http.get(`/listRepDenByDepto/${depto_id}`,).catch((error) => {
