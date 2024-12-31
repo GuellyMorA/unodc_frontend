@@ -24,7 +24,7 @@ export default {
       people: [],      
       capitalsArray: [],
       username: localStorage.getItem('username'),
-      deptoId: 0, //localStorage.getItem('depto_id'),
+      deptoId: localStorage.getItem('depto_id'),
       boliviaDptos : {
           "bolivia": {
             "capitals": [
@@ -122,9 +122,9 @@ export default {
          this.fetchData();
     },
 
-    async listRepDenByDepto(depto_id) {
+    async listRepDenByDepto() {
       console.log('this.deptoId', this.deptoId );
-      await  Denuncia.listRepDenByDepto( 0)
+      await  Denuncia.listRepDenByDepto( this.deptoId )
           .then((response) => {
             console.log("listRepDenByDepto  : ", response.data, response.status);
             if (response.status === 200) {

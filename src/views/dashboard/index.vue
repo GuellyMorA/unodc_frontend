@@ -96,7 +96,7 @@
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias de los ultimos 5
                                     dias
                                 </div>
-                                <label> {{ 3 }} </label>
+                                <label> {{ segEstadoCount.nuevas_hoy }} </label>
 
                             </v-col>
                         </v-row>
@@ -115,7 +115,7 @@
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias con Inf. Final
                                     de Aceptacion
                                 </div>
-                                <label> {{ 7 }} </label>
+                                <label> {{ segEstadoCount.conclusion  }} </label>
                             </v-col>
                         </v-row>
                     </v-card-item>
@@ -133,7 +133,7 @@
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias con Inf. Final
                                     de Rechazo
                                 </div>
-                                <label> {{ 7 }} </label>
+                                <label> {{ segEstadoCount.rechazado}} </label>
                             </v-col>
                         </v-row>
                     </v-card-item>
@@ -152,7 +152,7 @@
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias con seguimiento
                                     hasta la fecha
                                 </div>
-                                <label> {{ 76 }} </label>
+                                <label> {{ segEstadoCount.con_seguimiento}} </label>
 
                             </v-col>
                         </v-row>
@@ -184,7 +184,7 @@ const segEstadoCount = reactive({
     nuevas_hoy:0, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar) 
     retraso: 0, // RETRASO
     conclusion:0, //aceptadas CONCLUSION
-rechazado: 0, // RECHAZADO
+    rechazado: 0, // RECHAZADO
     con_seguimiento: 0,  //  SEGUIMIENTO esta ASIGNADO  // SEGUIMIENTO  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
     solicitado: 0,  //sin_seguimiento: 12, // SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
 
@@ -242,23 +242,51 @@ const renderLineChart = () => {
 };
 
 const  seguimientolistRepByNivelGeoByUsuId =async (usuarios_id,depto_id ) => {
+    console.log(`usuarios_id ${usuarios_id} , depto_id: ${depto_id}`);
+
     await Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
         .then((response) => {
           console.log("seguimientolistRepByNivelGeoByUsuId  : ", response.data, response.status);
           if (response.status === 200) {
 
             seguimientosArray = response.data;
-            segEstadoCount.nuevas_hoy = seguimientosArray[4].cantidad; //error  nuevas hoy  SOLICITADO
-            segEstadoCount.retraso = seguimientosArray[0].cantidad;// Denuncias con RETRASO en los plazos:
-            segEstadoCount.rechazado = seguimientosArray[2].cantidad; // denuncias con RECHAZO
+            seguimientosArray.forEach(async denuncia => {
+       
+              //  const depto = this.denunciasPorTipo.find(p => p.codigo === denuncia.estado); // Buscar la persona por id
 
-            segEstadoCount.con_seguimiento = seguimientosArray[3].cantidad;// Denuncias SIN RETRASO , con seguimiento , 
-            segEstadoCount.conclusion = seguimientosArray[1].cantidad; // Denuncias con COCLUSION, aceptadas con informe final: 
+                if (denuncia.estado ==='ASIGNADO_HOY') {
+                    segEstadoCount.nuevas_hoy = denuncia.cantidad; //ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar) 
+                    console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                }
+                if (denuncia.estado ==='RETRASO') {
+                    segEstadoCount.retraso = denuncia.cantidad; //ARETRASO
+                    console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                } 
+                if (denuncia.estado ==='CONCLUSION') {
+                    segEstadoCount.conclusion = denuncia.cantidad; //aceptadas CONCLUSION  con inf final de aceptacion
+                    console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                }
+                if (denuncia.estado ==='RECHAZADO') {
+                    segEstadoCount.rechazado = denuncia.cantidad; //RECHAZADO
+                    console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                }                 
+                if (denuncia.estado ==='ASIGNADO' || denuncia.estado ==='SEGUIMIENTO') {
+                    segEstadoCount.con_seguimiento = denuncia.cantidad;  //  SEGUIMIENTO esta ASIGNADO  // SEGUIMIENTO  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
+                    console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                }
+                if (denuncia.estado ==='SOLICITADO') {
+                    segEstadoCount.solicitado = denuncia.cantidad;  //sin_seguimiento: SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
+                    console.log(`cod_denuncia para el id ${denuncia.estado}: ${denuncia.cantidad}`);
+                }
+              //  else {
+               // console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.estado}`);
+              //  }           
+                
 
-            console.log("segEstadoCount  : ", segEstadoCount, response.status);
-            //segEstadoCount.total_denuncias = seguimientosArray.cantidad[1];
+        });
+                
            
-          } else {
+        } else {
             //showSnackbar('Error recuperando seguimientolistRepByNivelGeoByUsuId ' + response, 'red');
                console.log("error seguimientolistRepByNivelGeoByUsuId  response  : ", response);
 
