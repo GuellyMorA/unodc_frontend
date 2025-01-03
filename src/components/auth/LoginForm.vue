@@ -283,8 +283,8 @@ const enviarPin = () => {
   editedItemSesionLog.user_login_sigla = form.value.user_login;
   editedItemSesionLog.email = form.value.email;
   editedItemSesionLog.nombre = form.value.nombre;
-  editedItemSesionLog.pin = 123456; //Math.floor(100000 + Math.random() * 900000); // Generar un PIN de 6 dígitos
-  form.value.pin = editedItemSesionLog.pin ;
+  editedItemSesionLog.pin = Math.floor(100000 + Math.random() * 900000);  // 123456   Generar un PIN de 6 dígitos
+  //form.value.pin = editedItemSesionLog.pin ;
   editedItemSesionLog.pin_hora_expiracion = new Date().toLocaleTimeString("en-US", { hour12: false });
   form.value.pin_hora_expiracion = new Date().toLocaleTimeString();
   editedItemSesionLog.pin_estado = 'PENDIENTE';
