@@ -14,7 +14,7 @@
   
   <script>
   import Highcharts from 'highcharts';
-  import { mockData } from '../../data/mock/data.js';
+  //import { mockData } from '../../data/mock/data.js';
   import Seguimiento from '@/services/Seguimiento';
   import Denuncia from '@/services/Denuncia';
   import { toast } from 'vue3-toastify';
