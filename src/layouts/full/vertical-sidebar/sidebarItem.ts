@@ -34,7 +34,7 @@ const sidebarItem: menu[] = [
   /*{ header: 'Módulos' },
   */
   {
-    title: "Administracion",
+    title: "Administración",
     icon: UserPlusIcon,
     BgColor: 'primary',
     to: "/administracion/index",

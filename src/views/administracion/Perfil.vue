@@ -32,9 +32,8 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title class="text-center">Perfiles de usuario por módulo y operacion</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
+
+          <v-toolbar-title class="text-center">Perfiles de usuario por módulo y operación</v-toolbar-title>
 
 
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -232,7 +231,7 @@ export default {
         class: 'background'
       },
 
-      { title: 'Modulo/Perfil', key: 'modulo_operacion_concat' },
+      { title: 'Módulo/Perfil', key: 'modulo_operacion_concat' },
       { title: 'Estado', key: 'estado' },
 
   

@@ -94,7 +94,7 @@
                         <v-row>
                             <v-col cols="12" sm="12">
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias de los ultimos 5
-                                    dias
+                                    días
                                 </div>
                                 <label> {{ segEstadoCount.nuevas_hoy }} </label>
 
@@ -108,12 +108,12 @@
                 <v-card elevation="10" class="withbg">
                     <v-card-item>
                         <div class="d-sm-flex align-center justify-space-between pt-sm-2">
-                            <v-card-title class="text-h5">Inf. Fin. Aceptacion</v-card-title>
+                            <v-card-title class="text-h5">Inf. Fin. Aceptación</v-card-title>
                         </div>
                         <v-row>
                             <v-col cols="12" sm="12">
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias con Inf. Final
-                                    de Aceptacion
+                                    de Aceptación
                                 </div>
                                 <label> {{ segEstadoCount.conclusion  }} </label>
                             </v-col>

@@ -84,42 +84,42 @@
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="nombres"
-                  placeholder="nombres." :rules="[v => !!v || 'Nombres es requerido']"
+                  <v-text-field v-model="editedItemUsuario.nombres" :readonly="lockField" label="Nombres"
+                   :rules="[v => !!v || 'Nombres es requerido']"
                   @input="generateLoginAndPassword" ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="apellido pat"
-                  placeholder="Apellido" :rules="[v => !!v || 'Apellido es requerido']"
+                  <v-text-field v-model="editedItemUsuario.apellido_pat" :readonly="lockField" label="Ap. Paterno"
+                   :rules="[v => !!v || 'Apellido es requerido']"
                   @input="generateLoginAndPassword" ></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="apellido mat"
-                  placeholder="Apellido" :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="Ap. Materno"
+                   :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="editedItemUsuario.ci_y_complemento" :readonly="lockField" label="CI y complemento" 
                   placeholder="CI" :rules="[v => !!v || 'CI es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField" label="ci_expedido"
-                  placeholder="Expedido" :rules="[v => !!v || 'ci_expedido es requerido']"></v-select>
+                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField" label="Ci expedido"
+                   :rules="[v => !!v || 'ci_expedido es requerido']"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" :readonly="lockField" label="grados"
+                  <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" :readonly="lockField" label="Grado"
                      item-title="grado"        item-value="grados_sigla"   @update:modelValue="onGradoChange"
-                     placeholder="grado" :rules="[v => !!v || 'grado es requerido']"></v-select>
+                      :rules="[v => !!v || 'grado es requerido']"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.telefono" :readonly="lockField" label="telefono"
-                  placeholder="telefono" :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemUsuario.telefono" :readonly="lockField" label="Teléfono"
+                   :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.email" :readonly="lockField" label="email"
-                  placeholder="email" type="email"  :rules="[v => !!v || 'email es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemUsuario.email" :readonly="lockField" label="Correo electrónico"
+                  type="email"  :rules="[v => !!v || 'email es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.departamento" :items="deptoOptions" :readonly="lockField" label="departamento" 
+                  <v-select v-model="editedItemUsuario.departamento" :items="deptoOptions" :readonly="lockField" label="Departamento" 
                     item-title="depto"     item-value="depto_id"   @update:modelValue="onDepartChange"
                     placeholder="departamento" :rules="[v => !!v || 'departamento es requerido']"></v-select>
 
@@ -127,22 +127,22 @@
                 <v-col cols="12" sm="6" md="4">
                   <v-select v-model="editedItemUsuario.municipio" :items="munOptions" :readonly="lockField" label="Ciudad" 
                     item-title="mun" item-value="mun_id"   return-object
-                    placeholder="ciudad" :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
+                    :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="usuario"
-                  placeholder="usuario" :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
+                  <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="Usuario"
+                   :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="password"
+                  <v-text-field v-model="editedItemUsuario.password_hash" :readonly="lockField" label="Password"
                     :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]"
                     :type="show1 ? 'text' : 'password'" hint="Min. 8 caracteres" name="input-10-1" counter
                     @click:append="show1 = !show1"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.rol" :items="rolOptions" :readonly="lockField" label="rol del usuario"
+                  <v-select v-model="editedItemUsuario.rol" :items="rolOptions" :readonly="lockField" label="Rol del usuario"
                      item-title="rol" item-value="roles_sigla"          @update:modelValue="onRolChange"
-                     placeholder="rol" :rules="[v => !!v || 'Rol es requerido']"></v-select>
+                      :rules="[v => !!v || 'Rol es requerido']"></v-select>
 
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -243,7 +243,7 @@ export default {
       { title: 'Rol Asignado', key: 'rol' },
       { title: 'Estado', key: 'estado' },
 
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Acciones', value: 'actions', sortable: false },
     ],
     people: [],
     editedIndex: -1,

@@ -37,7 +37,7 @@
     <template v-slot:top>
       <v-toolbar flat>
 
-        <v-toolbar-title class="text-center">Derivacion de denuncias registradas en sistema</v-toolbar-title>
+        <v-toolbar-title class="text-center">Derivación de denuncias registradas en sistema</v-toolbar-title>
 
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -252,7 +252,7 @@
             <v-col cols="4" class="p-0 py-0 px-1">
               <v-select v-model="denPerDnte.departamento" :items="deptoOptions" item-title="depto" item-value="depto_id"
                 :readonly="lockField" label="Departamento" @update:modelValue="onDepartChange"
-                :rules="[v => !!v || 'departamento es requerido']"></v-select>
+                :rules="[v => !!v || 'Departamento es requerido']"></v-select>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-1">
               <v-select v-model="denPerDnte.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
@@ -468,7 +468,7 @@ iconColor: "fas fa-circle",
 
     headers: [
       {
-        title: 'Num', key: 'fila2', class: 'background',
+        title: 'Num.', key: 'fila2', class: 'background',
         align: 'start', sortable: true,
       },
       { title: 'Cod. Denuncia', key: 'cod_denuncia' },
@@ -482,7 +482,7 @@ iconColor: "fas fa-circle",
       { title: 'Tipo Denuncia', key: 'tipo_denuncia' },
       { title: 'Plazo', key: 'color_semaforo' },
       { title: 'Estado', key: 'estado' },
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Acciones', value: 'actions', sortable: false },
     ],
 
    // color_semaforo:'';

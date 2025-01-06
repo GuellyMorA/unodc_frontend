@@ -32,9 +32,8 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title class="text-center">Roles por modulo y perfil habilitado</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
+           <v-toolbar-title class="text-center">Roles por módulo y perfil habilitado</v-toolbar-title>
+          
 
 
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -226,18 +225,18 @@ export default {
 
     headers: [
       {
-        title: 'Num',
+        title: 'Num.',
         align: 'start',
         sortable: false,
         key: 'fila',
         class: 'background'
       },
-      { title: 'Codigo Rol', key: 'roles_sigla', class: 'success--text title' },
+      { title: 'Código Rol', key: 'roles_sigla', class: 'success--text title' },
       { title: 'Rol', key: 'rol' },
-      { title: 'Modulo/Perfil', key: 'operaciones_concat' },
+      { title: 'Módulo/Perfil', key: 'operaciones_concat' },
       { title: 'Estado', key: 'rol_estado' },
 
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Acciones', value: 'actions', sortable: false },
     ],
     people: [],
     editedIndex: -1,

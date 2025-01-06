@@ -8,16 +8,18 @@
   <v-container>
     <v-card class="mx-auto  mt-1" max-width="700">
 
-<v-card-title class="text-multiline">
-  <h2>    Formulario de denuncias</h2>
+<v-card-title class="text-center">
+  <h1>    Formulario de denuncias</h1>
 </v-card-title>
+
+
 
 </v-card>
     <v-card class="mx-auto  mt-1" max-width="700">
 
-      <v-card-title class="text-multiline  title-small">
-        "EL PRESENTE FORMULARIO RECIBE DENUNCIAS DE CORRUPCION, MALOS TRATOS Y OTROS COMETIDOS POR FUNCIONARIOS POLICIALES
-        Y SERA REVISADO POR EL DEPARTAMENTO NACIONAL DE TRANSPARENCIA DE LA POLICIA BOLIVIANA"
+      <v-card-title class="text-multiline  title-small" >
+       <h3>"EL PRESENTE FORMULARIO RECIBE DENUNCIAS DE CORRUPCION, MALOS TRATOS Y OTROS COMETIDOS POR FUNCIONARIOS POLICIALES
+        Y SERá REVISADO POR EL DEPARTAMENTO NACIONAL DE TRANSPARENCIA DE LA POLICÍA BOLIVIANA"</h3> 
 
       </v-card-title>
 
@@ -28,12 +30,12 @@
         
         <v-row class="mt-4 ml-4">
             <v-col class="p-0 py-0 px-0" cols="4">
-            <label class="text-h5">Datos del Denunciante  </label>
+            <label class="text-h5">Datos del Denunciante</label>
         
           </v-col>
           <v-col class="p-0 py-3 px-4" cols="4">
            
-            <label >Denuncia anonima ? : </label>
+            <label >Denuncia anónima ? : </label>
           </v-col>
             <v-col class="p-0 py-0 px-0" cols="2">
                 <v-checkbox  v-model="denPerDnte.denuncia_anonima" :readonly="lockField"
@@ -50,39 +52,39 @@
 
           <v-row>
             <v-col cols="4" class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.nombres" :readonly="lockField" label="nombres"
-              placeholder="nombres." :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+              <v-text-field v-model="denPerDnte.nombres" :readonly="lockField" label="Nombres"
+              :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.apellido_pat" :readonly="lockField" label="apellido pat"
-              placeholder="Apellido" :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+              <v-text-field v-model="denPerDnte.apellido_pat" :readonly="lockField" label="Ap. Paterno"
+               :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.apellido_mat" :readonly="lockField" label="apellido mat"
-              placeholder="Apellido" :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+              <v-text-field v-model="denPerDnte.apellido_mat" :readonly="lockField" label="Ap. Materno."
+               :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col cols="4" class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.email" :readonly="lockField" label="correo electronico"
-                :rules="[v => !!v || 'email es requerido']"  ></v-text-field>
+              <v-text-field v-model="denPerDnte.email" :readonly="lockField" label="Correo electrónico"
+                :rules="[v => !!v || 'Correo es requerido']"  ></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-select v-model="denPerDnte.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
                 :readonly="lockField" label="Género" @update:modelValue="onSexoChange"
-                :rules="[v => !!v || 'sexo es requerido']"></v-select>
+                :rules="[v => !!v || 'Género es requerido']"></v-select>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
-              <v-text-field v-model="denPerDnte.telefono" :readonly="lockField" label="Telefono"
-                :rules="[v => !!v || 'telefono es requerido']"></v-text-field>
+              <v-text-field v-model="denPerDnte.telefono" :readonly="lockField" label="Teléfono"
+                :rules="[v => !!v || 'Teléfono es requerido']"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
             <v-col class="p-0 py-0 px-0">
               <v-text-field v-model="denPerDnte.ubic_donde" :readonly="lockField" label="Donde se encuentra"
-                :rules="[v => !!v || 'Ubicacion es requerido']"></v-text-field>
+                :rules="[v => !!v || 'Ubicación es requerido']"></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -168,9 +170,9 @@
     <table>
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>apellido_pat</th>
-          <th>apellido_mat</th>
+          <th>Nombres</th>
+          <th>Ap. Paterno.</th>
+          <th>Ap. Materno.</th>
           <th>Acciones</th>
         </tr>
       </thead>
@@ -441,7 +443,7 @@ export default {
       { title: 'Nombres', key: 'nombres' },
       { title: 'Rol Asignado', key: 'rol' },
       { title: 'Estado', key: 'estado' },
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Acciones', value: 'actions', sortable: false },
     ],
     people: [],
     editedIndex: -1,
