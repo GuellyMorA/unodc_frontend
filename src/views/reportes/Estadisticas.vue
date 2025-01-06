@@ -33,8 +33,8 @@
       deptoId: 0, //localStorage.getItem('depto_id'),
 
         denunciasPorTipo : [
-        { codigo:'ASIGNADO_HOY' ,tipo: 'Den.nuevas asignadas hoy', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
-        { codigo:'RETRASO' ,tipo: 'Den.con retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
+        { codigo:'ASIGNADO_HOY' ,tipo: 'Den. nuevas asignadas hoy', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
+        { codigo:'RETRASO' ,tipo: 'Den. con retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
           
           { codigo:'CONCLUSION' ,tipo: 'Den.con informe final', total: 0 },// aceptadas:3, // CONCLUSION
           { codigo:'RECHAZADO' ,tipo: 'Denuncias rechazadas', total: 0 },//rechazadas: 4, // RECHAZADO

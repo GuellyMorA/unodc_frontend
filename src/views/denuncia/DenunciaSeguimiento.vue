@@ -923,7 +923,7 @@ export default {
 
     headers: [
       {
-        title: 'Num', key: 'fila2', class: 'background',
+        title: 'Num.', key: 'fila2', class: 'background',
         align: 'start', sortable: false,
       },
       { title: 'Cod. Denuncia', key: 'cod_denuncia', class: 'success--text title' },
@@ -932,11 +932,11 @@ export default {
       { title: 'Ap. Materno', key: 'apellido_mat_gestor' },
       { title: 'Nombres', key: 'nombres_gestor' },
 
-      { title: 'Fecha Derivacion', key: 'fec_registro' },
+      { title: 'Fecha Derivación', key: 'fec_registro' },
       { title: 'Actividad', key: 'actividad' },
      // { title: 'Tiempo de respuesta', key: 'tiempo_respuesta' },
       { title: 'Estado', key: 'estado' },
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Acciones', value: 'actions', sortable: false },
     ],
     people: [],
     editedIndex: -1,

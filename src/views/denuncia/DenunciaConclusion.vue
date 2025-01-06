@@ -36,7 +36,7 @@
     <template v-slot:top>
       <v-toolbar flat>
 
-        <v-toolbar-title class="text-center">Conclusion de denuncias registradas en sistema</v-toolbar-title>
+        <v-toolbar-title class="text-center">Conclusión de denuncias registradas en sistema</v-toolbar-title>
 
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
@@ -79,7 +79,7 @@
           <v-container>
             <v-row>
               <v-col cols="4" class="p-0 py-0 px-1">
-                <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
+                <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Código Denuncia"
                   :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
               </v-col>
 
@@ -593,7 +593,7 @@ export default {
 
     headers: [
       {
-        title: 'Num', key: 'fila2', class: 'background',
+        title: 'Num.', key: 'fila2', class: 'background',
         align: 'start', sortable: false,
       },
       { title: 'Cod. Denuncia', key: 'cod_denuncia', class: 'success--text title' },
@@ -602,11 +602,11 @@ export default {
       { title: 'Ap. Materno', key: 'apellido_mat_gestor' },
       { title: 'Nombres', key: 'nombres_gestor' },
 
-      { title: 'Fecha Derivacion', key: 'fec_registro' },
+      { title: 'Fecha Derivación', key: 'fec_registro' },
       { title: 'Actividad', key: 'actividad' },
       { title: 'Tiempo de respuesta', key: 'tiempo_respuesta' },
       { title: 'Estado', key: 'estado' },
-      { title: 'Aciones', value: 'actions', sortable: false },
+      { title: 'Acciones', value: 'actions', sortable: false },
     ],
     people: [],
     editedIndex: -1,
