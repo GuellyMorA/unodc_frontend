@@ -31,7 +31,7 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Usuarios del sistema</v-toolbar-title>
+          <v-toolbar-title class="text-center">Usuarios del sistema</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
 
@@ -422,6 +422,11 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
 
             this.rolOptions = Object.values(response.data);
             console.log("rolOptions  : ", this.rolOptions);
+             const uniqueArray = this.removeRolesDuplicates(this.rolOptions);
+              console.log("uniqueArray : ", uniqueArray);   
+              this.rolOptions=uniqueArray;
+
+
           } else {
             this.showSnackbar('Error recuperando Usuario ' + response, 'red');
           }
@@ -430,6 +435,19 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
           console.log(e);
         });
     },
+
+     removeRolesDuplicates(arr) {
+           // Usamos un Set para mantener valores únicos
+        const seen = new Set();
+        return arr.filter(item => {
+            if (!seen.has(item.roles_sigla)) {
+                seen.add(item.roles_sigla);
+                return true; // Mantiene el objeto en el array
+            }
+            return false; // Filtra el objeto si el 'roles_sigla' ya ha sido visto
+    });
+},
+
     async deptoList() {
       NivelGeografico.nivelGeograficoList()
         .then((response) => {
@@ -588,7 +606,7 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
             this.editedItemUsuario.u_rol_id = response.data.id;
             this.editedItemRolUsu.id = response.data.id;
             console.log("UsuariosRolCreate  : ", response.status, response);
-            this.showSnackbar('Usuario rol creado correctamente!', 'green')
+           // this.showSnackbar('Usuario rol creado correctamente!', 'green')
             // this.close()
           } else {
 

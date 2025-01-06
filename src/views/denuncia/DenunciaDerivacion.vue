@@ -31,7 +31,7 @@
     </template>
 
     <template v-slot:item.fila2="{ index }">
-      <td class="text-center">{{ index + 1 }}</td>
+      <td class="sin-borde text-center">{{ index + 1 }}</td>
     </template>
 
     <template v-slot:top>
@@ -90,6 +90,10 @@
         <v-card-title class="mt-4">
           <v-container>
             <v-row>
+                 <h2>    Formulario de denuncias</h2>
+            </v-row>
+
+            <v-row class="mt-8" >    
               <v-col cols="4" class="p-0 py-0 px-1">
                 <v-text-field v-model="denPerDnte.cod_denuncia" :readonly="lockField" label="Codigo Denuncia"
                   :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
@@ -1494,6 +1498,10 @@ td {
 
 th {
   background-color: #f2f2f2;
+}
+
+td.sin-borde {
+    border: none; /* Quitar borde solo para celdas con esta clase */
 }
 
 button {

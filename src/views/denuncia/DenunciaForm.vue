@@ -31,14 +31,18 @@
             <label class="text-h5">Datos del Denunciante  </label>
         
           </v-col>
-          <v-col class="p-0 py-3 px-9" cols="4">
+          <v-col class="p-0 py-3 px-4" cols="4">
            
             <label >Denuncia anonima ? : </label>
           </v-col>
-            <v-col class="p-0 py-0 px-0" cols="4">
+            <v-col class="p-0 py-0 px-0" cols="2">
                 <v-checkbox  v-model="denPerDnte.denuncia_anonima" :readonly="lockField"
-                  label=""></v-checkbox>
-                </v-col>
+                label="Si"></v-checkbox>
+           </v-col>
+           <v-col class="p-0 py-0 px-0" cols="2">
+                <v-checkbox  v-model="denPerDnte.denuncia_anonima_no"
+                  label="No"></v-checkbox>
+              </v-col>
           </v-row>
       </v-card-title>
       <v-card-text>
@@ -99,26 +103,29 @@
       </v-card-title>
       <v-card-text class="mt-4" >
         <v-container>
-      
+          <v-row  class="mb-4">
+            <span class="text-h7"> Para adicionar a un denunciado presione "+", depues de llenar los datos requeridos</span>
+        </v-row>
+
           <v-row>
 
             <v-col cols="3" class="p-0 py-0 px-0">
               <v-text-field v-model="denunciado.nombres" :readonly="lockField" label="nombres"
-                :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
+               ></v-text-field>
 
             </v-col>
             <v-col cols="3" class="p-0 py-0 px-0">
               <v-text-field v-model="denunciado.apellido_pat" :readonly="lockField" label="apellido pat"
-                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+               ></v-text-field>
             </v-col>
             <v-col cols="3" class="p-0 py-0 px-0">
               <v-text-field v-model="denunciado.apellido_mat" :readonly="lockField" label="apellido mat"
-                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+             ></v-text-field>
             </v-col>
             <v-col cols="3" class="p-0 py-0 px-0">
               <v-select v-model="denunciado.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
                 :readonly="lockField" label="Género" @update:modelValue="onSexoChangeDenunciado"
-                :rules="[v => !!v || 'sexo es requerido']"></v-select>
+               ></v-select>
             </v-col>
           </v-row>
       
@@ -126,36 +133,35 @@
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-select v-model="denunciado.grado" :items="gradoOptions" item-title="grado" item-value="grados_sigla"
                 :readonly="lockField" label="grado" @update:modelValue="onGradoChange"
-                :rules="[v => !!v || 'grado es requerido']"></v-select>
+              ></v-select>
 
             </v-col>
 
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denunciado.puesto_cargo_funcion" :readonly="lockField" label="Cargo y funcion"
-                :rules="[v => !!v || 'cargo y funcion es requerido']"></v-text-field>
+              ></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denunciado.unidad_policial_desc" :readonly="lockField" label="Unidad policial"
-                :rules="[v => !!v || 'unidad policial es requerido']"></v-text-field>
-            </v-col>
-        
+              ></v-text-field>
+            </v-col>        
 
           </v-row>   
           <v-row>
 
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho (Calle,Edif...)"
-                :rules="[v => !!v || 'lugar del hecho es requerido']"></v-text-field>
+            ></v-text-field>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-select v-model="denPerDnte.departamento" :items="deptoOptions" item-title="depto" item-value="depto_id"
                 :readonly="lockField" label="Departamento" @update:modelValue="onDepartChange"
-                :rules="[v => !!v || 'departamento es requerido']"></v-select>
+               ></v-select>
             </v-col>
             <v-col cols="4" class="p-0 py-0 px-0">
               <v-select v-model="denPerDnte.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
                 :readonly="lockField" label="Ciudad" return-object
-                :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
+               ></v-select>
             </v-col>
           </v-row>
     <div>   
@@ -296,23 +302,7 @@
           Enviar Denuncia
         </v-btn>
       </v-card-text>
-     <!--
-      <v-row>
-            <v-col class="p-0 py-0 px-0">    
-              <v-btn @click="downloadFile" :disabled="isLoading" color="primary">
-                <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
-                Descargar Archivo
-              </v-btn>
 
-              <v-snackbar v-model="snackbar.visible" :timeout="3000" :color="snackbar.color">{{ snackbar.message }}</v-snackbar>
-
-
-          <div v-for="file in files1" :key="file.id">
-            <button @click="downloadFile1(file)">Descargar {{ file.name }}</button>
-          </div>
-            </v-col>      
-     </v-row>
-    -->
     </v-card>
 
     <template>
@@ -393,7 +383,7 @@ export default {
     },
 
 
-    isLoading: false,
+   // isLoading: true,
  
     selectedFileName: '...',
 
@@ -478,6 +468,7 @@ export default {
       hora_registro_hecho: '',
       detalle_hecho: '',
       denuncia_anonima: '',
+      denuncia_anonima_no: '',
       reserva_identidad:'',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
@@ -519,6 +510,7 @@ export default {
       hora_registro_hecho: '',
       detalle_hecho: '',
       denuncia_anonima: false,
+      denuncia_anonima_no: '',
       reserva_identidad: false,
       reserva_identidad_si: false,
       reserva_identidad_no: false,
@@ -692,7 +684,7 @@ export default {
    // this.denunciaPersonasGetByCod();
    // this.denunciadoListByCod();
    // this.documentosPathListByCod();
-    this.isLoading= false;
+    this.loading= false;
   },
 
 
@@ -700,7 +692,11 @@ export default {
   methods: {
 
     agregarPersona() {
-      this.denunciadosArray.push({ ...this.denunciado });
+
+      if(!this.denunciado.nombres || !this.denunciado.apellido_pat ) {
+       return ;
+      }  
+         this.denunciadosArray.push({ ...this.denunciado });
 
       console.log('this.denunciadosArray :', this.denunciadosArray);
       this.denunciado = Object.assign({}, this.defaultItemDenunciado);
@@ -737,7 +733,7 @@ export default {
     },
 
     async downloadFile() { //  en utils
-      this.isLoading = true;
+      this.loading = true;
       this.snackbar.visible = false;
 
       try {
@@ -748,7 +744,7 @@ export default {
         this.snackbar.message = 'Ocurrió un error al descargar el archivo.';
         this.snackbar.color = 'error';
       } finally {
-        this.isLoading = false;
+        this.loading = false;
         this.snackbar.visible = true;
       }
     },
@@ -1024,7 +1020,7 @@ export default {
       this.denPerDnte.grados_sigla = 'CIVIL';
       this.denPerDnte.genero_sexo_sigla=  this.denPerDnte.genero_sexo_sigla ? this.denPerDnte.genero_sexo_sigla:  this.denPerDnte.genero_sexo;
       this.denPerDnte.sigla = 'INTERNET';
-      this.denunciado.direccion =    this.denunciado.ubic_donde ;
+      this.denPerDnte.direccion =    this.denPerDnte.ubic_donde ;
       this.denPerDnte.estado = 'ACTIVO';
       this.denPerDnte.transaccion = 'ACTIVAR';
       this.denPerDnte.usu_cre = this.username;
@@ -1165,10 +1161,19 @@ export default {
             position: toast.POSITION.TOP_RIGHT,
           });
           //this.dialog = false;
+         this.validationErrors = {};
           return false;
         }
 
-        this.validateCaptcha();
+        if (!this.validateCaptcha()) {
+          toast.info('CAPTCHA no válido. Debe ingresar un número CAPTCHA válido', {
+            autoClose: 3000,
+            position: toast.POSITION.TOP_RIGHT,
+          });
+     
+          return false;
+        }
+      //  this.validateCaptcha();
 
         this.denPerDnte.mun_id = this.denPerDnte.municipio.mun_id ? this.denPerDnte.municipio.mun_id : this.denPerDnte.mun_id;
         console.log('denPerDnte 2 : ',this.denPerDnte);
@@ -1188,7 +1193,8 @@ export default {
 
           this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? true:  
                                               this.denPerDnte.reserva_identidad_no ? false:  false;
-
+          this.denPerDnte.denuncia_anonima=  this.denPerDnte.denuncia_anonima ? true:  
+                                              this.denPerDnte.denuncia_anonima_no ? false:  'xxx';
           await this.denunciaPersonasList() ;
 
           this.denPerDnte.cod_denuncia = this.codDenuncia;         
@@ -1234,6 +1240,7 @@ export default {
               this.showSnackbar('Log Error creando denuncia: ' + error, 'red');
               console.log('Log Error creando denuncia: ', error);
             });
+          //  this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
 
           // this.showSnackbar('denunciadoCreate creado correctamente!', 'green')
           // this.close()
@@ -1251,9 +1258,9 @@ export default {
 
 
     validateForm() {
-      //this.validationErrors = {};
-
-      if (!this.denPerDnte.nombres || !this.denPerDnte.apellido_pat || !this.denPerDnte.apellido_mat) this.validationErrors.nombres = { value: true };
+      
+ //  || !this.denPerDnte.apellido_mat
+      if (!this.denPerDnte.nombres || !this.denPerDnte.apellido_pat ) this.validationErrors.nombres = { value: true };
       else delete this.validationErrors.nombres;
 
      // if (!this.denPerDnte.ci_y_complemento || !this.denPerDnte.ci_expedido || !this.denPerDnte.grado) this.validationErrors.ci_y_complemento = { value: true };
@@ -1266,8 +1273,8 @@ export default {
       else delete this.validationErrors.departamento;
 
       
-     if ( this.denunciadosArray.length==0 ){
-      if (!this.denunciado.nombres || !this.denunciado.apellido_pat || !this.denunciado.apellido_mat) this.validationErrors.nombres = { value: true };
+     if ( this.denunciadosArray.length==0 ){  // || !this.denunciado.apellido_mat
+      if (!this.denunciado.nombres || !this.denunciado.apellido_pat ) this.validationErrors.nombres = { value: true };
       else delete this.validationErrors.nombres;
       
       if (!this.denunciado.grado ||  !this.denunciado.puesto_cargo_funcion ||   !this.denunciado.unidad_policial_desc ) this.validationErrors.grado = { value: true };
@@ -1283,12 +1290,16 @@ export default {
       if ((this.denPerDnte.reserva_identidad_si &&  this.denPerDnte.reserva_identidad_no) || ( this.denPerDnte.reserva_identidad_si==false && this.denPerDnte.reserva_identidad_no==false) ) this.validationErrors.reserva_identidad_si = { value: true };
       else delete this.validationErrors.reserva_identidad_si;
 
+      if ((this.denPerDnte.denuncia_anonima &&  this.denPerDnte.denuncia_anonima_no) || ( this.denPerDnte.denuncia_anonima==false && this.denPerDnte.denuncia_anonima_no==false) ) this.validationErrors.denuncia_anonima = { value: true };
+      else delete this.validationErrors.denuncia_anonima;
+
     /*  if (!this.reserva_datos )  this.validationErrors.reserva_datos = { value: true };
       else delete this.validationErrors.reserva_datos;
 
       if ( !this.articulo_166_cp)  this.validationErrors.articulo_166_cp = { value: true };
       else delete this.validationErrors.articulo_166_cp;
-*/
+*/ 
+      console.log('validationErrors : ',this.validationErrors);
       return !Object.keys(this.validationErrors).length;
     },
 
@@ -1392,7 +1403,7 @@ export default {
     applyDateMaskXXX() {
       // Elimina caracteres no numéricos
       let inputValue = this.rawDate.replace(/\D/g, '');
-      console.log("inputValue:", inputValue);
+    //  console.log("inputValue:", inputValue);
       // Aplica la máscara de fecha
 
       if (inputValue.length > 2) {
@@ -1404,7 +1415,7 @@ export default {
 
       // Actualiza rawDate con la fecha formateada
       this.rawDate = inputValue;
-      console.log("inputValue2:", inputValue);
+      //console.log("inputValue2:", inputValue);
     },
  
     // Formato de la fecha
@@ -1413,7 +1424,7 @@ export default {
     handleInputDate(event) {  //  @input="handleInputDate"
       // Limitar la entrada a números y el separador de fecha
       this.denPerDnte.fec_registro_hecho = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
-      console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro_hecho);  ///[^0-9]/g
+     // console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro_hecho);  ///[^0-9]/g
     },
     // Función para formatear la fecha// Aplica la máscara de fecha  dd/mm/yyyy
     formatDate(inputValue) {
@@ -1444,13 +1455,13 @@ export default {
     handleInputHour(event) {  //  @input="handleInputDate"
       // Limitar la entrada a números y el separador de fecha
       this.denPerDnte.hora_registro_hecho = this.formatHour(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
-      console.log("handleInputHour hora del hecho:", this.denPerDnte.hora_registro_hecho);  ///[^0-9]/g
+    //  console.log("handleInputHour hora del hecho:", this.denPerDnte.hora_registro_hecho);  ///[^0-9]/g
     },
      // Función para formatear la fecha.       // Ejemplo: formato hh:mm
      formatHour(inputValue) {
      inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
      
-      console.log("inputValue:", inputValue);
+     // console.log("inputValue:", inputValue);
       // Aplica la máscara de fecha
       if (inputValue.length == 2) {
         inputValue = `${inputValue.slice(0, 2)}:`;
@@ -1465,7 +1476,7 @@ export default {
 
       // Actualiza rawDate con la fecha formateada
       // this.rawDate = inputValue;
-      console.log("inputValue2:", inputValue);
+     // console.log("inputValue2:", inputValue);
 
       return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
     },
@@ -1492,12 +1503,18 @@ export default {
       this.captcha = randomNumber.toString();
     },
     validateCaptcha() {
-      if (this.userInput === this.captcha) {
+      if ( this.captcha === (!this.userInput ? '': this.userInput  ) &&  this.captcha !='' ) {
         alert('CAPTCHA válido');
-      } else {
-        alert('CAPTCHA no válido, por favor intenta de nuevo');
+        this.generateCaptcha(); 
+        this.userInput = ''; // Limpiar entrada
+        this.captcha='';
+        return true;
+      } 
+      else {
+       // alert('CAPTCHA no válido, por favor intenta de nuevo');
         this.generateCaptcha(); // Generar un nuevo CAPTCHA
         this.userInput = ''; // Limpiar entrada
+        return false;
       }
     },
     async onSubmit() {

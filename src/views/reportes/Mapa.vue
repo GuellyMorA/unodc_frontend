@@ -1,6 +1,7 @@
-<template>
-  <div id="map-container">
-    <highcharts :constructorType="'mapChart'" class="hc" :options="chartOptions" ref="chart"></highcharts>
+<template> 
+<!-- div id="container" style="height: 900px;  min-width: 700px; max-width: 1000px;  margin: 0 auto;" -->
+  <div id="container" >
+    <highcharts :constructorType="'mapChart'" class="hc" :options="chartOptions" ref="chart"  style="width: 100%; height: 800px; display: block;"></highcharts>
   </div>
 </template>
   
@@ -193,11 +194,7 @@ h1 {
   color: #333;
 }
 
-#map-container {
-  height: 640px;
-  /* Ocupar toda la altura de la pantalla */
- 
-  /* width: 100%; Ocupar toda la anchura */
-}
+
+
 </style>
   

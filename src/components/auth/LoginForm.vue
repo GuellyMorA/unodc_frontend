@@ -19,7 +19,7 @@ const pin = ref('');
 const checkbox = ref(false);
 const form = ref({
   user_login: 'acrespo',
-  password_hash: '123456',
+  password_hash: '' , //'123456',
   email: '',
   nombre: '',
   pin: '',
@@ -127,8 +127,7 @@ const submit = async (event: any) => {
         }
         else{ // actualizar la hora de envio de pin para el caso de un primer ingreso lugo del reseto de clave
          // editedItemSesionLog.pin_hora_expiracion = new Date().toLocaleTimeString();
-        //  editedItemSesionLog.pin = 123456; //Math.floor(100000 + Math.random() * 900000); // Generar un PIN de 6 dígitos
-
+         form.value.password_hash = '';
         }
         
         //   router.push('/');  
@@ -455,7 +454,7 @@ const usuarioUpdate = async () => {
           <v-row class="mb-3">
             <v-col cols="12">
               <v-label class="font-weight-medium mb-1">Nueva contraseña</v-label>
-              <v-text-field variant="outlined" class="pwdInput" hide-details color="primary"
+              <v-text-field variant="outlined" class="pwdInput" type="password"  hide-details color="primary"
                 v-model="form.password_hash"></v-text-field>
             </v-col>
             <v-col cols="12">

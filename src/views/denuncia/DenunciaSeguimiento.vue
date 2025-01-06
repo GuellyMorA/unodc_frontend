@@ -35,7 +35,7 @@
     </template>
     <!--  secuencial Column -->
     <template v-slot:item.fila2="{ index }">
-      <td class="text-center">{{ index + 1 }}</td>
+      <td class="sin-borde text-center">{{ index + 1 }}</td>
     </template>
 
     <template v-slot:top>
@@ -352,7 +352,7 @@
               <h3 class="p-0 py-3 px-0">Responsable de admisión:</h3>
               <v-text-field
                 label="Responsable de admisión"
-                placeholder="Responsable de admisión"
+               
                 outlined
               ></v-text-field>
      
@@ -360,16 +360,18 @@
         </v-container>
       </v-card-text>
 
-      <!-- Botón de Enviar -->
+     
+    </v-card>
+    </div>
+ <!-- Botón de Enviar -->
       <v-card-actions >
           <v-spacer></v-spacer>
-                 <v-btn class="custom-green-btn"  @click="downloadPDF">Exportar a PDF</v-btn>
+                 <v-btn  class="custom-green-btn"  @click="downloadPDF">Exportar  PDF</v-btn>
       
           <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
       
         </v-card-actions>
-    </v-card>
-    </div>
+
    </v-card>
  </v-dialog>
     <!-- view Dialog denuncia consult denuncia-->
@@ -642,6 +644,7 @@
       
         </v-card-actions>
 </div>
+
       </v-card>
     </v-dialog>
 
@@ -864,7 +867,7 @@ import html2canvas from 'html2canvas';
 export default {
 
   data: () => ({
-
+   // toPrint: true,
     loading: true,
     isLoading: false,
     files1: [{ id: 1, name: 'archivo1.pdf' }, { id: 2, name: 'imagen.jpg' }],
@@ -1318,6 +1321,8 @@ export default {
 
     downloadPDF() {
       const popupContent = this.$refs.popupContent;
+     // console.log('this.toPrint :',  this.toPrint   );
+     // this.toPrint= false;
 
       html2canvas(popupContent).then((canvas) => {
         const imgData = canvas.toDataURL('image/png');
@@ -1342,8 +1347,10 @@ export default {
           heightLeft -= pageHeight;
         }
 
-        pdf.save('evidencia.pdf'); // Nombre del archivo PDF
+        pdf.save('denuncia.pdf'); // Nombre del archivo PDF
       });
+
+
     },
 
      imprimirContenido() {
@@ -2286,15 +2293,13 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
 
 
 
-
 table {
   /* ojo no borrar estilos para la tabla html */
   width: 100%;
   border-collapse: collapse;
 }
 
-th,
-td {
+th,td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
@@ -2302,6 +2307,10 @@ td {
 
 th {
   background-color: #f2f2f2;
+}
+
+td.sin-borde {
+    border: none; /* Quitar borde solo para celdas con esta clase */
 }
 
 button {

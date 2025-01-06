@@ -31,7 +31,7 @@
       </tr>
     </template>
     <template v-slot:item.fila2="{ index }">
-      <td class="text-center">{{ index + 1 }}</td>
+      <td class="sin-borde text-center">{{ index + 1 }}</td>
     </template>
     <template v-slot:top>
       <v-toolbar flat>
@@ -1852,6 +1852,10 @@ td {
 
 th {
   background-color: #f2f2f2;
+}
+
+td.sin-borde {
+    border: none; /* Quitar borde solo para celdas con esta clase */
 }
 
 button {

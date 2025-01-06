@@ -9,6 +9,7 @@ const logout = async (event: any) => {
 
     console.log("localStorage.removeItem(username)  : ",   localStorage.getItem('username'));
     localStorage.removeItem("username");    
+   
     router.push('/auth/login');
 };
 

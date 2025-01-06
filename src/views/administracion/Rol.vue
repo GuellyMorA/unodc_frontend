@@ -32,7 +32,7 @@
       </template>
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>Roles por modulo y perfil habilitado</v-toolbar-title>
+          <v-toolbar-title class="text-center">Roles por modulo y perfil habilitado</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
 
@@ -498,7 +498,7 @@ export default {
               depto_sigla: depart.depto_sigla,
             }));
             this.deptoOptions.push({
-              depto: 'Bolivia',
+              depto: '(Nacional)',   // Bolivia
               depto_id: 0,
               depto_sigla: 'BOL',
             });
