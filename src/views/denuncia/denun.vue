@@ -249,7 +249,7 @@
               <h3 class="p-0 py-3 px-0">Responsable de admisión:</h3>
               <v-text-field
                 label="Responsable de admisión"
-                placeholder="Responsable de admisión"
+             s
                 outlined
               ></v-text-field>
      
