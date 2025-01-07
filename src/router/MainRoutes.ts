@@ -87,7 +87,13 @@ const MainRoutes = {
             requiresAuth: true,
             component: () => import('@/views/reportes/Mapa.vue')
         },
-
+        
+        {
+            name: 'ReportesEstTabla',
+            path: '/reportes/estadisticasTabla',
+            requiresAuth: true,
+            component: () => import('@/views/reportes/EstadisticasTabla.vue')
+        },
 
 
         {
