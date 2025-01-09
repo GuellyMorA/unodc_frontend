@@ -37,20 +37,26 @@
 
 
               <h3 class="p-0 py-3 px-2 ml-4">Departamento:</h3> 
-              <v-col class="p-0 py-0 px-0" cols="3">
+              <v-col class="p-0 py-0 px-0" cols="2">
                 <v-select v-model="denPerDnte.departamento" :items="deptoOptions" 
                           item-title="depto"     item-value="depto_id"   @update:modelValue="onDepartChange"
                   ></v-select>
                   
             </v-col>
+     <v-col class="p-0 py-0 px-0 ml-6" cols="2">
+            <v-text-field v-model="denPerDnte.fec_registro_hecho" :readonly="lockField" label="Fecha" @update:modelValue="onDepartChange"
+                placeholder="DD/MM/AAAA" required></v-text-field>
+        
+              </v-col>
+       
 
             <v-col class="p-0 py-1 px-0 ml-6" cols="1">
-              <v-btn  class="custom-green-btn"  @click="close"> Excel </v-btn>
+              <v-btn  class="custom-green-btn"  @click="exportToExcel"> Excel </v-btn>
 
 
             </v-col>
-            <v-col class="p-0 py-1 px-0" cols="1">
-              <v-btn class="custom-green-btn" text @click="downloadPDF"> PDF </v-btn>
+            <v-col class="p-0 py-1 px-0 ml-6" cols="1">
+              <v-btn class="custom-green-btn" text @click="exportToPDF"> PDF </v-btn>
 
             </v-col>
 
@@ -67,7 +73,9 @@
     no-data-text="No existen registros." no-results-text="Sin resultados" 
     page-text="de" :items-per-page="itemsPerPage"  
     rows-per-page-text="Filas por página"   :page-count="pageCount"
-    items-per-page-text="Registros por pagina ">
+    items-per-page-text="Registros por pagina "
+
+    >
 
     <template v-slot:headers="{ props }">
       <tr v-bind="props">
@@ -96,20 +104,25 @@
 <script>
 //     <v-row justify="space-between" align="center">
 //   <v-col cols="auto">
-import { toast } from 'vue3-toastify';
+
 import Denuncia from '@/services/Denuncia';
 import NivelGeografico from '@/services/NivelGeografico';
 
 import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
-import Highcharts from 'highcharts';
-import exportChart from 'highcharts/modules/exporting';
-import exportData from 'highcharts/modules/export-data';
+import 'jspdf-autotable';
 
+
+
+
+import * as XLSX from 'xlsx'
 
 export default {
 
   data: () => ({
+
+
+  //  visibleItems:[],
+
    // toPrint: true,
     loading: true,
     isLoading: false,
@@ -161,8 +174,7 @@ export default {
       { title: 'nombres denunciados', key: 'dndo_nombre_completo' },
       { title: 'detalle hecho', key: 'detalle_hecho' },
       { title: 'departamento', key: 'departamento' },
-      { title: 'Asignado', key: 'asignado_nombre_completo' },
-   
+      { title: 'Asignado', key: 'asignado_nombre_completo' },   
       { title: 'Estado', key: 'estado' },
       { title: 'Resultado', key: 'resultado' },
      { title: 'Fecha', key: 'fec_registro_hecho' },
@@ -511,9 +523,9 @@ export default {
     munOptions: [{}], //['El Alto', 'Chuquisaca', 'La Paz', 'Santa Cruz', 'Cochabamba'],
 
 
-    estadoOptions: [{ est: 'SOLICITADO', transac: 'CREAR' }, { est: 'ASIGNADO', transac: 'DERIVAR' }
-      , { est: 'ACEPTADO', transac: 'ACEPTAR' }, { est: 'RECHAZADO', transac: 'RECHAZAR' }
-      , { est: 'ABSUELTO', transac: 'ABSOLVER' }, { est: 'SANCIONADO', transac: 'SANCIONAR' }],
+    estadoOptions: [{ est: 'TODOS', transac: '' }, { est: 'SOLICITADO', transac: 'CREAR' }, { est: 'ASIGNADO', transac: 'DEN_DERIVAR' }
+      , { est: 'ACEPTADO', transac: 'DEN_ACEPTAR' }, { est: 'RECHAZADO', transac: 'DEN_RECHAZAR' }
+      ,{ est: 'AMPLIACION', transac: 'DEN_SOL_AMPLIACION' }],
     
     gestorOptions: [],
     actividadOptions: [],
@@ -531,130 +543,84 @@ export default {
 
    this.deptoList();
 
-    console.log('this.deptoId' ,this.deptoId, ',this.estado: ',this.estado );
+    console.log('this.deptoId' ,this.deptoId, ',this.estado: ',this.estado,'this.denPerDnte.fec_registro_hecho', this.denPerDnte.fec_registro_hecho );
 
-    this.listRepDenByDeptoByEstado( this.deptoId, this.estado  );
+    this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho  );
     
     this.loading = false;
   },
 
 
 
-  methods: {
-    generarReporte() {
-      const dataTable = this.datos.map(item => [item.nombre, item.edad, item.ciudad]);
-      return dataTable;
+  methods: {  //  this.people
+
+
+    // Función para exportar los datos de la tabla a un archivo Excel
+    exportToExcel() {
+      // Extraemos las cabeceras de la tabla
+      const ws_data = [
+        this.headers.map(header => header.title), // Cabeceras de las columnas
+        ...this.people.map(item => [item.fila2  , item.cod_denuncia  , item.dnte_nombre_completo  , item.dndo_nombre_completo
+             , item.detalle_hecho  , item.departamento  , item.asignado_nombre_completo, item.estado, item.resultado, item.fec_registro_hecho
+            ]), // Filas de datos
+      ];
+
+      // Crear una hoja de trabajo (worksheet) con los datos
+      const ws = XLSX.utils.aoa_to_sheet(ws_data);
+
+      // Crear un libro de trabajo (workbook) con la hoja de trabajo
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Datos');
+
+      // Exportar el archivo Excel
+      XLSX.writeFile(wb, 'tabla_datos.xlsx');
     },
-    inicializarHighcharts() {
-      Highcharts.chart('container', {
-        title: {
-          text: 'Reporte de Datos'
-        },
-        exporting: {
-          buttons: {
-            contextButton: {
-              menuItems: ['exportChart', 'separator', 'downloadXLSX', 'downloadPDF']
-            }
-          },
-          csv: {
-            dateFormat: '%Y-%m-%d',
-            itemDelimiter: ',',
-            lineDelimiter: '\n'
-          },
-          xlsx: {
-            filename: 'reporte_datos'
-          }
-        },
-        series: [{
-          type: 'table',
-          data: this.generarReporte(),
-          name: 'Datos',
-          colorByPoint: true
-        }],
-        lang: {
-          downloadXLSX: 'Descargar Excel',
-          downloadPDF: 'Descargar PDF'
-        }
-      });
-    },
-    exportarExcel() {
-      const chart = Highcharts.charts[0];
-      chart.exportChart({
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        filename: 'reporte_datos',
-        options: {
-          filename: 'reporte_datos'
-        }
-      });
-    },
-    exportarPDF() {
-      const chart = Highcharts.charts[0];
-      chart.exportChart({
-        type: 'application/pdf',
-        filename: 'reporte_datos',
-        options: {
-          filename: 'reporte_datos'
-        }
-      });
-    },
-    downloadPDF() {
-      const popupContent = this.$refs.popupContent;
-     // console.log('this.toPrint :',  this.toPrint   );
-     // this.toPrint= false;
+  
+    exportToPDF() {
+      //const doc = new jsPDF();
+      const doc = new jsPDF('landscape'); // Configurar la orientación horizontal
+      const margins = { top: 20, bottom: 20 };
 
-      html2canvas(popupContent).then((canvas) => {
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF();
-    
-        const imgWidth = 190; // Ajusta el ancho de la imagen, si es necesario
-        const pageHeight = pdf.internal.pageSize.height;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
+      // Configurar la tabla en el PDF usando jsPDF y autotable
+      const columns = this.headers.map(header => header.title); // Cabeceras
+      const rows = this.people.map(item => [item.fila2  , item.cod_denuncia  , item.dnte_nombre_completo  , item.dndo_nombre_completo
+             , item.detalle_hecho  , item.departamento  , item.asignado_nombre_completo, item.estado, item.resultado, item.fec_registro_hecho
+            ]);
 
-        let position = 0;
+     // Agregar la tabla al documento PDF con formato horizontal
+        // Agregar la tabla al documento PDF
+    //  doc.autoTable(columns, rows);
 
-        // Añade la imagen al PDF
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        // Si la imagen es más larga que una página, hay que añadir más en páginas nuevas
-        while (heightLeft >= 0) {
-          position = heightLeft - imgHeight;
-          pdf.addPage();
-          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight;
-        }
-
-        pdf.save('denuncia.pdf'); // Nombre del archivo PDF
+      doc.autoTable({
+        head: [columns],
+        body: rows,
       });
 
 
+ // Calcular el ancho y alto disponibles para la tabla
+ /*const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const contentWidth = pageWidth - margins.left - margins.right;
+      const contentHeight = pageHeight - margins.top - margins.bottom;
+
+      // Crear una tabla usando jsPDF-Autotable
+      doc.autoTable({
+        head: [columns],
+        body: [rows],
+        startY: margins.top,
+        theme: 'grid',
+        margin: { horizontal: margins.left }
+     
+      });
+*/
+
+      const filename = `tabla_datos_${new Date().toISOString().slice(0, 10)}.pdf`;
+      // Descargar el archivo PDF
+      doc.save(filename);
     },
 
-     imprimirContenido() {
-       const popupContent = this.$refs.popupContent;
 
- const printWindow = window.open("", "_blank");
-      const content =  this.$refs.popupContent; //popupContent.value;
 
-      if (printWindow && content) {
-        printWindow.document.write(`
-          <html>
-            <head>
-              <title>Imprimir Contenido</title>
-            </head>
-            <body>
-              ${content.innerHTML}
-            </body>
-          </html>
-        `);
-        printWindow.document.close();
-        printWindow.print();
-      }
- 
-
-    },
- 
 
 
     async deptoList() {
@@ -669,6 +635,16 @@ export default {
               depto: depart.depto,
               depto_id: depart.depto_id,
             }));
+            this.deptoOptions.push({
+              depto: '(Nacional)',   // Bolivia
+              depto_id: 0,
+              depto_sigla: 'BOL',
+            });
+            this.departamentos.push({
+              depto: '(Nacional)',   // Bolivia
+              depto_id: 0,
+              depto_sigla: 'BOL',
+            });
             console.log("deptoOptions  : ", this.deptoOptions);
           } else {
             this.showSnackbar('Error recuperando Denuncia ' + response, 'red');
@@ -680,15 +656,26 @@ export default {
     },
 
  
-    async listRepDenByDeptoByEstado(depto_id,estado)  {
-      
-      await Denuncia.listRepDenByDeptoByEstado(depto_id,estado) 
+    async listRepDenByDeptoByEstado(deptoId,estado, fec_registro_hecho)  {
+      console.log('deptoId ' ,deptoId ,'this.estado: ',estado,'fec_registro_hecho',fec_registro_hecho );
+     if(!fec_registro_hecho)     {
+      fec_registro_hecho='1999-01-01'
+
+     }else{
+      const dateParts =   fec_registro_hecho.split("/"); //// "2024-05-17".split("/");  //
+      fec_registro_hecho = dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]; //.toISOString(),  
+   
+     }
+     
+      await Denuncia.listRepDenByDeptoByEstado(deptoId,estado, fec_registro_hecho  ) 
         .then((response) => {
-          console.log("listRepDenByDeptoByEstado : ", response.data, response.status);
+      
           if (response.status === 200) {
+                console.log("listRepDenByDeptoByEstado : ", response.data, response.status);
             this.people = response.data;
          
           } else {
+            this.people =[];
             this.showSnackbar('Error recuperando listRepDenByDeptoByEstado ' + response, 'red');
           }
         })
@@ -702,20 +689,21 @@ export default {
       // Encuentra el depart seleccionado por su id
       const depart = this.departamentos.find(c => c.depto_id === this.denPerDnte.departamento);
 
-      console.log("depart  : ", depart.depto_id);
-   
-      this.depto_id = depart.depto_id;
-      this.listRepDenByDeptoByEstado( this.deptoId, this.estado  );
+      this.deptoId = depart.depto_id;
+      console.log('this.deptoId ' ,this.deptoId ,'this.estado: ',this.estado );
+
+      this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho );
     },
 
     onEstadoChange() {
       // Encuentra el depart seleccionado por su id
       const estado = this.estadoOptions.find(c => c.transac === this.denPerDnte.estado);
       // Actualiza las municip según el depart seleccionado
-      console.log("estado  : ", estado.est);
    
       this.estado = estado.est;
-      this.listRepDenByDeptoByEstado( this.deptoId, this.estado  );
+      console.log('this.deptoId ' ,this.deptoId ,'this.estado: ',this.estado );
+
+      this.listRepDenByDeptoByEstado( this.deptoId, this.estado ,this.denPerDnte.fec_registro_hecho );
     },
   
 

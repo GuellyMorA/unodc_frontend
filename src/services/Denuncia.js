@@ -5,8 +5,8 @@ const apiUrl = import.meta.env;
 
 class DenunciaService {
 
-  listRepDenByDeptoByEstado(depto_id,estado) {
-    return http.get(`/listRepDenByDeptoByEstado/${depto_id}/${estado}`,).catch((error) => {
+  listRepDenByDeptoByEstado(depto_id,estado,fec_registro_hecho) {
+    return http.get(`/listRepDenByDeptoByEstado/${depto_id}/${estado}/${fec_registro_hecho}`,).catch((error) => {
       console.log("error listRepDenByDeptoByEstado  url  : ", error.config.url);
       return error;
     });
