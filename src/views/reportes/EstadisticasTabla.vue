@@ -34,8 +34,6 @@
                             item-title="est"     item-value="transac"     @update:modelValue="onEstadoChange" 
                       ></v-select>
             </v-col>
-
-
               <h3 class="p-0 py-3 px-2 ml-4">Departamento:</h3> 
               <v-col class="p-0 py-0 px-0" cols="2">
                 <v-select v-model="denPerDnte.departamento" :items="deptoOptions" 
