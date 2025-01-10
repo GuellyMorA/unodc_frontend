@@ -26,16 +26,19 @@
     </v-card>
 
     <v-card class="mx-auto mt-4" max-width="700">
-      <v-card-title>
+      <v-card-text>
         
-        <v-row class="mt-4 ml-4">
+        <v-row class="ml-1">
             <v-col class="p-0 py-0 px-0" cols="4">
             <label class="text-h5">Datos del Denunciante</label>
         
           </v-col>
-          <v-col class="p-0 py-3 px-4" cols="4">
+        </v-row>
+
+        <v-row>
+          <v-col class="p-0 py-3 px-0 ml-4" cols="4">
            
-            <label >Denuncia anónima ? : </label>
+            <label class="text-h6" >Denuncia anónima ? : </label>
           </v-col>
             <v-col class="p-0 py-0 px-0" cols="2">
                 <v-checkbox  v-model="denPerDnte.denuncia_anonima" :readonly="lockField"
@@ -46,36 +49,35 @@
                   label="No"></v-checkbox>
               </v-col>
           </v-row>
-      </v-card-title>
-      <v-card-text>
+   
         <v-container>
 
           <v-row>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denPerDnte.nombres" :readonly="lockField" label="Nombres"
               :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denPerDnte.apellido_pat" :readonly="lockField" label="Ap. Paterno"
                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denPerDnte.apellido_mat" :readonly="lockField" label="Ap. Materno."
                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denPerDnte.email" :readonly="lockField" label="Correo electrónico"
                 :rules="[v => !!v || 'Correo es requerido']"  ></v-text-field>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-select v-model="denPerDnte.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
                 :readonly="lockField" label="Género" @update:modelValue="onSexoChange"
                 :rules="[v => !!v || 'Género es requerido']"></v-select>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denPerDnte.telefono" :readonly="lockField" label="Teléfono"
                 :rules="[v => !!v || 'Teléfono es requerido']"></v-text-field>
             </v-col>
@@ -92,18 +94,19 @@
     </v-card>
 
     <v-card class="mx-auto  mt-4" max-width="700">
-      <v-card-title class="mb-4" >
+      <v-card-title >
         <v-row class="mx-auto  mt-1">   
-          <v-col cols="4" class="p-0 py-0 px-0">
+          <v-col cols="12" sm="6" md="4">
           <span class="text-h5"> Datos del Denunciado </span>
         </v-col>
-          <v-col cols="4" class="p-0 py-0 px-0">
+        <v-col cols="12" sm="6" md="4">
             <v-icon small class="mr-2" @click="agregarPersona"> mdi-plus-circle-outline</v-icon>
         
       </v-col>
       </v-row>
       </v-card-title>
-      <v-card-text class="mt-4" >
+
+      <v-card-text  >
         <v-container>
           <v-row  class="mb-4">
             <span class="text-h7"> Para adicionar a un denunciado presione "+", depues de llenar los datos requeridos</span>
@@ -132,18 +135,18 @@
           </v-row>
       
           <v-row>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-select v-model="denunciado.grado" :items="gradoOptions" item-title="grado" item-value="grados_sigla"
                 :readonly="lockField" label="grado" @update:modelValue="onGradoChange"
               ></v-select>
 
             </v-col>
 
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denunciado.puesto_cargo_funcion" :readonly="lockField" label="Cargo y funcion"
               ></v-text-field>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denunciado.unidad_policial_desc" :readonly="lockField" label="Unidad policial"
               ></v-text-field>
             </v-col>        
@@ -151,16 +154,16 @@
           </v-row>   
           <v-row>
 
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho (Calle,Edif...)"
             ></v-text-field>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-select v-model="denPerDnte.departamento" :items="deptoOptions" item-title="depto" item-value="depto_id"
                 :readonly="lockField" label="Departamento" @update:modelValue="onDepartChange"
                ></v-select>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" sm="6" md="4">
               <v-select v-model="denPerDnte.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
                 :readonly="lockField" label="Ciudad" return-object
                ></v-select>
@@ -200,8 +203,13 @@
 
     <v-card class="mx-auto  mt-4" max-width="700">
       <v-card-title>
+        <v-row class="mx-auto  mt-1">   
+          <v-col cols="12" sm="6" md="4">
         <span class="text-h5"> Detalles del hecho </span>
+      </v-col>
+    </v-row>
       </v-card-title>
+      
       <v-card-text>
         <v-container>
           <v-row>

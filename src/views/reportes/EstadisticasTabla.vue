@@ -689,8 +689,11 @@ export default {
 
       this.deptoId = depart.depto_id;
       console.log('this.deptoId ' ,this.deptoId ,'this.estado: ',this.estado );
+     if(this.denPerDnte.fec_registro_hecho.length >=10 || this.denPerDnte.fec_registro_hecho.length ==0 ){
 
       this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho );
+
+     }
     },
 
     onEstadoChange() {
