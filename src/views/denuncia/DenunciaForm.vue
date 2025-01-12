@@ -19,7 +19,7 @@
 
       <v-card-title class="text-multiline  title-small" >
        <h3>"EL PRESENTE FORMULARIO RECIBE DENUNCIAS DE CORRUPCION, MALOS TRATOS Y OTROS COMETIDOS POR FUNCIONARIOS POLICIALES
-        Y SERá REVISADO POR EL DEPARTAMENTO NACIONAL DE TRANSPARENCIA DE LA POLICÍA BOLIVIANA"</h3> 
+        Y SERÁ REVISADO POR EL DEPARTAMENTO NACIONAL DE TRANSPARENCIA DE LA POLICÍA BOLIVIANA. LA DENUNCIA PUEDE SER CON RESERVA DE IDENTIDAD O ANONIMA ,PERO ES IMPORTANTE QUE USTED REGISTRE AL MENOS UN CORREO ELECTRONICO"</h3> 
 
       </v-card-title>
 
@@ -29,62 +29,69 @@
       <v-card-text>
         
         <v-row class="ml-1">
-            <v-col class="p-0 py-0 px-0" cols="4">
-            <label class="text-h5">Datos del Denunciante</label>
         
-          </v-col>
+            <label class="text-h5">Datos del Denunciante</label>        
+         
         </v-row>
 
-        <v-row>
-          <v-col class="p-0 py-3 px-0 ml-4" cols="4">
-           
-            <label class="text-h6" >Denuncia anónima ? : </label>
-          </v-col>
-            <v-col class="p-0 py-0 px-0" cols="2">
-                <v-checkbox  v-model="denPerDnte.denuncia_anonima" :readonly="lockField"
-                label="Si"></v-checkbox>
-           </v-col>
-           <v-col class="p-0 py-0 px-0" cols="2">
-                <v-checkbox  v-model="denPerDnte.denuncia_anonima_no"
-                  label="No"></v-checkbox>
+      
+          <v-row >
+            <h3 class="p-0 py-7 px-6 ">Denuncia anónima ? : </h3>
+            <v-col>  
+               <v-row>    
+
+                <v-col cols="12" md="3">
+            
+                    <v-checkbox  v-model="denPerDnte.denuncia_anonima"  @change="handleSiChange"
+                    label="Si"></v-checkbox>
+                    </v-col>
+                    <v-col cols="12" md="3">
+                          <v-checkbox  v-model="denPerDnte.denuncia_anonima_no"  @change="handleNoChange"  
+                            label="No"></v-checkbox>
+                        </v-col>
+                </v-row>  
               </v-col>
+
           </v-row>
    
         <v-container>
-
+      
           <v-row>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-text-field v-model="denPerDnte.nombres" :readonly="lockField" label="Nombres"
               :rules="[v => !!v || 'Nombres es requerido']"></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4" class="px-1">
               <v-text-field v-model="denPerDnte.apellido_pat" :readonly="lockField" label="Ap. Paterno"
                :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4" class="px-1">
               <v-text-field v-model="denPerDnte.apellido_mat" :readonly="lockField" label="Ap. Materno."
-               :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
+              ></v-text-field>
             </v-col>
           </v-row>
-
+          <v-row  >
+            <span class="ml-3 text-h7"> (*) El registro de correo es obligatorio</span>
+        </v-row>
+        
           <v-row>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"   class="px-1">
               <v-text-field v-model="denPerDnte.email" :readonly="lockField" label="Correo electrónico"
                 :rules="[v => !!v || 'Correo es requerido']"  ></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-select v-model="denPerDnte.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
                 :readonly="lockField" label="Género" @update:modelValue="onSexoChange"
                 :rules="[v => !!v || 'Género es requerido']"></v-select>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-text-field v-model="denPerDnte.telefono" :readonly="lockField" label="Teléfono"
                 :rules="[v => !!v || 'Teléfono es requerido']"></v-text-field>
             </v-col>
           </v-row>
 
           <v-row>
-            <v-col class="p-0 py-0 px-0">
+            <v-col class="p-0 py-0 px-0   ml-3 mr-3 ">
               <v-text-field v-model="denPerDnte.ubic_donde" :readonly="lockField" label="Donde se encuentra"
                 :rules="[v => !!v || 'Ubicación es requerido']"></v-text-field>
             </v-col>
@@ -109,25 +116,25 @@
       <v-card-text  >
         <v-container>
           <v-row  class="mb-4">
-            <span class="text-h7"> Para adicionar a un denunciado presione "+", depues de llenar los datos requeridos</span>
+            <span class="text-h7"> Para adicionar a un denunciado presione "+", depues de llenar los datos requeridos. El registro de Genero, Lugar, Dpto. y Ciudad es obligatorio</span>
         </v-row>
 
-          <v-row>
+          <v-row >
 
-            <v-col cols="3" class="p-0 py-0 px-0">
+            <v-col cols="12" md="3"   class="px-1">
               <v-text-field v-model="denunciado.nombres" :readonly="lockField" label="nombres"
                ></v-text-field>
 
             </v-col>
-            <v-col cols="3" class="p-0 py-0 px-0">
+            <v-col cols="12" md="3"   class="px-1">
               <v-text-field v-model="denunciado.apellido_pat" :readonly="lockField" label="apellido pat"
                ></v-text-field>
             </v-col>
-            <v-col cols="3" class="p-0 py-0 px-0">
+            <v-col cols="12" md="3"   class="px-1">
               <v-text-field v-model="denunciado.apellido_mat" :readonly="lockField" label="apellido mat"
              ></v-text-field>
             </v-col>
-            <v-col cols="3" class="p-0 py-0 px-0">
+            <v-col cols="12" md="3"   class="px-1">
               <v-select v-model="denunciado.genero_sexo" :items="sexoOptions" item-title="sexo" item-value="sexo_sigla"
                 :readonly="lockField" label="Género" @update:modelValue="onSexoChangeDenunciado"
                ></v-select>
@@ -135,18 +142,18 @@
           </v-row>
       
           <v-row>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-select v-model="denunciado.grado" :items="gradoOptions" item-title="grado" item-value="grados_sigla"
                 :readonly="lockField" label="grado" @update:modelValue="onGradoChange"
               ></v-select>
 
             </v-col>
 
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-text-field v-model="denunciado.puesto_cargo_funcion" :readonly="lockField" label="Cargo y funcion"
               ></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-text-field v-model="denunciado.unidad_policial_desc" :readonly="lockField" label="Unidad policial"
               ></v-text-field>
             </v-col>        
@@ -154,16 +161,16 @@
           </v-row>   
           <v-row>
 
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-text-field v-model="denPerDnte.lugar_hecho" :readonly="lockField" label="Lugar del hecho (Calle,Edif...)"
             ></v-text-field>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-select v-model="denPerDnte.departamento" :items="deptoOptions" item-title="depto" item-value="depto_id"
                 :readonly="lockField" label="Departamento" @update:modelValue="onDepartChange"
                ></v-select>
             </v-col>
-            <v-col cols="12" sm="6" md="4">
+            <v-col cols="12" sm="6" md="4"  class="px-1">
               <v-select v-model="denPerDnte.municipio" :items="munOptions" item-title="mun" item-value="mun_id"
                 :readonly="lockField" label="Ciudad" return-object
                ></v-select>
@@ -213,12 +220,12 @@
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" md="4" class="px-1">
           <!--      <div class="d-flex align-center">    style="width: 400px;" -->
                 <v-text-field v-model="denPerDnte.fec_registro_hecho" :readonly="lockField" label="Fecha del hecho"  @input="handleInputDate"
                   placeholder="DD/MM/AAAA" required></v-text-field>
             </v-col>
-            <v-col cols="4" class="p-0 py-0 px-0">
+            <v-col cols="12" md="4" class="px-1">
                   <v-text-field v-model="denPerDnte.hora_registro_hecho" :readonly="lockField" label="Hora aprox. del hecho" @input="handleInputHour"
                   placeholder="hh:mm" hide-details required></v-text-field>
             <!--</div>  -->  
@@ -259,10 +266,12 @@
                 <label for="file3">Reserva de identidad ? : </label>
               </v-col>
               <v-col class="p-0 py-0 px-0" cols="3" >
-                <v-checkbox v-model="denPerDnte.reserva_identidad_si" label="Si" ></v-checkbox>           
+                <v-checkbox v-model="denPerDnte.reserva_identidad_si"  @change="handleSiReservaChange"
+                 label="Si" ></v-checkbox>           
               </v-col>
               <v-col class="p-0 py-0 px-0" cols="3" >
-                <v-checkbox   v-model="denPerDnte.reserva_identidad_no" label="No" ></v-checkbox>           
+                <v-checkbox   v-model="denPerDnte.reserva_identidad_no" @change="handleNoReservaChange"
+                label="No" ></v-checkbox>           
                 </v-col>
           </v-row>
 
@@ -478,10 +487,10 @@ export default {
       hora_registro_hecho: '',
       detalle_hecho: '',
       denuncia_anonima: '',
-      denuncia_anonima_no: '',
+      denuncia_anonima_no: true,
       reserva_identidad:'',
       reserva_identidad_si: '',
-      reserva_identidad_no: '',
+      reserva_identidad_no: true,
       dnte_id: null,
       apellido_pat: '',
       apellido_mat: '',
@@ -655,7 +664,7 @@ export default {
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
     gradoOptions: [], // ['Capitan', 'Teniente', 'Sargento 1ro', 'Sin Grado'],
     rolOptions: [],
-    validationErrors: { nombres: { value: false } },
+    validationErrors: {  },
 
     selectedDeptoId: null,    // Código del país seleccionado
     selectedProvinceCode: 0,    // Código de la provincia seleccionada
@@ -670,42 +679,75 @@ export default {
 
   mounted() {
     const fileInputs = document.querySelectorAll('.file-input');
-/*
-    fileInputs.forEach(input => {
-      input.addEventListener('change', function () {
-        const label = this.previousElementSibling;
-        if (this.files.length > 0) {
-          //  label.textContent = `${this.files[0].name}`;
-          this.selectedFileName = this.files[0].name; // Actualiza el valor en Vue
-        } else {
-          label.textContent = "Selecciona un archivo";
-          this.selectedFileName = "No se eligió ningún archivo";
-        }
-      });
-    });
-*/
+
     this.deptoList();
     this.onDepartChange();
     this.gradoList();
    
     this.generateCaptcha();
     this.updateBreadcrumbs();
+   // this.denPerDnte.denuncia_anonima=false;
+   // this.denPerDnte.reserva_identidad_no = true;
 
-   // this.denunciaPersonasGetByCod();
-   // this.denunciadoListByCod();
-   // this.documentosPathListByCod();
     this.loading= false;
   },
 
 
 
   methods: {
+    handleSiChange() {
+      if (this.denPerDnte.denuncia_anonima) {
+        this.denPerDnte.denuncia_anonima_no = false;
+        this.denPerDnte.reserva_identidad_si = true;
+        this.denPerDnte.reserva_identidad_no = false;
 
+        this.denPerDnte.nombres='(ANONIMO)';
+        this.denPerDnte.apellido_pat='(ANONIMO)';
+        this.denPerDnte.apellido_mat='(ANONIMO)';
+        this.denPerDnte.telefono='N/D';
+       // this.denPerDnte.email='N/D';
+       this.denPerDnte.ubic_donde='N/D';
+
+
+      }
+    },
+    handleNoChange() {
+      if (this.denPerDnte.denuncia_anonima_no) {
+        this.denPerDnte.denuncia_anonima = false;
+        this.denPerDnte.reserva_identidad_si = false;
+        this.denPerDnte.reserva_identidad_no = true;
+
+        this.denPerDnte.nombres='';
+        this.denPerDnte.apellido_pat='';
+        this.denPerDnte.apellido_mat='';
+        this.denPerDnte.telefono='';
+        //this.denPerDnte.email='';
+        this.denPerDnte.ubic_donde='';
+      }
+    },
+
+    handleSiReservaChange() {
+      if (this.denPerDnte.reserva_identidad_si) {
+        this.denPerDnte.reserva_identidad_no = false   ;
+
+      }
+    },
+    handleNoReservaChange() {
+      if (this.denPerDnte.reserva_identidad_no) {
+        this.denPerDnte.reserva_identidad_si = false  ;
+  
+      }
+    },
     agregarPersona() {
-
-      if(!this.denunciado.nombres || !this.denunciado.apellido_pat ) {
+       // validar nulos
+      if(!this.denunciado.genero_sexo_sigla || !this.denPerDnte.lugar_hecho || !this.denPerDnte.departamento || !this.denPerDnte.municipio  ) {// || !this.denunciado.apellido_pat
        return ;
       }  
+      
+      if (!this.denunciado.nombres  )   { // || !this.denunciado.apellido_pat
+        this.denunciado.nombres= 'N/D';     
+
+    }
          this.denunciadosArray.push({ ...this.denunciado });
 
       console.log('this.denunciadosArray :', this.denunciadosArray);
@@ -822,6 +864,7 @@ export default {
                       console.log("documentosPathCreate  archivos: ", response.status, response);
                       this.showSnackbar('archivo subido correctamente!', 'green')
                       // this.close()
+                      this.files=[];
                     } else {
 
                       console.log("denuncianteCreate  : ", response.status, "error:   : ", response.response.request.response);
@@ -1031,10 +1074,13 @@ export default {
       this.denPerDnte.genero_sexo_sigla=  this.denPerDnte.genero_sexo_sigla ? this.denPerDnte.genero_sexo_sigla:  this.denPerDnte.genero_sexo;
       this.denPerDnte.sigla = 'INTERNET';
       this.denPerDnte.direccion =    this.denPerDnte.ubic_donde ;
+      if( this.denPerDnte.genero_sexo_sigla ==''){
+        this.denPerDnte.genero_sexo_sigla ='M';
+      }
+      
       this.denPerDnte.estado = 'ACTIVO';
       this.denPerDnte.transaccion = 'ACTIVAR';
-      this.denPerDnte.usu_cre = this.username;
-  
+      this.denPerDnte.usu_cre = this.username;  
 
       await Denunciante.denuncianteCreate(this.denPerDnte)
         .then((response) => {
@@ -1107,15 +1153,28 @@ export default {
       this.denunciado.direccion = 'N/A';
       this.denunciado.genero_sexo_sigla=  this.denunciado.genero_sexo_sigla ? this.denunciado.genero_sexo_sigla:  this.denunciado.genero_sexo;
 
-      
-      
+      if( this.denunciado.nombres ==''){
+        this.denunciado.nombres ='N/D';
+        this.denunciado.apellido_pat ='N/D';
+        this.denunciado.apellido_mat ='N/D';
+      } 
+  
+
+      if( this.denunciado.grados_sigla ==''){
+        this.denunciado.grados_sigla ='CIVIL';
+      }
+    
+
+
+
       this.denunciado.estado = 'ACTIVO';
       this.denunciado.transaccion = 'ACTIVAR';
       this.denunciado.usu_cre = this.username;
+
       this.denunciadosArray =   this.denunciadosArray.length==0 ?     [{ ...this.denunciado }]: this.denunciadosArray;
      
       await this.denunciadosArray.forEach((dndo, index) => {
-          // Renombrar el archivo
+          // Recorrer array denuncados
           if (dndo !== undefined){
             dndo.id = this.denPerDnte.id;
             dndo.cod_denuncia = this.denPerDnte.cod_denuncia;
@@ -1123,18 +1182,20 @@ export default {
             dndo.orden = index + 1 ; //parseInt(dndo.orden)==1 ? parseInt(dndo.orden) : parseInt(this.dndo.orden)  + 1;
             dndo.direccion = 'N/A';
             
-            
-            //dndo.tipo_personas = 'DENUNCIANTE';
-            //dndo.orden = parseInt(dndo.orden)==1 ? parseInt(dndo.orden) : parseInt(this.denunciado.orden)  + 1;
-            //dndo.grados_sigla = 'CIVIL';
-            //dndo.genero_sexo_sigla=  dndo.genero_sexo_sigla ? dndo.genero_sexo_sigla:  dndo.genero_sexo;
+            if( dndo.nombres ==''){
+              dndo.nombres ='N/D';
+              dndo.apellido_pat ='N/D';
+              dndo.apellido_mat ='N/D';
+            } 
+        
+            if( dndo.grados_sigla ==''){
+              dndo.grados_sigla ='CIVIL';
+            }
 
-           // dndo.direccion =    this.denPerDnte.ubic_donde ;
             dndo.estado = 'ACTIVO';
             dndo.transaccion = 'ACTIVAR';
             dndo.usu_cre = this.username;
-  
-            
+              
             
               Denunciado.denunciadoCreate(dndo)
                   .then((response) => {
@@ -1142,7 +1203,6 @@ export default {
                  
                       console.log("DenunciadoCreate  : ", response.status, response);
                       this.showSnackbar('Denunciado creado correctamente!', 'green')
-                      // this.close()
                     } else {
 
                       console.log("DenunciadoCreate  error: ", response.status, "error:   : ", response.response.request.response);
@@ -1159,7 +1219,9 @@ export default {
                     console.log('Log Error creando Denunciado: ', error);
                   })
           }
-      })
+      });
+      this.denunciadosArray =[];
+
     },
 
     async denunciaSave() {
@@ -1202,7 +1264,7 @@ export default {
           this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
 
           this.denPerDnte.reserva_identidad=  this.denPerDnte.reserva_identidad_si ? true:  
-                                              this.denPerDnte.reserva_identidad_no ? false:  false;
+                                              this.denPerDnte.reserva_identidad_no ? false:  'xxx';
           this.denPerDnte.denuncia_anonima=  this.denPerDnte.denuncia_anonima ? true:  
                                               this.denPerDnte.denuncia_anonima_no ? false:  'xxx';
           await this.denunciaPersonasList() ;
@@ -1250,11 +1312,7 @@ export default {
               this.showSnackbar('Log Error creando denuncia: ' + error, 'red');
               console.log('Log Error creando denuncia: ', error);
             });
-          //  this.denPerDnte.fec_registro_hecho=new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]); //.toISOString(),  
-
-          // this.showSnackbar('denunciadoCreate creado correctamente!', 'green')
-          // this.close()
-
+      
 
         }
 
@@ -1268,30 +1326,29 @@ export default {
 
 
     validateForm() {
-      
- //  || !this.denPerDnte.apellido_mat
-      if (!this.denPerDnte.nombres || !this.denPerDnte.apellido_pat ) this.validationErrors.nombres = { value: true };
+    if ( this.denPerDnte.denuncia_anonima_no ){   //  || !this.denPerDnte.apellido_mat
+      if (!this.denPerDnte.nombres || !this.denPerDnte.apellido_pat )     this.validationErrors.nombres = { value: true };
       else delete this.validationErrors.nombres;
-
-     // if (!this.denPerDnte.ci_y_complemento || !this.denPerDnte.ci_expedido || !this.denPerDnte.grado) this.validationErrors.ci_y_complemento = { value: true };
-     // else delete this.validationErrors.ci_y_complemento;
-
-      if (!this.denPerDnte.email ||  !this.denPerDnte.genero_sexo ||   !this.denPerDnte.telefono ) this.validationErrors.email = { value: true };
+  
+      if (!this.denPerDnte.email ||  !this.denPerDnte.genero_sexo || !this.denPerDnte.telefono )   this.validationErrors.email = { value: true };
       else delete this.validationErrors.email;
 
-      if (  !this.denPerDnte.departamento  ||  !this.denPerDnte.municipio ) this.validationErrors.departamento = { value: true };
-      else delete this.validationErrors.departamento;
+      if (  !this.denPerDnte.departamento  ||  !this.denPerDnte.municipio )    this.validationErrors.departamento = { value: true };
+      else delete this.validationErrors.departamento;  //  ubic_donde
 
-      
+    }
+
      if ( this.denunciadosArray.length==0 ){  // || !this.denunciado.apellido_mat
-      if (!this.denunciado.nombres || !this.denunciado.apellido_pat ) this.validationErrors.nombres = { value: true };
-      else delete this.validationErrors.nombres;
+       if (!this.denunciado.genero_sexo  )    this.validationErrors.genero_sexo = { value: true };
+       else delete this.validationErrors.genero_sexo;
+      // if (!this.denunciado.nombres || !this.denunciado.apellido_pat )    this.validationErrors.nombres = { value: true };
+    //  else delete this.validationErrors.nombres;
       
-      if (!this.denunciado.grado ||  !this.denunciado.puesto_cargo_funcion ||   !this.denunciado.unidad_policial_desc ) this.validationErrors.grado = { value: true };
-      else delete this.validationErrors.grado;
+     // if (!this.denunciado.grado ||  !this.denunciado.puesto_cargo_funcion || !this.denunciado.unidad_policial_desc )    this.validationErrors.grado = { value: true };
+     // else delete this.validationErrors.grado;
      }
 
-      if (!this.denPerDnte.lugar_hecho ||  !this.denPerDnte.departamento ||   !this.denPerDnte.municipio ) this.validationErrors.lugar_hecho = { value: true };
+      if (!this.denPerDnte.lugar_hecho ||  !this.denPerDnte.departamento || !this.denPerDnte.municipio ) this.validationErrors.lugar_hecho = { value: true };
       else delete this.validationErrors.lugar_hecho;
 
       if (!this.denPerDnte.fec_registro_hecho ||  !this.denPerDnte.hora_registro_hecho ||   !this.denPerDnte.detalle_hecho ) this.validationErrors.fec_registro_hecho = { value: true };

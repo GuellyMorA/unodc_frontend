@@ -16,54 +16,69 @@
       </v-card-title>
 
       <v-card-text>
-        <v-container>
-          
+        <v-container>          
+      
           <v-row>
-            <v-col class="p-0 py-0 px-0" cols="4">
-          </v-col>  
-            <v-col class="p-0 py-0 px-0 mb-3" cols="8">
-            <label class="text-h5">.</label>
-        
-          </v-col>    
-          </v-row>
-          <v-row>
-            <h3 class="p-0 py-3 px-2 ">Estado:</h3>
-            <v-col class="p-0 py-0 px-0" cols="2">
+            <h3 class="p-0 py-6 px-2 ">Estado:</h3>
+            <v-col cols="12" md="3">
                       
                         <v-select v-model="denPerDnte.estado" :items="estadoOptions" 
                             item-title="est"     item-value="transac"     @update:modelValue="onEstadoChange" 
                       ></v-select>
             </v-col>
-              <h3 class="p-0 py-3 px-2 ml-4">Departamento:</h3> 
-              <v-col class="p-0 py-0 px-0" cols="2">
+
+              <h3 class="p-0 py-6 px-2 ml-4">Departamento:</h3> 
+              <v-col cols="12" md="3">
                 <v-select v-model="denPerDnte.departamento" :items="deptoOptions" 
                           item-title="depto"     item-value="depto_id"   @update:modelValue="onDepartChange"
                   ></v-select>
                   
+            </v-col>         
+
+            </v-row>
+
+
+           <v-row>         
+            <h3 class="p-0 py-6 px-2 ">Fecha:</h3>
+            <v-col cols="12" md="3">
+            <v-text-field v-model="denPerDnte.fec_registro_hecho_desde" :readonly="lockField" label="Desde" @input="handleInputDateDesde"
+                placeholder="DD/MM/AAAA" required></v-text-field>
+        
             </v-col>
-     <v-col class="p-0 py-0 px-0 ml-6" cols="2">
-            <v-text-field v-model="denPerDnte.fec_registro_hecho" :readonly="lockField" label="Fecha" @update:modelValue="onDepartChange"
+            <v-col cols="12" md="3">
+            <v-text-field v-model="denPerDnte.fec_registro_hecho_hasta" :readonly="lockField" label="Hasta" @input="handleInputDateHasta"
                 placeholder="DD/MM/AAAA" required></v-text-field>
         
               </v-col>
-       
+            
+            <v-col>  
+                <v-row>  
+                      <v-col cols="12" md="3" >
+                          <v-btn  class="custom-green-btn"  @click="exportToExcel"> Excel </v-btn>         
+                      </v-col>
 
-            <v-col class="p-0 py-1 px-0 ml-6" cols="1">
-              <v-btn  class="custom-green-btn"  @click="exportToExcel"> Excel </v-btn>
-
-
-            </v-col>
-            <v-col class="p-0 py-1 px-0 ml-6" cols="1">
-              <v-btn class="custom-green-btn" text @click="exportToPDF"> PDF </v-btn>
-
-            </v-col>
-
+                    <v-col cols="12" md="3" class="px-1">              
+                      <v-btn class="custom-green-btn" text @click="exportToPDF"> PDF </v-btn>
+                    </v-col>
+                </v-row>  
+          </v-col>
           </v-row>
         </v-container>
         
       </v-card-text>
 
 <v-container>
+  <v-row class="mb-4">
+    <v-col cols="6" class="p-0 py-0 px-1">
+
+      <!-- Search Field -->
+      <v-text-field v-model="search" class="pa-2" label="Buscar Denuncia" append-icon="mdi-magnify" single-line
+        hide-details></v-text-field>
+   
+    </v-col>
+    <v-col cols="6" class="p-0 py-0 px-1">
+   </v-col>
+  </v-row>
   <!-- Data Table --> <!-- v-model:page="page"     filteredItems-->
   <v-data-table :headers="headers" :items="filteredItems"
     class="elevation-1"
@@ -206,6 +221,9 @@ export default {
       grados_sigla: '',
       grado: '',
       fec_registro_hecho: '',
+      fec_registro_hecho_desde: '',
+      fec_registro_hecho_hasta: '',
+
       hora_registro_hecho: '',
       detalle_hecho: '',
       denuncia_anonima: '',
@@ -543,7 +561,7 @@ export default {
 
     console.log('this.deptoId' ,this.deptoId, ',this.estado: ',this.estado,'this.denPerDnte.fec_registro_hecho', this.denPerDnte.fec_registro_hecho );
 
-    this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho  );
+    this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho_desde  , this.denPerDnte.fec_registro_hecho_hasta  );
     
     this.loading = false;
   },
@@ -654,18 +672,21 @@ export default {
     },
 
  
-    async listRepDenByDeptoByEstado(deptoId,estado, fec_registro_hecho)  {
-      console.log('deptoId ' ,deptoId ,'this.estado: ',estado,'fec_registro_hecho',fec_registro_hecho );
-     if(!fec_registro_hecho)     {
-      fec_registro_hecho='1999-01-01'
+    async listRepDenByDeptoByEstado(deptoId,estado, fec_registro_hecho_desde  , fec_registro_hecho_hasta  )  {
+      console.log('deptoId ' ,deptoId ,'this.estado: ',estado,'fec_registro_hecho_desde',fec_registro_hecho_desde,'fec_registro_hecho_hasta',fec_registro_hecho_hasta );
+     if(!fec_registro_hecho_desde || !fec_registro_hecho_hasta)     {
+      fec_registro_hecho_desde='1999-01-01';
+      fec_registro_hecho_hasta='1999-01-01';
 
-     }else{
-      const dateParts =   fec_registro_hecho.split("/"); //// "2024-05-17".split("/");  //
-      fec_registro_hecho = dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]; //.toISOString(),  
-   
+     }
+     else{
+      let dateParts =   fec_registro_hecho_desde.split("/"); //// "2024-05-17".split("/");  //
+      fec_registro_hecho_desde = dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]; //.toISOString(),  
+      dateParts =   fec_registro_hecho_hasta.split("/"); //// "2024-05-17".split("/");  //
+      fec_registro_hecho_hasta = dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]; //.toISOString(),     
      }
      
-      await Denuncia.listRepDenByDeptoByEstado(deptoId,estado, fec_registro_hecho  ) 
+      await Denuncia.listRepDenByDeptoByEstado(deptoId,estado, fec_registro_hecho_desde  , fec_registro_hecho_hasta  ) 
         .then((response) => {
       
           if (response.status === 200) {
@@ -689,11 +710,11 @@ export default {
 
       this.deptoId = depart.depto_id;
       console.log('this.deptoId ' ,this.deptoId ,'this.estado: ',this.estado );
-     if(this.denPerDnte.fec_registro_hecho.length >=10 || this.denPerDnte.fec_registro_hecho.length ==0 ){
+    // if(this.denPerDnte.fec_registro_hecho_desde.length >=10 || this.denPerDnte.fec_registro_hecho_hasta.length ==0 ){
 
-      this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho );
+      this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho_desde, this.denPerDnte.fec_registro_hecho_hasta );
 
-     }
+    // }
     },
 
     onEstadoChange() {
@@ -704,10 +725,75 @@ export default {
       this.estado = estado.est;
       console.log('this.deptoId ' ,this.deptoId ,'this.estado: ',this.estado );
 
-      this.listRepDenByDeptoByEstado( this.deptoId, this.estado ,this.denPerDnte.fec_registro_hecho );
+      this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho_desde, this.denPerDnte.fec_registro_hecho_hasta );
     },
   
+  // Formato de la fecha
+    handleInputDateDesde(event) {  //  @input="handleInputDate"
+      // Limitar la entrada a números y el separador de fecha
+      this.denPerDnte.fec_registro_hecho_desde = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
+     // console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro_hecho);  ///[^0-9]/g
+     if(this.denPerDnte.fec_registro_hecho_desde.length >=10 || this.denPerDnte.fec_registro_hecho_desde.length ==0 ){
 
+      this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho_desde, this.denPerDnte.fec_registro_hecho_hasta );
+
+      }
+    
+    },
+  // Formato de la fecha
+  handleInputDateHasta(event) {  //  @input="handleInputDate"
+      // Limitar la entrada a números y el separador de fecha
+      this.denPerDnte.fec_registro_hecho_hasta = this.formatDate(event.target.value) ;//.replace(/^[0-9-]*$/, '').slice(0, 10);
+     // console.log("handleInputDate fecha del hecho:", this.denPerDnte.fec_registro_hecho);  ///[^0-9]/g
+     if(this.denPerDnte.fec_registro_hecho_hasta.length >=10 || this.denPerDnte.fec_registro_hecho_hasta.length ==0 ){
+
+      this.listRepDenByDeptoByEstado( this.deptoId, this.estado , this.denPerDnte.fec_registro_hecho_desde, this.denPerDnte.fec_registro_hecho_hasta );
+
+      }
+    
+    },
+    // Función para formatear la fecha// Aplica la máscara de fecha  dd/mm/yyyy
+    formatDate(inputValue) {
+        inputValue = this.eliminarUltimoCaracterNoNumerico(inputValue);
+      // Ejemplo: formato DD/MM/AAAA     // console.log("formatDate:", inputValue);
+      
+      if (inputValue.length == 2) {
+        inputValue = `${inputValue.slice(0, 2)}/`;
+      }
+      if (inputValue.length > 3 && inputValue.length < 5) {
+        inputValue = `${inputValue.slice(0, 2)}${inputValue.slice(2, 4)}`;
+      }
+      if (inputValue.length == 5) {
+        inputValue = `${inputValue.slice(0, 5)}/`;
+      }
+      if (inputValue.length > 5) {
+        inputValue = `${inputValue.slice(0, 10)}`;
+      }
+
+      // Actualiza rawDate con la fecha formateada
+      // this.rawDate = inputValue;
+     // console.log("formatDate:", inputValue);
+
+      return inputValue; //value.replace(/(\d{2})(\d{2})(\d{4})/, '$1/$2/$3');
+    },
+    eliminarUltimoCaracterNoNumerico(str) {
+      // Verificamos si el string no está vacío
+      if (str.length === 0) {
+        return str; // Devuelve el string sin cambios si está vacío
+      }
+
+      // Obtenemos el último carácter
+      const ultimoCaracter = str.charAt(str.length - 1);
+
+      // Comprobamos si es un carácter numérico
+      if (!/\d/.test(ultimoCaracter)) {
+        // Si no es numérico, eliminamos el último carácter
+        return str.slice(0, -1);
+      }
+
+      // Si es un carácter numérico, devolvemos el string sin cambios
+      return str;
+    },
 
 
     close() {

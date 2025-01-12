@@ -119,7 +119,7 @@ const submit = async (event: any) => {
         primeraVez.value = res.data.cambio_clave == 'PENDIENTE' ? true : false;
         console.log('primeraVez : ', primeraVez.value);
 
-        if(false){  //CON PIN ERA:  !primeraVez.value
+        if(!primeraVez.value){
           showPinDialog.value = true; // Mostramos el cuadro de diálogo para ingresar el PIN
             // Si la autenticación es exitosa, enviamos un PIN al correo
             enviarPin();
@@ -130,8 +130,8 @@ const submit = async (event: any) => {
          form.value.password_hash = '';
         }
         
-          router.push('/'); // CON PIN ERA:   return res; // AQUI validar el error cuando se envia el pin al correo
-      
+        //   router.push('/');  
+       return res;
 
       }
     }
