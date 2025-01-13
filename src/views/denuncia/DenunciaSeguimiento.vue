@@ -792,22 +792,34 @@
       
           <v-row>
             <v-col class="p-0 py-4 px-1">
-              <h4>Archivos adjuntos: </h4>
+              <h4>Archivos adjuntos.: </h4>
             </v-col>
           </v-row>
           <v-row>
             <v-col class="p-0 py-0 px-1">
-              <!--  <v-btn @click="downloadFile" :disabled="isLoading" color="primary">
-                <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
-                Descargar Archivo
-              </v-btn>-->
+              <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Fila</th>
+                  <th>Actividad de seguimiento</th>
+                  <th>Archivo (Evidencia/Informes)</th>
+                </tr>
+              </thead>
+              <tbody>
 
-              <div v-for="file in docsPath" :key="file.descripcion">
-                <a @click="downloadArch(file.descripcion)" href="#" class="download-link">{{ file.descripcion }}
-                </a>
-                <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
-
-              </div>
+              <tr v-for="file in docsPath" :key="file.descripcion">
+                <td>{{ file.fila }}</td>
+                <td>{{ !file.observacion ? '(Denuncia)': file.observacion }}</td>
+                <td>  <a @click="downloadArch(file.descripcion)" href="#" class="download-link">{{ file.descripcion }}
+                        </a>
+                        <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon></td>
+              
+            
+            </tr>
+              </tbody>
+            </table>
+          </div>
             </v-col>
           </v-row>  
         </v-card-text>
