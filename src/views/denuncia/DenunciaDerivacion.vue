@@ -63,7 +63,7 @@
       </template>
     <!-- Action Buttons Column -->
     <template v-slot:item.actions="{ item }">
-      <v-icon small class="mr-2" @click=""> mdi-printer </v-icon>
+      <v-icon small class="mr-2" @click="viewItemDenunciaPrint(item)"> mdi-printer </v-icon>
 
       <v-icon small @click="viewItem(item)"> mdi-eye</v-icon>
       <!-- <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon> -->
@@ -81,8 +81,303 @@
     </template>-->
   </v-data-table>
 
-
   <template>
+
+            <!-- view Dialog denuncia   reporte denuncia-->
+   <v-dialog v-model="dialogPrint" max-width="1000px">
+  
+  <v-card class="mx-auto  mt-4" >
+   <div ref="popupContent"> 
+   <v-card>
+     <v-card-title class="text-center">
+       <v-container>
+       <h3>FORMULARIO DE DENUNCIA MG-UTLCC No. {{ denPerDnte.cod_denuncia }}</h3>
+     
+         </v-container>
+     </v-card-title>
+
+     <v-card-text>
+       <v-container>
+          
+         <v-row>
+           <v-col class="p-0 py-0 px-0" cols="4">
+         </v-col>  
+           <v-col class="p-0 py-0 px-0 mb-3" cols="4">
+           <label class="text-h5">Datos del Denunciante  </label>
+       
+         </v-col>    
+         </v-row>
+         <!-- Datos del denunciante -->
+         <v-row>
+       
+             
+             
+             <h3 class="p-0 py-3 px-2 ">Nombres y apellidos:</h3>
+             <v-text-field
+             v-model="denPerDnte.den_nombre_completo " 
+               
+               placeholder="Nombre del denunciante"
+               outlined
+             ></v-text-field>
+         
+         </v-row>
+         <v-row>
+             
+             <h3 class="p-0 py-3 px-2 ">Carnet de identidad:</h3>
+      
+             <v-text-field
+               
+               placeholder="CI"
+               outlined
+             ></v-text-field>
+    
+             
+             <h3 class="p-0 py-3 px-2 ml-4">Ciudad:</h3>
+     
+             <v-text-field
+
+               
+               placeholder="Extención"
+               outlined
+             ></v-text-field>
+         </v-row>
+
+         <v-row>
+                  
+             <h3  class="p-0 py-3 px-2">Correo electrónico:</h3>
+       
+             <v-text-field
+             v-model="denPerDnte.email" 
+             
+               placeholder="Correo electrónico"
+               outlined
+             ></v-text-field>        
+             
+             <h3 class="p-0 py-3 px-2 ml-4">Teléfono:</h3>
+           
+             <v-text-field
+             v-model="denPerDnte.telefono" 
+             
+               placeholder="Teléfono"
+               outlined
+             ></v-text-field>
+        
+         </v-row>
+
+         <!-- Checkbox: Denuncia anónima -->
+         <v-row>
+           <v-col class="p-0 py-4 px-0" cols="4">
+               <!-- Primera columna -->
+               <h3 class="p-0 py-0 px-0 ml-16">Denuncia anónima :</h3>
+             </v-col>
+             <v-col class="p-0 py-0 px-0" cols="1">
+               <v-checkbox  v-model="denPerDnte.denuncia_anonima" 
+                 label="Si"></v-checkbox>
+             </v-col>
+             <v-col class="p-0 py-0 px-0" cols="2">
+               <v-checkbox  v-model="denPerDnte.denuncia_anonima_no"
+                 label="No"></v-checkbox>
+             </v-col>
+         </v-row>
+         <v-row>
+         <v-col class="p-0 py-4 px-0" cols="4">
+               <!-- Primera columna -->
+               <h3>Solicita reserva de identidad :</h3>
+             </v-col>
+             <v-col class="p-0 py-0 px-0" cols="1">
+               <v-checkbox  v-model="denPerDnte.reserva_identidad_si" 
+                 label="Si"></v-checkbox>
+             </v-col>
+             <v-col class="p-0 py-0 px-0" cols="2">
+               <v-checkbox  v-model="denPerDnte.reserva_identidad_no" 
+                 label="No"></v-checkbox>
+             </v-col>
+
+           </v-row>
+     
+         <!-- Datos del denunciado -->
+         <v-row>
+           <v-col class="p-0 py-0 px-0" cols="4">
+         </v-col>  
+           <v-col class="p-0 py-0 px-0 mb-2" cols="4">
+           <label class="text-h5 ">Datos del Denunciado(s)  </label>
+         </v-col>    
+         </v-row>
+         <v-row>
+           <v-col class="p-0 py-3 px-0" cols="4">
+             
+             <h3>Nombres y apellidos denunciado(s):</h3>
+               </v-col>
+           <v-col cols="8" class="p-0 py-0 px-0">
+             <v-text-field
+             v-model="denunciado.dnado_nombre_completo" 
+             
+               placeholder="Nombres del denunciado"
+               outlined
+             ></v-text-field>
+           </v-col>
+         </v-row>
+         <v-row>
+           <h3 class="p-0 py-3 px-0 ">Lugar del hecho:</h3>
+             <v-text-field
+             v-model="denPerDnte.lugar_hecho" 
+              
+               placeholder="Dirección General"
+               outlined
+             ></v-text-field>
+           
+             <h3 class="p-0 py-3 px-2 ml-4">Unidad:</h3>
+             <v-text-field   
+             v-model="denunciado.unidad_policial_desc" 
+              
+               placeholder="Unidad"
+               outlined
+             ></v-text-field>
+           </v-row>
+         <v-row>
+             <h3 class="p-0 py-3 px-0">Cargo que ocupa:</h3>
+             <v-text-field
+             v-model="denunciado.puesto_cargo_funcion" 
+               label="Cargo que ocupa"
+               placeholder="Cargo que ocupa"
+               outlined
+             ></v-text-field>
+       
+         </v-row>
+
+         <!-- Hechos en los que se basa la denuncia -->
+         <v-row>
+           <v-col class="p-0 py-0 px-0" cols="4">
+         </v-col> 
+           <v-col class="p-0 py-0 px-0 mb-4" cols="8">
+           <label class="text-h5">Hechos en los que se basa la denuncia  </label>
+       
+         </v-col>    
+         </v-row>
+         <v-row>
+           <h3 class="p-0 py-3 px-0">¿Quién o quienes habrían incurrido?:</h3>
+             <v-textarea
+             v-model="denunciado.dnado_nombre_completo_concat" 
+            
+               placeholder="Describa los hechos"
+               outlined    rows="2" cols="1" 
+             ></v-textarea>
+         
+         </v-row>
+
+         <!-- Documentos adjuntos -->
+         <v-row>
+                <v-col class="p-0 py-0 px-0" cols="4">
+         </v-col> 
+           <v-col class="p-0 py-0 px-0" cols="8">
+           <label class="text-h5">Documentación adjunta acompaña pruebas
+                  </label>
+       
+         </v-col>    
+         </v-row>
+         <v-row>
+           <v-col class="p-0 py-4 px-0" cols="4">
+             
+           <h3>Documentos adjuntos:</h3>
+             </v-col>
+             <v-col class="p-0 py-0 px-0" cols="1">
+               <v-checkbox  v-model="docsPath_adj_si" 
+                 label="Si"></v-checkbox>
+             </v-col>
+             <v-col class="p-0 py-0 px-0" cols="2">
+               <v-checkbox  v-model="docsPath_adj_no" 
+                 label="No"></v-checkbox>
+             </v-col>
+           </v-row>
+         <v-row>
+           <h3 class="p-0 py-3 px-2 ">Número de hojas:</h3>
+           
+   <v-text-field
+       outlined
+        
+       style="max-width: 100px;"
+   ></v-text-field>
+
+        
+         </v-row>
+         <v-row>
+
+           <v-col class="p-0 py-4 px-0" cols="4">
+             
+             <h3>Clase de documentos:</h3>
+               </v-col>
+           <v-col cols="4" class="p-0 py-0 px-0">
+             <v-checkbox label="Fotocopia" />
+           </v-col>
+           <v-col cols="4" class="p-0 py-0 px-0">
+             <v-checkbox label="Original" />
+           </v-col>
+         </v-row>
+
+         <!-- Otro tipo de pruebas -->
+         <v-row>
+           <h3 class="p-0 py-3 px-0">Otro tipo de pruebas:</h3>
+             <v-textarea
+
+        
+               outlined   rows="2" cols="1" 
+             ></v-textarea>
+           </v-row>
+
+               <v-row class="mb-4"   >      
+             <div v-for="file in docsPath" :key="file.descripcion">
+               <a @click="downloadArch(file.descripcion)" href="#" class="download-link">{{ file.descripcion }}
+               </a>
+               <v-icon v-if="isLoading">mdi-loader mdi-spin</v-icon>
+
+             </div>
+         </v-row>
+
+         <!-- Firma y fecha -->
+         <v-row>
+           <h3 class="p-0 py-3 px-0">Firma:</h3>
+             <v-text-field
+              
+               outlined
+             ></v-text-field>
+             <h3 class="p-0 py-3 px-2 ml-4">Fecha:</h3>
+             <v-text-field
+          
+               outlined
+             ></v-text-field>
+    
+         </v-row>
+
+         <!-- Responsable de admisión -->
+         <v-row>
+          
+             <h3 class="p-0 py-3 px-0">Responsable de admisión:</h3>
+             <v-text-field
+              
+              
+               outlined
+             ></v-text-field>
+    
+         </v-row>
+       </v-container>
+     </v-card-text>
+
+    
+   </v-card>
+   </div>
+<!-- Botón de Enviar -->
+     <v-card-actions >
+         <v-spacer></v-spacer>
+                <v-btn  class="custom-green-btn"  @click="downloadPDF">Exportar  PDF</v-btn>
+     
+         <v-btn class="custom-green-btn" text @click="close"> Cerrar </v-btn>
+     
+       </v-card-actions>
+
+  </v-card>
+</v-dialog>
+
+
     <!-- view Dialog denuncia-->
     <v-dialog v-model="dialog" max-width="1000px">
       <v-card class="mx-auto  mt-4" max-width="700">
@@ -421,14 +716,17 @@ import Denuncia from '@/services/Denuncia';
 import NivelGeografico from '@/services/NivelGeografico';
 import Grado from '@/services/Grado';
 import Rol from '@/services/Rol';
-import DenunciasRol from '@/services/NivelGeografico';
 import Denunciado from '@/services/Denunciado';
 
 import { downloadFile } from '../../utils/fileDownloader';
 import DocumentosPath from '@/services/DocumentosPath';
 import Usuario from '@/services/Usuario';
 import Seguimiento from '@/services/Seguimiento';
-//import Denuncia from '@/services/Denuncia';
+import Actividad from '@/services/Actividad';
+import axios from 'axios';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+
 import 'font-awesome/css/font-awesome.css';
 export default {
 
@@ -445,6 +743,11 @@ export default {
     search: '',
     dialog: false,
     dialog2: false,
+    dialog3: false,
+
+    dialogPrint:false,
+
+    
     dialogDelete: false,
     // sortBy: ['calories'], // Ensure this is an array or an object with a 'find' method
     username: localStorage.getItem('username'),
@@ -501,6 +804,7 @@ iconColor: "fas fa-circle",
     denPerDnte: {
       fila: '',
       id: null,
+      denuncia_personas_id:0,
       cod_denuncia: '',
       tipo_personas: '',
       sigla: '',
@@ -515,6 +819,7 @@ iconColor: "fas fa-circle",
       hora_registro_hecho: '',
       detalle_hecho: '',
       denuncia_anonima: '',
+      denuncia_anonima_no: '',
       reserva_identidad: '',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
@@ -522,6 +827,8 @@ iconColor: "fas fa-circle",
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      den_nombre_completo: '',
+
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -541,6 +848,10 @@ iconColor: "fas fa-circle",
       gestor_seguimiento: '',
    observacion: '',
       fec_registro: '',
+
+      actividades_id: '',
+      actividad: '',
+      actividad_sigla: '',
 
       estado: '',
       transaccion: '',
@@ -567,6 +878,9 @@ iconColor: "fas fa-circle",
       fec_registro_hecho: '',
       hora_registro_hecho: '',
       detalle_hecho: '',
+      denuncia_anonima: '',
+      denuncia_anonima_no: '',
+      
       reserva_identidad: '',
       reserva_identidad_si: '',
       reserva_identidad_no: '',
@@ -663,6 +977,8 @@ iconColor: "fas fa-circle",
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      dnado_nombre_completo: '',
+      dnado_nombre_completo_concat: '',
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -702,6 +1018,8 @@ iconColor: "fas fa-circle",
       apellido_pat: '',
       apellido_mat: '',
       nombres: '',
+      dnado_nombre_completo: '',
+      dnado_nombre_completo_concat: '',
       genero_sexo_sigla: '',
       genero_sexo: '',
       email: '',
@@ -741,7 +1059,8 @@ iconColor: "fas fa-circle",
 
     },
     docsPath: [],
-
+    docsPath_adj_si:false,
+  docsPath_adj_no:false,
 
     //******************************************** */
 
@@ -832,7 +1151,53 @@ iconColor: "fas fa-circle",
 
 
   methods: {
+    async denunciaPersonasGetByCod(cod_denuncia) {
+          Denuncia.denunciaPersonasGetByCod(cod_denuncia) //  
+        .then((response) => {
+          console.log("denunciaPersonasGetByCod  : ",cod_denuncia, response.data, response.status);
+          if (response.status === 200) {
+            this.denPerDnte = response.data[0];
+          } else {
+            this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + response, 'red');
+          }
+        })
+        .catch(error => {
+           this.showSnackbar('Error recuperando denunciaPersonasGetByCod ' + error, 'red'); 
+        });
+    },
+    downloadPDF() {
+      const popupContent = this.$refs.popupContent;
+     // console.log('this.toPrint :',  this.toPrint   );
+     // this.toPrint= false;
 
+      html2canvas(popupContent).then((canvas) => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF();
+    
+        const imgWidth = 190; // Ajusta el ancho de la imagen, si es necesario
+        const pageHeight = pdf.internal.pageSize.height;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+
+        let position = 0;
+
+        // Añade la imagen al PDF
+        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Si la imagen es más larga que una página, hay que añadir más en páginas nuevas
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        pdf.save('denuncia.pdf'); // Nombre del archivo PDF
+      });
+
+
+    },
 
     denunciaAddEstado(){
       // filtrar solo los roles-modulos  en estado activo
@@ -1327,6 +1692,23 @@ this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
 
 
     },
+
+    viewItemDenunciaPrint(item) {
+      //this.editedIndex = this.people.indexOf(item)
+      //this.denPerDnte = Object.assign({}, item);
+      this.dialogPrint = true;
+      this.lockField = true;
+      this.lockField2 = true;
+
+      this.denunciaPersonasGetByCod(item.cod_denuncia) 
+      this.denunciadoListByCod(item.cod_denuncia);
+      this.documentosPathListByCod(item.cod_denuncia);
+      this.docsPath_adj_si = this.docsPath.length =0  ? false : true
+          this.docsPath_adj_no = this.docsPath.length =0  ? true : false
+
+    },
+
+
     dateToYMD(date) {
     var strArray=['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12'];
     var d = date.getDate();
@@ -1385,6 +1767,9 @@ console.log("this.denPerDnte.fec_registro: "+  this.denPerDnte.fec_registro)
     close() {
       this.dialog = false
       this.dialog2 = false
+      this.dialog3 = false
+      this.dialogPrint = false;
+
       this.$nextTick(() => {
         this.denPerDnte = Object.assign({}, this.defaultItemUsu)
         this.editedIndex = -1
@@ -1405,6 +1790,7 @@ console.log("this.denPerDnte.fec_registro: "+  this.denPerDnte.fec_registro)
       this.editedIndex = -1
       this.dialog = false
       this.dialog2 = false
+      this.dialog3 = false
       //this.editingUserId = null;
     },
 
@@ -1445,8 +1831,11 @@ console.log("this.denPerDnte.fec_registro: "+  this.denPerDnte.fec_registro)
     dialog2(val) {
       val || this.close()
     },
-
+    dialog3(val) {
+      val || this.close()
+    },
   },
+
 
 
 
