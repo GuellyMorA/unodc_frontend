@@ -15,7 +15,9 @@
     <v-col cols="6" class="p-0 py-0 px-1">
   </v-col>
   </v-row>
-
+  <v-row class="mb-4">
+            <span class="ml-3 text-h7"> (*) Dias de retraso: Se toma en cuenta desde la fecha de registro de la denuncia mas 45 dias de plazo</span>
+        </v-row>
   <!-- Data Table --> <!-- v-model:page="page" -->
   <v-data-table :headers="headers" :items="filteredItems"
     :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'cod_denuncia', order: 'desc' }]" class="elevation-1"
@@ -604,7 +606,7 @@ export default {
 
       { title: 'Fecha Derivación', key: 'fec_registro' },
       { title: 'Actividad', key: 'actividad' },
-      { title: 'Tiempo de respuesta', key: 'tiempo_respuesta' },
+      { title: '(*) Dias retraso', key: 'dias_retraso' },
       { title: 'Estado', key: 'estado' },
       { title: 'Acciones', value: 'actions', sortable: false },
     ],
@@ -763,7 +765,7 @@ export default {
       actividad_sigla: '',
       descripcion: '',
       actividad_tipo: '',
-      tiempo_respuesta: '',
+      dias_retraso: '',
 
       estado: '',
       transaccion: '',

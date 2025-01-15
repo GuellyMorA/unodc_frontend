@@ -4,7 +4,7 @@
     Cargando datos...
   </v-alert>
 
-  <v-row class="mb-4">
+  <v-row >
     <v-col cols="6" class="p-0 py-0 px-1">
      <!-- Search Field -->
       <v-text-field v-model="search" class="pa-2" label="Buscar Denuncia" append-icon="mdi-magnify" single-line
@@ -14,7 +14,9 @@
     <v-col cols="6" class="p-0 py-0 px-1">
     </v-col>
   </v-row>
-
+  <v-row class="mb-4">
+            <span class="ml-3 text-h7"> (*) Dias de retraso: Se toma en cuenta desde la fecha de registro de la denuncia mas 45 dias de plazo</span>
+        </v-row>
   <!-- Data Table --> <!-- v-model:page="page" -->
   <v-data-table :headers="headers" :items="filteredItems"
     :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'cod_denuncia', order: 'desc' }]" class="elevation-1"
@@ -38,7 +40,8 @@
       <v-toolbar flat>
 
         <v-toolbar-title class="text-center">Derivación de denuncias registradas en sistema</v-toolbar-title>
-
+       
+     
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
@@ -784,6 +787,7 @@ iconColor: "fas fa-circle",
       { title: 'Gestor Seguimiento', key: 'gestor_seguimiento' },
       { title: 'Tipo Denuncia', key: 'tipo_denuncia' },
       { title: 'Plazo', key: 'color_semaforo' },
+      { title: '(*) Dias retraso', key: 'dias_retraso' },
       { title: 'Estado', key: 'estado' },
       { title: 'Acciones', value: 'actions', sortable: false },
     ],
@@ -943,7 +947,15 @@ iconColor: "fas fa-circle",
       nombres_gestor: '',
       gestor_seguimiento: '',
     
-      actividades_id:'',
+      actividades_id: '',
+      actividad: '',
+      actividad_sigla: '',
+      descripcion: '',
+      actividad_tipo: '',
+      dias_retraso: '',
+
+
+
       estado: '',
       transaccion: '',
       usu_cre: null,
