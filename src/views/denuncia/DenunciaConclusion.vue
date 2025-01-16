@@ -604,7 +604,7 @@ export default {
       { title: 'Ap. Materno', key: 'apellido_mat_gestor' },
       { title: 'Nombres', key: 'nombres_gestor' },
 
-      { title: 'Fecha Derivación', key: 'fec_registro' },
+      { title: 'Fecha ', key: 'fec_cre' },  // { title: 'Fecha Derivación', key: 'fec_registro' },
       { title: 'Actividad', key: 'actividad' },
       { title: '(*) Dias retraso', key: 'dias_retraso' },
       { title: 'Estado', key: 'estado' },

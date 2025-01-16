@@ -783,7 +783,7 @@ iconColor: "fas fa-circle",
       { title: 'Ap. Materno', key: 'apellido_mat' },
       { title: 'Nombres', key: 'nombres' },
 
-      { title: 'Fecha', key: 'fec_registro_hecho' },
+      { title: 'Fecha', key: 'fec_cre' },
       { title: 'Gestor Seguimiento', key: 'gestor_seguimiento' },
       { title: 'Tipo Denuncia', key: 'tipo_denuncia' },
       { title: 'Plazo', key: 'color_semaforo' },
