@@ -1608,8 +1608,8 @@ export default {
     async denunciadoListByCod(cod_denuncia) {
       Denunciado.denunciadoListByCod(cod_denuncia)
         .then((response) => {
-          console.log("denunciadoListByCod 1  : ", response.data, response.status);
           if (response.status === 200) {
+          console.log("denunciadoListByCod 1  : ", response.data, response.status);
 
             this.denunciadosArray = response.data;
          //   this.denunciadosConcat =  this.denunciadosArray .join(", ");

@@ -1119,7 +1119,8 @@ iconColor: "fas fa-circle",
     },
     sexoOptions: [
       { sexo: 'MASCULINO', sexo_sigla: 'M' },
-      { sexo: 'FEMENINO', sexo_sigla: 'F' }
+      { sexo: 'FEMENINO', sexo_sigla: 'F' },
+  { sexo: 'OTRO', sexo_sigla: 'O' }
     ],
 
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
@@ -1398,8 +1399,8 @@ this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
     async denunciadoListByCod(cod_denuncia) {
       Denunciado.denunciadoListByCod(cod_denuncia)
         .then((response) => {
-          console.log("denunciadoListByCod 1  : ", response.data, response.status);
           if (response.status === 200) {
+          console.log("denunciadoListByCod 1  : ", response.data, response.status);
 
             this.denunciadosArray = response.data;
             this.loading = false;

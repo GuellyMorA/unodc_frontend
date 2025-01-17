@@ -646,7 +646,8 @@ snackbar: {
 },
 sexoOptions: [
   { sexo: 'MASCULINO', sexo_sigla: 'M' },
-  { sexo: 'FEMENINO', sexo_sigla: 'F' }
+  { sexo: 'FEMENINO', sexo_sigla: 'F' },
+  { sexo: 'OTRO', sexo_sigla: 'O' }
 ],
 
 expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],

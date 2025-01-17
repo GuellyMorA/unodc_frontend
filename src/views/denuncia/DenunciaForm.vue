@@ -658,7 +658,8 @@ export default {
 
     sexoOptions: [
       { sexo: 'MASCULINO', sexo_sigla: 'M' },
-      { sexo: 'FEMENINO', sexo_sigla: 'F' }
+      { sexo: 'FEMENINO', sexo_sigla: 'F' },
+  { sexo: 'OTRO', sexo_sigla: 'O' }
     ],
 
     expedidoOptions: ['LP', 'CH', 'SC', 'CBBA', 'OR'],
@@ -1036,8 +1037,9 @@ export default {
     async denunciadoListByCod() {
       Denunciado.denunciadoListByCod('SD-0306-11-2024')
         .then((response) => {
-          console.log("denunciadoListByCod 1  : ", response.data, response.status);
           if (response.status === 200) {
+                      console.log("denunciadoListByCod 1  : ", response.data, response.status);
+
             this.denunciado = response.data[0];
             this.loading = false;
           } else {
