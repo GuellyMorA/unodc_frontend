@@ -213,7 +213,7 @@
                </v-col>
            <v-col cols="8" class="p-0 py-0 px-0">
              <v-text-field
-             v-model="denunciado.dnado_nombre_completo" 
+             v-model="denunciado.dnado_nombre_completo_concat" 
              
                placeholder="Nombres del denunciado"
                outlined
@@ -260,7 +260,7 @@
          <v-row>
            <h3 class="p-0 py-3 px-0">¿Quién o quienes habrían incurrido?:</h3>
              <v-textarea
-             v-model="denunciado.dnado_nombre_completo_concat" 
+             v-model="denPerDnte.detalle_hecho" 
             
                placeholder="Describa los hechos"
                outlined    rows="2" cols="1" 
@@ -1397,13 +1397,23 @@ this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
         });
     },
     async denunciadoListByCod(cod_denuncia) {
-      Denunciado.denunciadoListByCod(cod_denuncia)
+      await Denunciado.denunciadoListByCod(cod_denuncia)
         .then((response) => {
           if (response.status === 200) {
           console.log("denunciadoListByCod 1  : ", response.data, response.status);
 
             this.denunciadosArray = response.data;
             this.loading = false;
+
+    /*        
+      const concatenado = this.denunciadosArray.map(denunciado => denunciado.dnado_nombre_completo).join(', ');
+      //this.denunciado.dnado_nombre_completo_concat  =  concatenado;
+    // Reemplazar la propiedad 'completo' en todos los objetos
+      this.denunciadosArray.forEach(denunciados => {
+        denunciados.dnado_nombre_completo_concat = concatenado;
+      });
+      console.log("concatenado 1  : ", concatenado);
+*/
           } else {
             this.showSnackbar('Error recuperando denunciadoListByCod ' + response, 'red');
           }
@@ -1715,6 +1725,20 @@ this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
 
       this.denunciaPersonasGetByCod(item.cod_denuncia) 
       this.denunciadoListByCod(item.cod_denuncia);
+
+      const concatenado = this.denunciadosArray.map(denunciado => denunciado.dnado_nombre_completo).join(', ');
+    
+    // Reemplazar la propiedad 'completo' en todos los objetos
+      this.denunciadosArray.forEach(denunciados => {
+       // denunciados.dnado_nombre_completo_concat = concatenado;
+       this.denunciado.dnado_nombre_completo_concat  =  concatenado;
+      this.denunciado.unidad_policial_desc  =  denunciados.unidad_policial_desc;
+      this.denunciado.puesto_cargo_funcion  =  denunciados.puesto_cargo_funcion;
+
+
+      });
+       console.log("concatenado 1  : ", concatenado);
+
       this.documentosPathListByCod(item.cod_denuncia);
       this.docsPath_adj_si = this.docsPath.length =0  ? false : true
           this.docsPath_adj_no = this.docsPath.length =0  ? true : false
@@ -1785,6 +1809,7 @@ console.log("this.denPerDnte.fec_registro: "+  this.denPerDnte.fec_registro)
 
       this.$nextTick(() => {
         this.denPerDnte = Object.assign({}, this.defaultItemUsu)
+        this.denunciado = Object.assign({}, this.defaultItemDenunciado)
         this.editedIndex = -1
       })
     },

@@ -90,7 +90,7 @@ onMounted(() => {
             <v-card elevation="10" class="withbg">
                 <v-card-item>
                     <div class="d-sm-flex align-center justify-space-between pt-sm-2">
-                        <v-card-title class="text-h5">Denuncias</v-card-title>
+                        <v-card-title class="text-h5">Derivación</v-card-title>
                     </div>
                     <v-row>
                         <v-col cols="12" sm="12">

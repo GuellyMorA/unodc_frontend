@@ -258,7 +258,7 @@
           <v-row>
             <h3 class="p-0 py-3 px-0">¿Quién o quienes habrían incurrido?:</h3>
               <v-textarea
-              v-model="denunciado.dnado_nombre_completo_concat" 
+              v-model="denPerDnte.detalle_hecho" 
              
                 placeholder="Describa los hechos"
                 outlined    rows="2" cols="1" 
@@ -1555,6 +1555,7 @@ export default {
     },
 
     async denunciaPersonasGetByCod(cod_denuncia) {
+      console.log("cod_denuncia  : ",cod_denuncia);
           Denuncia.denunciaPersonasGetByCod(cod_denuncia) //  
         .then((response) => {
           console.log("denunciaPersonasGetByCod  : ", response.data, response.status);
@@ -1882,7 +1883,7 @@ export default {
                 //primera ampliacion 305
  /// si sol ampliacion cambiar el param 1 de amplaicion de tiempo para el aasignado
  //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
-     this.denunciaPersonasGetByCod(this.seguimiento.cod_denuncia) ;
+     this.denunciaPersonasGetByCod(this.denPerDnte.cod_denuncia) ;
  
  if(this.seguimiento.actividad_sigla=='DEN_SOL_AMPLIACION'){
    if(this.denPerDnte.estado=='SOLICITADO'){
@@ -1908,10 +1909,6 @@ this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
  
  }
      
-
-
-
-
                 this.close()
               } else {
 
@@ -2149,6 +2146,21 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
 
       this.denunciaPersonasGetByCod(item.cod_denuncia) 
       this.denunciadoListByCod(item.cod_denuncia);
+
+      const concatenado = this.denunciadosArray.map(denunciado => denunciado.dnado_nombre_completo).join(', ');
+    
+    // Reemplazar la propiedad 'completo' en todos los objetos
+      this.denunciadosArray.forEach(denunciados => {
+       // denunciados.dnado_nombre_completo_concat = concatenado;
+       this.denunciado.dnado_nombre_completo_concat  =  concatenado;
+      this.denunciado.unidad_policial_desc  =  denunciados.unidad_policial_desc;
+      this.denunciado.puesto_cargo_funcion  =  denunciados.puesto_cargo_funcion;
+
+
+      });
+       console.log("concatenado 1  : ", concatenado);
+
+
       this.documentosPathListByCod(item.cod_denuncia);
       this.docsPath_adj_si = this.docsPath.length =0  ? false : true
           this.docsPath_adj_no = this.docsPath.length =0  ? true : false
@@ -2199,6 +2211,7 @@ console.log("new Date().toLocaleDateString() : "+  new Date().toLocaleDateString
 
       this.$nextTick(() => {
         this.denPerDnte = Object.assign({}, this.defaultItemUsu)
+        this.denunciado = Object.assign({}, this.defaultItemDenunciado)
         this.editedIndex = -1
       })
     },

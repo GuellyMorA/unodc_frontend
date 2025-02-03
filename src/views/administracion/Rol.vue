@@ -133,7 +133,7 @@
             <table>
               <thead>
                 <tr>
-                    <th>Devol.</th>
+                    <th>Des-Asig.</th>
                   <th>Perfiles por Módulo inactivos</th>
                 
                 </tr>

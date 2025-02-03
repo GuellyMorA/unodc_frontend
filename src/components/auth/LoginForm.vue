@@ -119,19 +119,19 @@ const submit = async (event: any) => {
         primeraVez.value = res.data.cambio_clave == 'PENDIENTE' ? true : false;
         console.log('primeraVez : ', primeraVez.value);
 
-        if(false){  //CON PIN ERA:  !primeraVez.value
-          showPinDialog.value = true; // Mostramos el cuadro de diálogo para ingresar el PIN
+        if( primeraVez.value){  //CON PIN ERA:  !primeraVez.value
+          dialog.value = true; 
+          //showPinDialog.value = true; // Mostramos el cuadro de diálogo para ingresar el PIN
             // Si la autenticación es exitosa, enviamos un PIN al correo
-            enviarPin();
-            // this.close()
+           // enviarPin();         // this.close()
         }
         else{ // actualizar la hora de envio de pin para el caso de un primer ingreso lugo del reseto de clave
          // editedItemSesionLog.pin_hora_expiracion = new Date().toLocaleTimeString();
-         form.value.password_hash = '';
+       //  form.value.password_hash = '';
+       router.push('/'); 
         }
         
-          router.push('/'); // CON PIN ERA:   return res; // AQUI validar el error cuando se envia el pin al correo
-      
+          //router.push('/'); // CON PIN ERA:   return res; // AQUI validar el error cuando se envia el pin al correo
 
       }
     }
@@ -386,10 +386,10 @@ const usuarioUpdate = async () => {
           //close()
           dialog.value = false; // ocultar el popup de cambio de contraseña
           
-          enviarPin() ; // enviar pin al correo
-           //      router.push('/auth/login');  // redigir al login nuevamente para q se refresque el nuevo PIN generado y almacenado en cache
+        //02/02/2025  enviarPin() ; // enviar pin al correo
+                router.push('/auth/login');  // redigir al login nuevamente para q se refresque el nuevo PIN generado y almacenado en cache
          
-          showPinDialog.value = true; // Mostrar el cuadro de diálogo para ingresar el PIN
+          //02/02/2025    showPinDialog.value = true; // Mostrar el cuadro de diálogo para ingresar el PIN
             // Si la autenticación es exitosa, enviamos un PIN al correo
            //xxxxx enviarPin();
         } else {
@@ -437,7 +437,7 @@ const usuarioUpdate = async () => {
           @click="submit">Ingresar</v-btn>
       </v-col>
       
-      <v-label class="font-weight-medium">_-Ver.3.0.1</v-label>
+      <v-label class="font-weight-medium">_-Ver.3.1.0</v-label>
     </v-row>
   </div>
   <template v-if="primeraVez">
