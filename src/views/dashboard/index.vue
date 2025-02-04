@@ -72,6 +72,19 @@
 
     <div :class="['container', { 'disabled': isDisabled }]">
 
+        <v-row class="p-0 py-0 px-4">
+            <a :href="manualLink" target="_blank" rel="noopener noreferrer" class="download-link">
+                <img src="/assets/images/icon/success.svg" alt="Icono PDF" class="pdf-icon"> Descargar Manual de usuario
+             </a>
+          
+        </v-row>
+        <v-row class="p-0 py-0 px-4 mb-4">   
+            <a :href="manualLink" target="_blank" rel="noopener noreferrer" class="download-link">
+                <img src="/assets/images/icon/success.svg" alt="Icono PDF" class="pdf-icon"> Descargar Video tutorial
+             </a>            
+          
+        </v-row>
+
         <v-row class="p-0 py-0 px-0 mt-2 mb-2">
             <v-col cols="4" class="p-0 py-0 px-0">
                 <div class="chart" id="lineChart"></div>
@@ -172,8 +185,6 @@
 import { ref, onMounted } from 'vue';
 import { reactive } from 'vue';
 
-import { useRouter } from "vue-router";
-
 import Highcharts from 'highcharts';
 import { mockData } from '../../data/mock/data.js';
 import Seguimiento from '@/services/Seguimiento';
@@ -195,6 +206,10 @@ const segEstadoCount = reactive({
 const isDisabled = ref(true);
 const dialog = ref(false);
 const rol = localStorage.getItem('rol');
+
+const manualLink = ref( './manuales/manual.pdf'); // Ruta al archivo PDF en la carpeta public
+  
+
 
 // Función para habilitar/deshabilitar
 const desabilitar = () => {
@@ -337,6 +352,18 @@ const renderLineChart2 = () => {
 
 
 <style scoped>
+
+.pdf-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+.download-link {
+  display: inline-flex;
+  align-items: center;
+  color: #007bff;
+  text-decoration: none;
+}
 .custom-green-btn {
     background-color: #849C58;
     /* #073d09    cambio a color verde oscuro  */

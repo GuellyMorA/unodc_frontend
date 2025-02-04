@@ -1005,9 +1005,9 @@ export default {
         .then( (response) => {
         
           if (response.status === 200) {
-            const fechaActual = new Date();             
+            const fechaActual = new Date(); //.toLocaleDateString();          
             const denunciaPersonasMaxId =  String(parseInt(response.data[0].latestId) +1);
-            this.codDenuncia = 'SD-'+ denunciaPersonasMaxId.padStart(4, '0') +'-' + fechaActual.getMonth()+'-' + fechaActual.getFullYear(); ; 
+            this.codDenuncia = 'SD-'+ denunciaPersonasMaxId.padStart(4, '0') +'-' + String(parseInt(fechaActual.getMonth()+1))+'-' + fechaActual.getFullYear(); ; 
             console.log("this.codDenuncia  : ", this.codDenuncia);
           } else {
             this.showSnackbar('Error recuperando denunciaPersonasList ' + response, 'red');

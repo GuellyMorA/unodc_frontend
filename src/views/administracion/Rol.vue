@@ -9,7 +9,7 @@
     <v-row class="mb-4">
     <v-col cols="6" class="p-0 py-0 px-1">
    <!-- Search Field -->
-    <v-text-field v-model="search" class="pa-2" label="Buscar Usuario" append-icon="mdi-magnify" single-line
+    <v-text-field v-model="search" class="pa-2" label="Buscar Rol" append-icon="mdi-magnify" single-line
       hide-details></v-text-field>
    
     </v-col>

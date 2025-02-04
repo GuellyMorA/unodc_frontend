@@ -32,8 +32,7 @@
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title class="text-center">Usuarios del sistema</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
+  
 
 
           <v-dialog v-model="dialogDelete" max-width="500px">
@@ -102,7 +101,7 @@
                   placeholder="CI" :rules="[v => !!v || 'CI es requerido']"></v-text-field>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField" label="Ci expedido"
+                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField" label="CI expedido"
                    :rules="[v => !!v || 'ci_expedido es requerido']"></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
@@ -663,7 +662,7 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
                 console.log("usuarioUpdate  : ", response.status, response);
                 // toast('Wow so easy !', { containerId: 'A' });
                 this.usuariosRolUpdate();
-
+              
 
                 //  this.showSnackbar('Usuario modificado correctamente !', 'green')
                 toast.success('Usuario modificado correctamente ! ', {
@@ -711,7 +710,7 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
 
                 this.editedItemUsuario.id = response.data.id;
                 this.usuariosRolCreate();
-
+                this.usuarioList();
                 console.log("usuarioCreate  : ", response.status, response);
               //  this.showSnackbar('Usuario creado correctamente!', 'green')
                 toast.success('Usuario creado correctamente ! ', {
