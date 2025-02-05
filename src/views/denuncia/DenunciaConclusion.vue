@@ -1399,42 +1399,7 @@ export default {
           this.denPerDnte.transaccion = 'MODIFICAR';
           this.denPerDnte.usu_mod = this.username;
           this.denPerDnte.fec_mod = new Date();
-         /*
-          Denuncia.denunciaUpdate(this.denPerDnte.id, JSON.stringify(this.denPerDnte))
-            .then((response) => {
-              if (response.status === 200) {
-                // this.people = response.data;
-                Object.assign(this.people[this.editedIndex], this.denPerDnte)
-
-                console.log("denunciaUpdate  : ", response.status, response);
-                // toast('Wow so easy !', { containerId: 'A' });
-                this.denunciasRolUpdate();
-
-
-                //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
-                toast.success('Denuncia modificado correctamente ! ', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-                  // toastClassName: 'custom-toast', // 
-
-                });
-                this.close()
-              } else {
-                console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
-                this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
-
-                toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
-                  autoClose: 5000,
-                  position: toast.POSITION.TOP_RIGHT,
-
-                });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
-              console.log('Log Error modificando Denuncia: ', error);
-            });
-         */
+       
         } 
         else {  // Add new seguimiento
    
@@ -1476,6 +1441,7 @@ export default {
 
                   this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
 
+                  this.seguimientoList( this.userId , this.deptoId, this.rol  );
                 this.close()
               } else {
 

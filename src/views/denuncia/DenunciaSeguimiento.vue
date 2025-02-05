@@ -1505,12 +1505,12 @@ export default {
           if (response.status === 200) {
 
             this.actividadOptions = Object.values(response.data);
-            if(  this.rol.substring (0,7) === 'GES_DEP'){
+           // if(  this.rol.substring (0,7) === 'GES_DEP'){
              // this.actividadOptions = this.actividadOptions.filter(elemento => elemento.actividad.startsWith('DENUNCIA'));
-            }
-            else{
+           // }
+           // else{
               this.actividadOptions = this.actividadOptions.filter(elemento => !elemento.actividad.startsWith('DENUNCIA'));
-            }
+           // }
            // this.actividadOptions =this.actividadOptions.sort((c, d)=> c.actividad.toLowerCase().charCodeAt(0) - d.actividad.toLowerCase().charCodeAt(0))
             this.actividadOptions.sort(function(a, b){
                 if(a.actividad.toLowerCase() < b.actividad.toLowerCase()) { return -1; }
@@ -1862,10 +1862,10 @@ export default {
           this.seguimiento.usu_cre = this.username;
 
 //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
-         await Seguimiento.seguimientoCreate(this.seguimiento)
+        await Seguimiento.seguimientoCreate(this.seguimiento)
             .then((response) => {
 
-              if (response.status === 201) {
+        if (response.status === 201) {
                // this.people.push(this.denPerDnte);  
                this.seguimiento.seg_id= response.data.id;
                
@@ -1881,36 +1881,63 @@ export default {
                 });
 
                 //primera ampliacion 305
- /// si sol ampliacion cambiar el param 1 de amplaicion de tiempo para el aasignado
- //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
-     this.denunciaPersonasGetByCod(this.denPerDnte.cod_denuncia) ;
+          /// si sol ampliacion cambiar el param 1 de amplaicion de tiempo para el aasignado
+          //  aki adicionar un upd a denuncia personas  y cambiar el estado a derivado
+             this.denunciaPersonasGetByCod(this.denPerDnte.cod_denuncia) ;
  
- if(this.seguimiento.actividad_sigla=='DEN_SOL_AMPLIACION'){
-   if(this.denPerDnte.estado=='SOLICITADO'){
+              if(this.seguimiento.actividad_sigla=='DEN_SOL_AMPLIACION'){ //   
+                  if(this.denPerDnte.estado=='SOLICITADO'){
 
-    this.denPerDnteUpd.modulos_sigla_amp_1 = 'DEN_SEG_AMP_5_DIAS';
-         this.denPerDnteUpd.fec_ampliacion_1 = new Date();
-         this.denPerDnteUpd.usu_mod = this.username;
-          this.denPerDnteUpd.fec_mod = new Date();
+                      this.denPerDnteUpd.modulos_sigla_amp_1 = 'DEN_SEG_AMP_5_DIAS';
+                      this.denPerDnteUpd.fec_ampliacion_1 = new Date();
+                      this.denPerDnteUpd.usu_mod = this.username;
+                      this.denPerDnteUpd.fec_mod = new Date();
+                      this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))                
+                  }
 
-          this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
- 
-        }
-   if(this.denPerDnte.estado=='ASIGNADO'){
+                  if(this.denPerDnte.estado=='ASIGNADO'){
 
-this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
-     this.denPerDnteUpd.fec_ampliacion_2 = new Date();
-     this.denPerDnteUpd.usu_mod = this.username;
-          this.denPerDnteUpd.fec_mod = new Date();
+                    this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
+                    this.denPerDnteUpd.fec_ampliacion_2 = new Date();
+                    this.denPerDnteUpd.usu_mod = this.username;
+                    this.denPerDnteUpd.fec_mod = new Date();
 
-          this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
- 
-    }     
- 
- }
-     
+                    this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+                
+                  }     
+                    
+              }
+              if(this.seguimiento.actividad_sigla=='DEN_SOL_AMPLIACION_POST_45'){ //   
+                this.denPerDnteUpd.modulos_sigla_amp_1 = 'DEN_SEG_AMP_45_DIAS';
+                this.denPerDnteUpd.fec_ampliacion_1 = new Date();
+                this.denPerDnteUpd.modulos_sigla_amp_2 = null;
+                this.denPerDnteUpd.fec_ampliacion_2 = null;
+
+                this.denPerDnteUpd.usu_mod = this.username;
+                this.denPerDnteUpd.fec_mod = new Date();
+                this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))
+                
+              }
+          /*    if(this.seguimiento.actividad_sigla=='DEN_ACEPTAR'){
+
+                      this.denPerDnteUpd.estado = 'CONCLUSION';
+                      this.denPerDnteUpd.transaccion =  this.seguimiento.actividad_sigla  ;//'DEN_ACEPTAR';
+                      this.denPerDnteUpd.usu_mod = this.username;
+                      this.denPerDnteUpd.fec_mod = new Date();
+                      this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))                
+                  }
+              if(this.seguimiento.actividad_sigla=='DEN_RECHAZAR'){
+
+                this.denPerDnteUpd.estado = 'CONCLUSION';
+                      this.denPerDnteUpd.transaccion = this.seguimiento.actividad_sigla  ;//'DEN_RECHAZAR';
+                this.denPerDnteUpd.usu_mod = this.username;
+                this.denPerDnteUpd.fec_mod = new Date();
+                this.denunciaUpdate(this.seguimiento.denuncia_personas_id, JSON.stringify(this.denPerDnteUpd))                
+                }
+*/
+
                 this.close()
-              } else {
+        } else {
 
                 console.log("seguimientoCreate  : ", response.status, "error:   : ", response.response.request.response);
                 this.showSnackbar('Error creando seguimiento: ' + response.response.request.response, 'red');
@@ -1919,12 +1946,12 @@ this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
                   position: toast.POSITION.TOP_RIGHT,
 
                 });
-              }
-            })
-            .catch(error => {
-              this.showSnackbar('Log Error creando seguimiento: ' + error, 'red');
-              console.log('Log Error creando seguimiento: ', error);
-            });
+        }
+      })
+      .catch(error => {
+        this.showSnackbar('Log Error creando seguimiento: ' + error, 'red');
+        console.log('Log Error creando seguimiento: ', error);
+      });
 
           // this.showSnackbar('Denuncia creado correctamente!', 'green')
           // this.close()
@@ -1940,38 +1967,39 @@ this.denPerDnteUpd.modulos_sigla_amp_2 = 'DEN_SEG_AMP_10_DIAS';
     },
     async denunciaUpdate(seguimiento_id,seguimiento_data)  {                  
 
-await Denuncia.denunciaUpdate(seguimiento_id, seguimiento_data)
-  .then((response) => {
-    if (response.status === 200) {
-  
-      // Object.assign(this.people[this.editedIndex], this.editedItemseguimiento)
+      await Denuncia.denunciaUpdate(seguimiento_id, seguimiento_data)
+        .then((response) => {
+          if (response.status === 200) {
+        
+            // Object.assign(this.people[this.editedIndex], this.editedItemseguimiento)
 
-      console.log("denunciaUpdate  : ", response.status, response);
+            console.log("denunciaUpdate  : ", response.status, response);
+            this.seguimientoList( this.userId , this.deptoId, this.rol  ); //04/02/2025
 
-        //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
-        toast.success('Denuncia modificado correctamente ! ', {
-        autoClose: 5000,
-        position: toast.POSITION.TOP_RIGHT,
-        // toastClassName: 'custom-toast', // Add your custom class name here
+              //  this.showSnackbar('Denuncia modificado correctamente !', 'green')
+              toast.success('Denuncia modificado correctamente ! ', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
+              // toastClassName: 'custom-toast', // Add your custom class name here
 
-      });
-      this.close()
-    } else {
-      console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
-      this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
+            });
+            this.close()
+          } else {
+            console.log("denunciaUpdate  : ", response.status, "error:   : ", response.response.request.response);
+            this.showSnackbar('Error modificando Denuncia: ' + response.response.request.response, 'red');
 
-      toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
-        autoClose: 5000,
-        position: toast.POSITION.TOP_RIGHT,
+            toast.info('Error modificando Denuncia: ' + 'Revise el denuncia de logueo', {
+              autoClose: 5000,
+              position: toast.POSITION.TOP_RIGHT,
 
-      });
-    }
-  })
-  .catch(error => {
-    this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
-    console.log('Log Error modificando Denuncia: ', error);
-  });
-},
+            });
+          }
+        })
+        .catch(error => {
+          this.showSnackbar('Log Error modificando Denuncia ' + error, 'red');
+          console.log('Log Error modificando Denuncia: ', error);
+        });
+      },
     async enviarArchivos() {
       try {
      

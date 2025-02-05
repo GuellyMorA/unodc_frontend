@@ -84,7 +84,7 @@
     class="elevation-1"
     :search="search" 
     no-data-text="No existen registros." no-results-text="Sin resultados" 
-    page-text="de" :items-per-page="itemsPerPage"  
+    page-text="." :items-per-page="itemsPerPage"  
     rows-per-page-text="Filas por página"   :page-count="pageCount"
     items-per-page-text="Registros por pagina "
 
