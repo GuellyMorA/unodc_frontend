@@ -678,7 +678,7 @@
           <v-row>
             <v-col cols="8" class="p-0 py-0 px-1">
               <v-select v-model="seguimiento.actividades_id" :items="actividadOptions" item-title="actividad" item-value="id"
-                :readonly="lockField2" label="Atividades" placeholder="Atividades realizadas"
+                :readonly="lockField2" label="Actvidades" placeholder="Actvidades realizadas"
                 @update:modelValue="onActividadChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
             </v-col>
           </v-row>
@@ -752,7 +752,7 @@
           <v-row>
             <v-col cols="8" class="p-0 py-0 px-1">
               <v-select v-model="seguimiento.actividades_id" :items="actividadOptions" item-title="actividad" item-value="id"
-                :readonly="lockField2" label="Atividades" placeholder="Atividades realizadas"
+                :readonly="lockField2" label="Actvidades" placeholder="Actvidades realizadas"
                 @update:modelValue="onActividadChange" :rules="[v => !!v || 'Gestor es requerido']"></v-select>
             </v-col>
           </v-row>

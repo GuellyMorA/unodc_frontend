@@ -19,7 +19,7 @@
     <v-data-table :headers="headers" :items="filteredItems"
       :sort-by="[{ key: 'fila', order: 'asc' }, { key: 'apellido_pat', order: 'desc' }]" class="elevation-1"
       :search="search" :items-per-page="itemsPerPage" rows-per-page-text="Filas por página"
-      no-data-text="No existen registros." no-results-text="Sin resultados" page-text="de"
+      no-data-text="No existen registros." no-results-text="Sin resultados" page-text="."
       items-per-page-text="Registros por pagina ">
 
       <template v-slot:headers="{ props }">
@@ -92,18 +92,18 @@
                    :rules="[v => !!v || 'Apellido es requerido']"
                   @input="generateLoginAndPassword" ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+              <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="editedItemUsuario.apellido_mat" :readonly="lockField" label="Ap. Materno"
-                   :rules="[v => !!v || 'Apellido es requerido']"></v-text-field>
-                </v-col>
+                 ></v-text-field>
+                </v-col> 
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="editedItemUsuario.ci_y_complemento" :readonly="lockField" label="CI y complemento" 
                   placeholder="CI" :rules="[v => !!v || 'CI es requerido']"></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField" label="CI expedido"
+               <!--   <v-col cols="12" sm="6" md="4">
+                <v-select v-model="editedItemUsuario.ci_expedido" :items="expedidoOptions" :readonly="lockField" label="CI expedido"
                    :rules="[v => !!v || 'ci_expedido es requerido']"></v-select>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="6" md="4">
                   <v-select v-model="editedItemUsuario.grado" :items="gradoOptions" :readonly="lockField" label="Grado"
                      item-title="grado"        item-value="grados_sigla"   @update:modelValue="onGradoChange"
@@ -123,11 +123,11 @@
                     placeholder="departamento" :rules="[v => !!v || 'departamento es requerido']"></v-select>
 
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
+                   <!-- <v-col cols="12" sm="6" md="4">
                   <v-select v-model="editedItemUsuario.municipio" :items="munOptions" :readonly="lockField" label="Ciudad" 
                     item-title="mun" item-value="mun_id"   return-object
                     :rules="[v => !!v || 'Ciudad es requerido']"></v-select>
-                </v-col>
+                </v-col> -->
                 <v-col cols="12" sm="6" md="4">
                   <v-text-field v-model="editedItemUsuario.user_login" :readonly="lockField" label="Usuario"
                    :rules="[v => !!v || 'usuario es requerido']"></v-text-field>
@@ -205,7 +205,7 @@ export default {
     loading: true,
 
     page: 1,
-    itemsPerPage: 5,
+    itemsPerPage: 10,
     search: '',
     dialog: false,
     dialogDelete: false,
@@ -525,19 +525,19 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
     }
 };*/
     validateForm() {
-      //this.validationErrors = {};
-
-      if (!this.editedItemUsuario.nombres || !this.editedItemUsuario.apellido_pat || !this.editedItemUsuario.apellido_mat) this.validationErrors.nombres = { value: true };
+     
+    //  || !this.editedItemUsuario.apellido_mat
+      if (!this.editedItemUsuario.nombres || !this.editedItemUsuario.apellido_pat ) this.validationErrors.nombres = { value: true };
       else delete this.validationErrors.nombres;
-
-      if (!this.editedItemUsuario.ci_y_complemento || !this.editedItemUsuario.ci_expedido || !this.editedItemUsuario.grado) this.validationErrors.ci_y_complemento = { value: true };
-      else delete this.validationErrors.ci_y_complemento;
+   // || !this.editedItemUsuario.ci_expedido 
+      if (!this.editedItemUsuario.ci_y_complemento || !this.editedItemUsuario.grado) this.validationErrors.grado = { value: true };
+      else delete this.validationErrors.grado;
 
       if (!this.editedItemUsuario.telefono || !this.editedItemUsuario.email || !this.editedItemUsuario.departamento) this.validationErrors.telefono = { value: true };
       else delete this.validationErrors.telefono;
-
-      if (!this.editedItemUsuario.municipio || !this.editedItemUsuario.user_login || !this.editedItemUsuario.password_hash) this.validationErrors.municipio = { value: true };
-      else delete this.validationErrors.municipio;
+      //!this.editedItemUsuario.municipio || 
+      if (!this.editedItemUsuario.user_login || !this.editedItemUsuario.password_hash) this.validationErrors.user_login = { value: true };
+      else delete this.validationErrors.user_login;
 
       if (!this.editedItemUsuario.rol || !this.editedItemUsuario.estado) this.validationErrors.rol = { value: true };
       else delete this.validationErrors.rol;
@@ -640,7 +640,7 @@ this.editedItemUsuario.user_login  = `${this.editedItemUsuario.user_login.replac
         // const dateParts = (form.value.fecha || '').split("/");      
         // fec_ejecucion:   new Date(dateParts[2] +'-'+ dateParts[1] +'-'+ dateParts[0]).toISOString(), // form.value.fecha,        
 
-        this.editedItemUsuario.mun_id = this.editedItemUsuario.municipio.mun_id ? this.editedItemUsuario.municipio.mun_id : this.editedItemUsuario.mun_id;
+    // 11/02/2025    this.editedItemUsuario.mun_id = this.editedItemUsuario.municipio.mun_id ? this.editedItemUsuario.municipio.mun_id : this.editedItemUsuario.mun_id;
 
         console.log('editedItemUsuario 2 : ', JSON.stringify(this.editedItemUsuario));
 
