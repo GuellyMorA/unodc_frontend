@@ -18,7 +18,7 @@ const pin = ref('');
 
 const checkbox = ref(false);
 const form = ref({
-  user_login: 'acrespo',
+  user_login: 'acrespo33',
   password_hash: '' , //'123456',
   email: '',
   nombre: '',

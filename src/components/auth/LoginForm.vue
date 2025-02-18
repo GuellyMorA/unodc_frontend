@@ -18,7 +18,7 @@ const pin = ref('');
 
 const checkbox = ref(false);
 const form = ref({
-  user_login: 'acrespo',
+  user_login: '',  //  acrespo34534
   password_hash: '' , //'123456',
   email: '',
   nombre: '',
@@ -81,7 +81,7 @@ const submit = async (event: any) => {
 
       if (res.data.codigo_s) {
         //localStorage.setItem('user', JSON.stringify(res.data));
-        localStorage.setItem('username', form.value.user_login);
+       // localStorage.setItem('username', form.value.user_login);
         console.log('**1 Auth.login: ', res.data);
         router.push('/');
         return res;
@@ -103,7 +103,7 @@ const submit = async (event: any) => {
         form.value.email = res.data.email;
 
         localStorage.setItem('menu_operaciones', JSON.stringify(res.data.menu_operaciones));
-        console.log('**2 usuario_id: ', res.data.usuario_id);
+      /*  console.log('**2 usuario_id: ', res.data.usuario_id);
         console.log('**2 Auth.login: ', res.data);
         console.log('**2 username: ', form.value.user_login);
         console.log('**2 nombre_completo: ', res.data.nombre);
@@ -114,7 +114,7 @@ const submit = async (event: any) => {
 
         console.log('**2 grados_sigla: ', res.data.grados_sigla);
         console.log('**2 menu_operaciones: ', res.data.menu_operaciones);
-
+*/
         console.log('**2 cambio_clave: ', res.data.cambio_clave);
         primeraVez.value = res.data.cambio_clave == 'PENDIENTE' ? true : false;
         console.log('primeraVez : ', primeraVez.value);
@@ -437,7 +437,7 @@ const usuarioUpdate = async () => {
           @click="submit">Ingresar</v-btn>
       </v-col>
       
-      <v-label class="font-weight-medium">_-Ver.3.1.0</v-label>
+      <v-label class="font-weight-medium">_-Ver.3.2.0</v-label>
     </v-row>
   </div>
   <template v-if="primeraVez">
