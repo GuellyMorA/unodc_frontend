@@ -27,10 +27,23 @@ class DenunciaService {
     });
   }
 
-
   getByCodEstado(cod_denuncia,estado) {
     return http.get(`/getByCodEstado/${cod_denuncia}/${estado}`,).catch((error) => {
       console.log("error getByCodEstado  url  : ", error.config.url);
+      return error;
+    });
+  }
+
+  listRepDenByTipo(depto_id, usuarios_id) {
+    return http.get(`/listRepDenByTipo/${depto_id}/${usuarios_id}`,).catch((error) => {
+      console.log("error listRepDenByTipo  url  : ", error.config.url);
+      return error;
+    });
+  }
+
+  listRepDenByTipoPlazo(depto_id, usuarios_id) {
+    return http.get(`/listRepDenByTipoPlazo/${depto_id}/${usuarios_id}`,).catch((error) => {
+      console.log("error listRepDenByTipoPlazo  url  : ", error.config.url);
       return error;
     });
   }

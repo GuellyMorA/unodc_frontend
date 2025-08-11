@@ -78,54 +78,59 @@ export const mockData = {
     }
   ],
   denunciasPorDia: [
-    { dia: 'lunes', total: 5 },
-    { dia: 'Martes', total: 6 },
-    { dia: 'Miercoels', total: 7 },
-    { dia: 'Jueves', total: 8 },
-    { dia: 'Viernes', total: 5 },
+    { dia: 'lunes', total: 0 },
+    { dia: 'Martes', total: 0 },
+    { dia: 'Miercoles', total: 0 },
+    { dia: 'Jueves', total: 0 },
+    { dia: 'Viernes', total: 0 },
   ],
 
   denunciasPorMes: [
-
-    { mes: 'Julio', total: 45 },
-    { mes: 'Agosto', total: 60 },
-    { mes: 'Septiembre', total: 75 },
-    { mes: 'Octubre', total: 80 },
-    { mes: 'Noviembre', total: 50 },
-    { mes: 'Diciembre', total: 40 }
+    { mes: 'Enero', total: 0 },
+    { mes: 'Febrero', total: 0 },
+    { mes: 'Marzo', total: 0 },
+    { mes: 'Abril', total: 0},
+    { mes: 'Mayo', total: 0 },
+    { mes: 'Junio', total: 0 },
+    { mes: 'Julio', total: 0 },
+    { mes: 'Agosto', total: 0 },
+    { mes: 'Septiembre', total: 0 },
+    { mes: 'Octubre', total: 0 },
+    { mes: 'Noviembre', total: 0 },
+    { mes: 'Diciembre', total: 0 }
   ],
   denunciasRechazadas: [
-    { mes: 'Enero', total: 4 },
+    { mes: 'Enero', total: 0 },
     { mes: 'Febrero', total: 0 },
-    { mes: 'Marzo', total: 5 },
-    { mes: 'Abril', total: 8},
-    { mes: 'Mayo', total: 5 },
-    { mes: 'Junio', total: 9 },
-    { mes: 'Julio', total: 45 },
-    { mes: 'Agosto', total: 60 },
-    { mes: 'Septiembre', total: 75 },
-    { mes: 'Octubre', total: 80 },
-    { mes: 'Noviembre', total: 50 },
-    { mes: 'Diciembre', total: 40 }
+    { mes: 'Marzo', total: 0 },
+    { mes: 'Abril', total: 0},
+    { mes: 'Mayo', total: 0 },
+    { mes: 'Junio', total: 0 },
+    { mes: 'Julio', total: 0 },
+    { mes: 'Agosto', total: 0 },
+    { mes: 'Septiembre', total: 0 },
+    { mes: 'Octubre', total: 0 },
+    { mes: 'Noviembre', total: 0 },
+    { mes: 'Diciembre', total: 0 }
   ],
   
   denunciasPorDepto: [
-    { region: 'LP', total: 100 },
-    { region: 'SC', total: 80 },
-    { region: 'CH', total: 45 },
-    { region: 'CBBA', total: 60 },
-    { region: 'OR', total: 100 },
-    { region: 'TAR', total: 80 },
-    { region: 'BE', total: 45 },
-    { region: 'PAN', total: 60 },
+    { region: 'LP', total: 0 },
+    { region: 'SC', total: 0 },
+    { region: 'CH', total: 0 },
+    { region: 'CBBA', total: 0 },
+    { region: 'OR', total: 0 },
+    { region: 'TAR', total: 0 },
+    { region: 'BE', total: 0 },
+    { region: 'PAN', total: 0 },
   ],
 
   denunciasPorTipo: [
-    { tipo: 'Den.nuevas asignadas', total: 120 },
-    { tipo: 'Den.con retraso en plazos', total: 85 },
-    { tipo: 'Denu.con seguimiento', total: 56 },
-    { tipo: 'Denuncias rechazadas', total: 33 },
-    { tipo: 'Den.con informe final', total: 75 }
+    { tipo: 'Den.nuevas asignadas', total: 0 },
+    { tipo: 'Den.con retraso en plazos', total: 0 },
+    { tipo: 'Denu.con seguimiento', total: 0 },
+    { tipo: 'Denuncias rechazadas', total: 0 },
+    { tipo: 'Den.con informe final', total: 0 }
   ],
 
 };
