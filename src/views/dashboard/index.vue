@@ -106,7 +106,7 @@
                                 <div class="text-subtitle-1 text-grey100 pb-1" data-v-81e7cbfb="">Denuncias sin asignacion de los ultimos 5
                                     días
                                 </div>
-                                <label> {{ segEstadoCount.nuevas_hoy }} </label>
+                                <label> {{ segEstadoCount.nuevasHoy }} </label>
 
                             </v-col>
                         </v-row>
@@ -250,7 +250,7 @@ let denunciasPorDia= [
     { mes: 'Noviembre', total: 0 },
     { mes: 'Diciembre', total: 0 }
   ];
-  let      denunciasPorTipo = [
+  let      denunciasPorTipoXXX = [
         { codigo:'SIN_ASIGNACION' ,tipo: 'Den.sin asignar', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
         { codigo:'RECHAZADO_CON_INF' ,tipo: 'Denuncias rechazadas', total: 0 },//rechazadas: 4, // RECHAZADO
         { codigo:'SIN_RETRASO' ,tipo: 'Den. sin retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
@@ -308,12 +308,10 @@ onMounted(() => {
    // listRepDenByTipoRech(depto_id,usuarios_id);
   dialog.value = true;
 });
-const renderLineChart = () => {
-  
+const renderLineChart = () => {  
    // const meses = mockData.denunciasPorDia.map(d => d.dia);
     //   const totales = mockData.denunciasPorDia.map(d => d.total);
-
-    //const meses =denunciasPorTipo.map(d => d.tipo); 
+    
     const dias =denunciasPorDia.map(d => d.dia); 
     const totales = denunciasPorDia.map(d => parseInt(d.total));
 
@@ -421,11 +419,28 @@ const denunciaAddCantidadByMesRech = async ()=> {
               people = response.data;
               denunciaAddCantidadByMes();
               denunciaAddCantidadByDia();
-              // denunciaAddCantidadByMesRech();
-
+             
               renderLineChart();
-renderRegionChart();
-renderLineChart2();
+                renderRegionChart();
+                renderLineChart2();
+
+            seguimientosArray = response.data;
+            seguimientosArray.forEach(async denuncia => {
+    
+                if (denuncia.codigo ==='SIN_ASIGNACION') {// ok NUEVAS de los ultimos dias
+                    segEstadoCount.nuevasHoy = denuncia.total; //
+                    console.log(`cod_denuncia para el id ${denuncia.codigo}: ${denuncia.total}`);
+                }
+                if (denuncia.codigo ==='SEGUIMIENTO') {
+                    segEstadoCount.con_seguimiento = denuncia.total; //con_seguimiento
+                    console.log(`cod_denuncia para el id ${denuncia.codigo}: ${denuncia.total}`);
+                }                
+                else {
+                console.log(`No se encontró registro con el id ${denuncia.codigo}`);
+                }           
+                
+              });
+
             } else {
               showSnackbar('Error recuperando listRepDenByTipo ' + response, 'red');
             }
@@ -472,22 +487,20 @@ const  listRepDenByTipoPlazo =async (depto_id ,usuarios_id) => {
                 if (denuncia.codigo ==='ACEPTADO_CON_INF') {
                     segEstadoCount.conInfFinalAceptacion = denuncia.total; //aceptadas CONCLUSION  con inf final de aceptacion
                     console.log(`cod_denuncia para el id ${denuncia.codigo}: ${denuncia.total}`);
-                }
-                 //xxxxxxxxxxxxx               
-                if (denuncia.codigo ==='ASIGNADO' || denuncia.codigo ==='SEGUIMIENTO') {
-                    segEstadoCount.con_seguimiento = denuncia.total;  // ok  SEGUIMIENTO esta ASIGNADO  // SEGUIMIENTO  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
+                } 
+                if (denuncia.codigo ==='SEGUIMIENTO') {
+                    segEstadoCount.con_seguimiento = denuncia.total; //con_seguimiento
                     console.log(`cod_denuncia para el id ${denuncia.codigo}: ${denuncia.total}`);
-                }
-                if (denuncia.codigo ==='SOLICITADO') {
-                    segEstadoCount.solicitado = denuncia.total;  //sin_seguimiento: SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
-                    console.log(`cod_denuncia para el id ${denuncia.codigo}: ${denuncia.total}`);
-                }
+                } 
+                //xxxxxxxxxxxxx     
                 else {
                 console.log(`No se encontró ninguna cod_denuncia con el id ${denuncia.codigo}`);
                 }           
                 
 
-            });                
+            });  
+            
+            
              denunciaAddCantidadByMesRech();
         } else {
             showSnackbar('Error recuperando listRepDenByTipoPlazo ' + response, 'red');
