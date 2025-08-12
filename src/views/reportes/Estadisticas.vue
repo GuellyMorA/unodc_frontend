@@ -33,15 +33,19 @@
      // deptoId: localStorage.getItem('depto_id'),
 
         denunciasPorTipo : [
-        { codigo:'ASIGNADO_HOY' ,tipo: 'Den. nuevas asignadas hoy', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
+        { codigo:'ASIGNADO_INICIAL' ,tipo: 'Den. nuevas con_derivacion_inicial', total: 0 }, //nuevas:5, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar)
         { codigo:'RECHAZADO_CON_INF' ,tipo: 'Denuncias rechazadas', total: 0 },//rechazadas: 4, // RECHAZADO
         { codigo:'SIN_RETRASO' ,tipo: 'Den. sin retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
         { codigo:'CON_RETRASO' ,tipo: 'Den. con retrazo en los plazos', total: 0 }, //retraso:5, // RETRASO luego de la primera o segunda ampliacion 
         { codigo:'ACEPTADO_CON_INF' ,tipo: 'Den.con informe final', total: 0 },// aceptadas:3, // CONCLUSION
        
         { codigo:'SEGUIMIENTO' ,tipo: 'Den.con seguimiento', total: 0 },// SEGUIMIENTO esta ASIGNADO:  para el investigador muestra un numero,  para el caso de jefe departamental muestra cero
-          { codigo:'SOLICITADO' ,tipo: 'Den.sin asignacion', total: 0 },//  SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
-    //nuevas_hoy:0, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar) 
+          { codigo:'SIN_ASIGNACION' ,tipo: 'Den.sin asignacion ', total: 0 },//  SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
+   
+      ],
+         	
+
+      //nuevas_hoy:0, // ASIGNADO_HOY al investigador , o para el caso de jefe departamental son las denuncias en estado SOLICITADO (pendientes de asignar) 
     //retraso: 0, // RETRASO
    // conclusion:0, //aceptadas CONCLUSION
    // rechazado: 0, // RECHAZADO
@@ -49,7 +53,7 @@
     //solicitado: 0,  //sin_seguimiento: 12, // SOLICITADO  para el investigador muestra cero,  para el caso de jefe departamental muestra un numero
 
          // total_denuncias: 15, // TOTAL  
-      ],
+   
 
       denunciasPorDepto: [
         {  codigo:'LP',    region: 'La Paz', total: 0 },
@@ -121,22 +125,22 @@
     const usuarioId= localStorage.getItem('usuario_id');
 
      // this.seguimientolistRepByNivelGeoByUsuId( userId , deptoId  );
-         this.listRepDenByTipo(deptoId,usuarioId);
-      this.listRepDenByDepto(deptoId);
+      this.listRepDenByTipoPlazo(deptoId,usuarioId);
+      this.listRepDenByTipo(deptoId,usuarioId);
 
+      this.listRepDenByDepto(deptoId);
       this.listRepDenByDeptoByInfFinal(deptoId);
   
-
     },
 
     methods: {
-        showSnackbar(message, color) {
+      showSnackbar(message, color) {
       this.snackbar.message = message;
       this.snackbar.color = color;
       this.snackbar.visible = true;
-    },
-   
-    async listRepDenByTipo(deptoId,usuarioId) {
+      },
+
+     async listRepDenByTipo(deptoId,usuarioId) {
       console.log('this.deptoId,usuarioId', deptoId,usuarioId );
       await  Denuncia.listRepDenByTipo( deptoId,usuarioId)
           .then((response) => {
@@ -144,7 +148,7 @@
             if (response.status === 200) {
               this.people = response.data;
               this.denunciaAddCantidad();
-              this.renderPieChart();
+             // this.renderPieChart();
               this.renderBarChart();
 
             } else {
@@ -160,7 +164,28 @@
                 });
           });
     },
- async listRepDenByDepto(deptoId) {
+    async listRepDenByTipoPlazo (depto_id ,usuarios_id) {    
+    console.log(` depto_id: ${depto_id}, usuarios_id ${usuarios_id} `);
+
+      await Denuncia.listRepDenByTipoPlazo(depto_id ,usuarios_id) 
+        .then((response) => {
+          console.log("listRepDenByTipoPlazo  : ", response.data, response.status);
+          if (response.status === 200) {
+
+            this.seguimientosArray = response.data;
+            
+        } else {
+            this.showSnackbar('Error recuperando listRepDenByTipoPlazo ' + response, 'red');
+               console.log("error listRepDenByTipoPlazo  response  : ", response);
+         }
+        })
+        .catch(error => {
+            console.log("error listRepDenByTipoPlazo error  : ", error);
+
+        });
+    },
+       
+    async listRepDenByDepto(deptoId) {
       console.log('this.deptoId', deptoId );
       await  Denuncia.listRepDenByDepto( deptoId)
           .then((response) => {
@@ -207,8 +232,42 @@
                 });
           });
     },
+    denunciaAddCantidad() {
+      // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
+      const denunciasArray = this.people.map(denuncia => ({ ...denuncia }));
+      
+      denunciasArray.forEach(async denuncia => {
+       
+              const depto = this.denunciasPorTipo.find(p => p.codigo === denuncia.codigo); // Buscar la persona por id
 
-   denunciaAddCantidadByDeptoByInfFinal() {
+              if (depto) {
+                depto.total = denuncia.total; // Nuevo valor para la propiedad estado
+                 console.log(`denunciasPorTipo para el id ${denuncia.codigo}: ${depto.total}`);
+              } else {
+                console.log(`No se encontró  el id ${denuncia.codigo}`);
+               
+              }           
+              
+     
+      });
+     
+       this.seguimientosArray.forEach(async denuncia => {
+       
+              const depto = this.denunciasPorTipo.find(p => p.codigo === denuncia.codigo); // Buscar la persona por id
+
+              if (depto) {
+                depto.total = denuncia.total; // Nuevo valor para la propiedad estado
+                 console.log(`denunciasPorTipoPlazo para el id ${denuncia.codigo}: ${depto.total}`);
+              } else {
+                console.log(`No se encontró  el id ${denuncia.codigo}`);
+               
+              }           
+              
+     
+      });
+    
+    },
+    denunciaAddCantidadByDeptoByInfFinal() {
     
       // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
       const denunciasArray = this.people.map(denuncia => ({ ...denuncia }));
@@ -254,34 +313,6 @@
 
    
 
-
-
-    denunciaAddCantidad() {
-      // filtrar solo los roles-modulos  en estado activo
-      // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
-
-      // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
-      const denunciasArray = this.people.map(denuncia => ({ ...denuncia }));
-      
-     // this.capitalsArray = this.denunciasPorTipo;
-      denunciasArray.forEach(async denuncia => {
-       
-            //const capitals = response.bolivia.capitals;          
-              const depto = this.denunciasPorTipo.find(p => p.codigo === denuncia.codigo); // Buscar la persona por id
-
-              if (depto) {
-                depto.total = denuncia.total; // Nuevo valor para la propiedad estado
-                 console.log(`denunciasPorTipo para el id ${denuncia.codigo}: ${depto.total}`);
-              } else {
-                console.log(`No se encontró  el id ${denuncia.codigo}`);
-               
-              }           
-              
-     
-      });
-     
-    },
-
     async  seguimientolistRepByNivelGeoByUsuIdxxx (usuarios_id,depto_id ) {
        await Seguimiento.seguimientolistRepByNivelGeoByUsuId(usuarios_id,depto_id ) 
         .then((response) => {
@@ -314,7 +345,6 @@
        // console.log(`tipos : ${tipos}`);
        // console.log(`totales : ${totales}`);
         console.log(`denunciasPorTipo : ${JSON.stringify(this.denunciasPorTipo)}`);
-
         
         Highcharts.chart('barChart', {
           chart: { type: 'column' },
@@ -343,7 +373,7 @@
           }]
         });
       },
-      renderLineChart() {
+      renderLineChartXXX() {
         const meses = this.denunciasPorMes.map(d => d.mes);
         const totales = this.denunciasPorMes.map(d => parseInt(d.total));
   
