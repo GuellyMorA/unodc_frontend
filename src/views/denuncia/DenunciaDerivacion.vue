@@ -58,9 +58,9 @@
     <template v-slot:item.color_semaforo="{ item }">
         <!-- Icono del semáforo {{item.color_semaforo}} -->
       
-        <i v-if="item.color_semaforo == 'green'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
-        <i v-if="item.color_semaforo == 'yellow'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
-        <i v-if="item.color_semaforo == 'red'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
+        <i v-if="item.color_semaforo == 'green' && item.estado != 'CONCLUSION'"   :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
+        <i v-if="item.color_semaforo == 'yellow' && item.estado != 'CONCLUSION'"  :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
+        <i v-if="item.color_semaforo == 'red' && item.estado != 'CONCLUSION'"     :class="['fa', 'fa-circle']"    :style="{'color': item.color_semaforo}"  ></i>
 
        
       </template>
@@ -1217,7 +1217,7 @@ iconColor: "fas fa-circle",
        // Convertir cada elemento de la propiedad 'operaciones_concat' en un objeto separado
       
 // Copiar el array A a B (copia profunda utilizando map y el operador de propagación)
-this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
+       this.semaforoArray = this.people.map(denuncia => ({ ...denuncia }));
 
        this.people.forEach(async denuncia => {
           await Denuncia.getByCodEstado(denuncia.cod_denuncia, denuncia.estado)
