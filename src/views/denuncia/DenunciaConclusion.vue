@@ -62,7 +62,11 @@
       <v-icon small @click="addNewSeguimiento(item)"> mdi-account-multiple-plus </v-icon>
 
     </template>
+    <template v-slot:item.dias_retraso="{ item }">
 
+    {{ item.estado === 'CONCLUSION' ? 0 : item.dias_retraso }}
+  
+    </template>
     <!--   <template v-slot:bottom>
       <div class="text-center pt-2">
         <v-pagination v-model="page" :length="pageCount"></v-pagination>

@@ -40,7 +40,11 @@
     <template v-slot:item.fila2="{ index }">
       <td class="sin-borde text-center">{{ index + 1 }}</td>
     </template>
+    <template v-slot:item.dias_retraso="{ item }">
 
+    {{ item.estado === 'CONCLUSION' ? 0 : item.dias_retraso }}
+  
+    </template>
     <template v-slot:top>
       <v-toolbar flat>
 
