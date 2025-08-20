@@ -4,6 +4,7 @@ import axios from 'axios';
 export const downloadFile = async (filename) => {
   try {
     const apiUrl = import.meta.env;
+   console.log(` url descarga: , /uploads/evidencia_denuncias/${filename}`);
 
     const response = await axios.get(`/uploads/evidencia_denuncias/${filename}`, {
       responseType: 'blob',
